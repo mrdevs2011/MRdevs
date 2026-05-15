@@ -1,0 +1,343 @@
+{
+  "rules": {
+
+    "users": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid"
+      }
+    },
+
+    "vault_files": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid",
+        "$fileId": {
+          "fileName": { ".validate": "newData.isString() && newData.val().length <= 200" },
+          "fileUrl":  { ".validate": "newData.isString() && newData.val().startsWith('https://')" },
+          "fileSize": { ".validate": "newData.isNumber() && newData.val() <= 52428800" },
+          "isPublic": { ".validate": "newData.isBoolean()" },
+          "createdAt":{ ".validate": "newData.isNumber()" }
+        }
+      }
+    },
+    "vault_shares": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid"
+      }
+    },
+
+    "exams": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid",
+        "$examId": {
+          "name":      { ".validate": "newData.isString() && newData.val().length <= 200" },
+          "timeLimit": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 3600" },
+          "createdAt": { ".validate": "newData.isNumber()" }
+        }
+      }
+    },
+    "exam_results": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid",
+        "$resultId": {
+          "examId":         { ".validate": "newData.isString()" },
+          "score":          { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100" },
+          "correctAnswers": { ".validate": "newData.isNumber()" },
+          "totalQuestions": { ".validate": "newData.isNumber()" },
+          "completedAt":    { ".validate": "newData.isNumber()" }
+        }
+      }
+    },
+
+    "board_data": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid",
+        "$boardId": {
+          "name":      { ".validate": "newData.isString() && newData.val().length <= 100" },
+          "createdAt": { ".validate": "newData.isNumber()" }
+        }
+      }
+    },
+    "board_elements": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid"
+      }
+    },
+
+    "messages": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid",
+        "$msgId": {
+          "text":       { ".validate": "newData.isString() && newData.val().length <= 5000" },
+          "receiverId": { ".validate": "newData.isString()" },
+          "timestamp":  { ".validate": "newData.isNumber()" },
+          "type":       { ".validate": "newData.isString()" }
+        }
+      }
+    },
+    "channels": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid"
+      }
+    },
+    "user_status": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid",
+        "status":  { ".validate": "newData.isString()" },
+        "lastSeen":{ ".validate": "newData.isNumber()" }
+      }
+    },
+    "posts": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid",
+        "$postId": {
+          "content":   { ".validate": "newData.isString() && newData.val().length <= 5000" },
+          "createdAt": { ".validate": "newData.isNumber()" }
+        }
+      }
+    },
+    "comments": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid"
+      }
+    },
+
+    "notes": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid",
+        "$noteId": {
+          "title":    { ".validate": "newData.isString() && newData.val().length <= 200" },
+          "content":  { ".validate": "newData.isString() && newData.val().length <= 10000" },
+          "pinned":   { ".validate": "newData.isBoolean()" },
+          "updatedAt":{ ".validate": "newData.isNumber()" },
+          "createdAt":{ ".validate": "newData.isNumber()" }
+        }
+      }
+    },
+
+    "todos": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid",
+        "$taskId": {
+          "title":    { ".validate": "newData.isString() && newData.val().length <= 200" },
+          "completed":{ ".validate": "newData.isBoolean()" },
+          "priority": { ".validate": "newData.isString()" },
+          "createdAt":{ ".validate": "newData.isNumber()" }
+        }
+      }
+    },
+
+    "system": {
+      ".read": true,
+      ".write": "auth != null && auth.token.admin === true"
+    },
+
+    "weather_cache": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid",
+        "city":      { ".validate": "newData.isString() && newData.val().length <= 100" },
+        "updatedAt": { ".validate": "newData.isNumber()" }
+      }
+    },
+
+    "ai_conversations": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid",
+        "$convId": {
+          "title":    { ".validate": "newData.isString() && newData.val().length <= 100" },
+          "updatedAt":{ ".validate": "newData.isNumber()" }
+        }
+      }
+    },
+
+    "code_projects": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid",
+        "$projectId": {
+          "name":     { ".validate": "newData.isString() && newData.val().length <= 100" },
+          "code":     { ".validate": "newData.isString() && newData.val().length <= 50000" },
+          "updatedAt":{ ".validate": "newData.isNumber()" }
+        }
+      }
+    },
+
+    "user_progress": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid"
+      }
+    },
+
+    "group_boards": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid"
+      }
+    },
+
+    "user_security": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid",
+        "twoFactorEnabled":  { ".validate": "newData.isBoolean()" },
+        "lastPasswordChange":{ ".validate": "newData.isNumber()" }
+      }
+    },
+
+    "typing_results": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid",
+        "$id": {
+          "wpm":      { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 999" },
+          "accuracy": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100" },
+          "createdAt":{ ".validate": "newData.isNumber()" }
+        }
+      }
+    },
+    "typing_leaderboard": {
+      ".read": true,
+      "$uid": {
+        ".write": "$uid === auth.uid"
+      }
+    },
+
+    "videos": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid",
+        "$videoId": {
+          "title":    { ".validate": "newData.isString() && newData.val().length <= 200" },
+          "url":      { ".validate": "newData.isString() && newData.val().startsWith('https://')" },
+          "createdAt":{ ".validate": "newData.isNumber()" }
+        }
+      }
+    },
+
+    "calc_history": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid",
+        "$id": {
+          "expression":{ ".validate": "newData.isString() && newData.val().length <= 500" },
+          "result":    { ".validate": "newData.isString()" },
+          "createdAt": { ".validate": "newData.isNumber()" }
+        }
+      }
+    },
+
+    "clock_settings": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid",
+        "timezone":  { ".validate": "newData.isString() && newData.val().length <= 50" },
+        "format24h": { ".validate": "newData.isBoolean()" },
+        "showSeconds":{ ".validate": "newData.isBoolean()" },
+        "updatedAt": { ".validate": "newData.isNumber()" }
+      }
+    },
+
+    "timer_presets": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid",
+        "$id": {
+          "name":     { ".validate": "newData.isString() && newData.val().length <= 50" },
+          "duration": { ".validate": "newData.isNumber() && newData.val() > 0 && newData.val() <= 86400" },
+          "createdAt":{ ".validate": "newData.isNumber()" }
+        }
+      }
+    },
+
+    "stopwatch_laps": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid",
+        "$sessionId": {
+          "name":    { ".validate": "newData.isString() && newData.val().length <= 50" },
+          "savedAt": { ".validate": "newData.isNumber()" }
+        }
+      }
+    },
+
+    "qr_history": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid",
+        "$id": {
+          "text":      { ".validate": "newData.isString() && newData.val().length <= 2000" },
+          "type":      { ".validate": "newData.isString()" },
+          "createdAt": { ".validate": "newData.isNumber()" }
+        }
+      }
+    },
+
+    "splitview_layouts": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid",
+        "$id": {
+          "name":      { ".validate": "newData.isString() && newData.val().length <= 50" },
+          "urls":      { ".validate": "newData.isList()" },
+          "savedAt":   { ".validate": "newData.isNumber()" }
+        }
+      }
+    },
+
+    "music_playlists": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid",
+        "$id": {
+          "name":     { ".validate": "newData.isString() && newData.val().length <= 100" },
+          "tracks":   { ".validate": "newData.isList()" },
+          "updatedAt":{ ".validate": "newData.isNumber()" }
+        }
+      }
+    },
+
+    "bingo_scores": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid",
+        "$id": {
+          "score":    { ".validate": "newData.isNumber() && newData.val() >= 0" },
+          "playedAt": { ".validate": "newData.isNumber()" }
+        }
+      }
+    },
+
+    "pass_notifications": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "auth != null"
+      }
+    },
+
+    "admin_config": {
+      ".read": true,
+      ".write": "auth != null && auth.token.admin === true"
+    },
+
+    "$other": {
+      ".read": false,
+      ".write": false
+    }
+  }
+}

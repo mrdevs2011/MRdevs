@@ -1,0 +1,22 @@
+{
+  "rules": {
+    "vault_files": { ".read": true, ".write": "auth != null" },
+    "exams": { ".read": true, ".write": "auth != null" },
+    "exam_results": { ".read": true, ".write": "auth != null" },
+    "system": { ".read": true, ".write": "auth != null && auth.token.admin === true" },
+    "board_data": { ".read": true, ".write": "auth != null" },
+    "messages": { ".read": "auth != null", ".write": "auth != null" },
+    "channels": { ".read": "auth != null", ".write": "auth != null" },
+    "posts": { ".read": true, ".write": "auth != null" },
+    "comments": { ".read": true, ".write": "auth != null" },
+    "notes": { "$uid": { ".read": "$uid === auth.uid", ".write": "$uid === auth.uid" } },
+    "todos": { "$uid": { ".read": "$uid === auth.uid", ".write": "$uid === auth.uid" } },
+    "weather_cache": { ".read": true, ".write": "auth != null" },
+    "ai_conversations": { "$uid": { ".read": "$uid === auth.uid", ".write": "$uid === auth.uid" } },
+    "code_projects": { "$uid": { ".read": "$uid === auth.uid", ".write": "$uid === auth.uid" } },
+    "user_progress": { "$uid": { ".read": "$uid === auth.uid", ".write": "$uid === auth.uid" } },
+    "group_boards": { ".read": "auth != null", ".write": "auth != null" },
+    "user_security": { "$uid": { ".read": "$uid === auth.uid", ".write": "$uid === auth.uid" } },
+    "admin_config": { ".read": true, ".write": "auth != null && auth.token.admin === true" }
+  }
+}

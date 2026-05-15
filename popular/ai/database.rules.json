@@ -1,0 +1,10 @@
+{
+  "rules": {
+    "ai_conversations": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid"
+      }
+    }
+  }
+}

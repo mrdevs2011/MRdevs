@@ -1,0 +1,10 @@
+{
+  "rules": {
+    "user_progress": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid"
+      }
+    }
+  }
+}

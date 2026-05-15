@@ -1,0 +1,456 @@
+/* ==================== MRDEV DROPDOWN v5.0 — 2026 Edition ==================== */
+
+/* ══════════════════════════════════════
+   OVERLAY
+   ══════════════════════════════════════ */
+.mrdev-dropdown-overlay {
+    position:   fixed;
+    inset:      0;
+    z-index:    150;
+    opacity:    0;
+    visibility: hidden;
+    transition: opacity 0.18s var(--ease-out), visibility 0.18s;
+    will-change: opacity;
+}
+
+.mrdev-dropdown-overlay.show {
+    opacity:    1;
+    visibility: visible;
+}
+
+/* ══════════════════════════════════════
+   ROOT DROPDOWN — user menu panel
+   ══════════════════════════════════════ */
+.mrdev-dropdown {
+    position:      fixed;
+    top:           calc(var(--header-h) + 10px);
+    right:         16px;
+    width:         320px;
+    max-height:    calc(100vh - var(--header-h) - 32px);
+    background:    var(--surface);
+    border-radius: var(--radius-xl);
+    border:        1.5px solid var(--border);
+    box-shadow:    var(--shadow-xl);
+    z-index:       160;
+    display:       flex;
+    flex-direction: column;
+    overflow:      hidden;
+    will-change:   transform, opacity;
+    transform-origin: top right;
+
+    /* Hidden state */
+    opacity:    0;
+    visibility: hidden;
+    transform:  translateY(-10px) scale(0.96) translateZ(0);
+    transition:
+        opacity    0.2s var(--ease-out),
+        transform  0.24s var(--ease-spring),
+        visibility 0.2s;
+}
+
+.mrdev-dropdown.show {
+    opacity:    1;
+    visibility: visible;
+    transform:  translateY(0) scale(1) translateZ(0);
+}
+
+/* ══════════════════════════════════════
+   DROPDOWN HEADER — user profile section
+   ══════════════════════════════════════ */
+.dd-header {
+    padding:  16px 16px 12px;
+    display:  flex;
+    gap:      12px;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+}
+
+.dd-avatar {
+    width:           40px;
+    height:          40px;
+    border-radius:   var(--radius-full);
+    background:      var(--accent-dim);
+    color:           var(--accent);
+    border:          2px solid var(--accent-light);
+    font-size:       14px;
+    font-weight:     600;
+    display:         flex;
+    align-items:     center;
+    justify-content: center;
+    overflow:        hidden;
+    flex-shrink:     0;
+}
+
+.dd-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+.dd-user-info {
+    flex:     1;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.dd-user-name {
+    font-size:     14px;
+    font-weight:   600;
+    color:         var(--text);
+    white-space:   nowrap;
+    overflow:      hidden;
+    text-overflow: ellipsis;
+    line-height:   1.3;
+}
+
+.dd-user-email {
+    font-size:     12px;
+    color:         var(--text-4);
+    white-space:   nowrap;
+    overflow:      hidden;
+    text-overflow: ellipsis;
+    line-height:   1.3;
+}
+
+.dd-user-id {
+    display:         inline-flex;
+    align-items:     center;
+    gap:             4px;
+    font-size:       10.5px;
+    font-family:     var(--font-mono);
+    color:           var(--accent);
+    background:      var(--accent-dim);
+    border-radius:   var(--radius-full);
+    padding:         1px 8px;
+    margin-top:      4px;
+}
+
+/* ══════════════════════════════════════
+   DROPDOWN BODY — scrollable content
+   ══════════════════════════════════════ */
+.dd-body {
+    overflow-y: auto;
+    flex:       1;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: var(--surface-3) transparent;
+    padding:    8px 0;
+}
+
+/* ── Section ── */
+.dd-section {
+    padding: 4px 0;
+}
+
+.dd-section + .dd-section {
+    border-top: 1px solid var(--border);
+    margin-top: 4px;
+    padding-top: 8px;
+}
+
+.dd-section-label {
+    font-size:      10px;
+    font-weight:    600;
+    color:          var(--text-4);
+    letter-spacing: 0.7px;
+    text-transform: uppercase;
+    padding:        6px 16px 4px;
+}
+
+/* ── Menu item ── */
+.dd-item {
+    display:         flex;
+    align-items:     center;
+    gap:             10px;
+    padding:         9px 14px;
+    margin:          0 6px;
+    border-radius:   var(--radius-md);
+    font-size:       13.5px;
+    color:           var(--text-2);
+    cursor:          pointer;
+    text-decoration: none;
+    transition:      background 0.12s, color 0.12s;
+    border:          none;
+    background:      none;
+    font-family:     var(--font-sans);
+    font-weight:     400;
+    width:           calc(100% - 12px);
+    text-align:      left;
+}
+
+.dd-item:hover {
+    background: var(--hover-strong);
+    color:      var(--text);
+}
+
+.dd-item:active {
+    background: var(--surface-3);
+}
+
+.dd-item-icon {
+    width:           28px;
+    height:          28px;
+    border-radius:   var(--radius-sm);
+    background:      var(--surface-2);
+    border:          1px solid var(--border);
+    display:         flex;
+    align-items:     center;
+    justify-content: center;
+    color:           var(--text-3);
+    flex-shrink:     0;
+    transition:      background 0.12s, border-color 0.12s;
+}
+
+.dd-item:hover .dd-item-icon {
+    background:   var(--surface-3);
+    border-color: var(--border-strong);
+}
+
+/* Destructive item */
+.dd-item--danger { color: var(--red); }
+.dd-item--danger:hover { background: var(--red-dim); color: var(--red); }
+.dd-item--danger .dd-item-icon { color: var(--red); background: var(--red-dim); border-color: rgba(220, 38, 38, 0.15); }
+
+/* ── Item right side (badge, arrow) ── */
+.dd-item-right {
+    margin-left: auto;
+    flex-shrink: 0;
+    color:       var(--text-4);
+    font-size:   12px;
+}
+
+/* ── Toggle switch in item ── */
+.dd-toggle {
+    appearance:    none;
+    width:         34px;
+    height:        20px;
+    border-radius: var(--radius-full);
+    background:    var(--surface-3);
+    border:        none;
+    cursor:        pointer;
+    position:      relative;
+    transition:    background 0.2s var(--ease-out);
+    flex-shrink:   0;
+    margin-left:   auto;
+}
+
+.dd-toggle::after {
+    content:       '';
+    position:      absolute;
+    top:           2px;
+    left:          2px;
+    width:         16px;
+    height:        16px;
+    border-radius: var(--radius-full);
+    background:    white;
+    transition:    transform 0.2s var(--ease-spring);
+    box-shadow:    var(--shadow-xs);
+}
+
+.dd-toggle:checked {
+    background: var(--accent);
+}
+
+.dd-toggle:checked::after {
+    transform: translateX(14px);
+}
+
+/* ══════════════════════════════════════
+   ACCOUNT SWITCHER — pill list
+   ══════════════════════════════════════ */
+.dd-account-list {
+    padding: 6px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.dd-account {
+    display:       flex;
+    align-items:   center;
+    gap:           10px;
+    padding:       8px 10px;
+    border-radius: var(--radius-md);
+    cursor:        pointer;
+    transition:    background 0.12s;
+    border:        1.5px solid transparent;
+}
+
+.dd-account:hover { background: var(--hover-strong); }
+
+.dd-account.active {
+    background:   var(--accent-dim);
+    border-color: var(--accent-light);
+}
+
+.dd-account-avatar {
+    width:           32px;
+    height:          32px;
+    border-radius:   var(--radius-full);
+    background:      var(--surface-3);
+    display:         flex;
+    align-items:     center;
+    justify-content: center;
+    font-size:       12px;
+    font-weight:     600;
+    color:           var(--text-3);
+    overflow:        hidden;
+    flex-shrink:     0;
+}
+
+.dd-account.active .dd-account-avatar {
+    background: var(--accent-dim);
+    color:      var(--accent);
+}
+
+.dd-account-info { flex: 1; min-width: 0; overflow: hidden; }
+
+.dd-account-name {
+    font-size:     13px;
+    font-weight:   500;
+    color:         var(--text);
+    white-space:   nowrap;
+    overflow:      hidden;
+    text-overflow: ellipsis;
+}
+
+.dd-account-detail {
+    font-size: 11px;
+    color:     var(--text-4);
+}
+
+.dd-account-check {
+    color:       var(--accent);
+    flex-shrink: 0;
+    opacity:     0;
+    transition:  opacity 0.15s;
+}
+
+.dd-account.active .dd-account-check { opacity: 1; }
+
+/* ══════════════════════════════════════
+   MINI APPS DROPDOWN
+   ══════════════════════════════════════ */
+.mrdev-apps-panel {
+    position:      fixed;
+    top:           calc(var(--header-h) + 10px);
+    right:         16px;
+    width:         300px;
+    background:    var(--surface);
+    border-radius: var(--radius-xl);
+    border:        1.5px solid var(--border);
+    box-shadow:    var(--shadow-xl);
+    z-index:       160;
+    overflow:      hidden;
+    will-change:   transform, opacity;
+    transform-origin: top right;
+
+    opacity:    0;
+    visibility: hidden;
+    transform:  translateY(-10px) scale(0.96) translateZ(0);
+    transition:
+        opacity    0.2s var(--ease-out),
+        transform  0.24s var(--ease-spring),
+        visibility 0.2s;
+}
+
+.mrdev-apps-panel.show {
+    opacity:    1;
+    visibility: visible;
+    transform:  translateY(0) scale(1) translateZ(0);
+}
+
+.apps-panel-header {
+    padding:       14px 16px 10px;
+    font-size:     12px;
+    font-weight:   600;
+    color:         var(--text-4);
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    border-bottom:  1px solid var(--border);
+}
+
+.apps-panel-grid {
+    display:               grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap:                   4px;
+    padding:               10px;
+}
+
+.apps-panel-item {
+    display:         flex;
+    flex-direction:  column;
+    align-items:     center;
+    gap:             6px;
+    padding:         10px 6px;
+    border-radius:   var(--radius-md);
+    cursor:          pointer;
+    text-decoration: none;
+    transition:      background 0.13s;
+    border:          1.5px solid transparent;
+}
+
+.apps-panel-item:hover {
+    background:   var(--hover-strong);
+    border-color: var(--border);
+}
+
+.apps-panel-icon {
+    width:           40px;
+    height:          40px;
+    border-radius:   var(--radius-sm);
+    background:      var(--surface-2);
+    border:          1px solid var(--border);
+    display:         flex;
+    align-items:     center;
+    justify-content: center;
+    overflow:        hidden;
+    transition:      box-shadow 0.13s, transform 0.18s var(--ease-spring);
+}
+
+.apps-panel-item:hover .apps-panel-icon {
+    box-shadow: var(--shadow-sm);
+    transform:  scale(1.08);
+}
+
+.apps-panel-icon img { width: 22px; height: 22px; object-fit: contain; }
+
+.apps-panel-name {
+    font-size:  10px;
+    font-weight: 500;
+    color:      var(--text-3);
+    text-align: center;
+    line-height: 1.2;
+}
+
+/* ══════════════════════════════════════
+   NOTIFICATION DROPDOWN
+   ══════════════════════════════════════ */
+.notif-panel {
+    position:      fixed;
+    top:           calc(var(--header-h) + 10px);
+    right:         16px;
+    width:         360px;
+    max-height:    480px;
+    background:    var(--surface);
+    border-radius: var(--radius-xl);
+    border:        1.5px solid var(--border);
+    box-shadow:    var(--shadow-xl);
+    z-index:       160;
+    display:       flex;
+    flex-direction: column;
+    overflow:      hidden;
+    will-change:   transform, opacity;
+    transform-origin: top right;
+
+    opacity:    0;
+    visibility: hidden;
+    transform:  translateY(-10px) scale(0.96) translateZ(0);
+    transition:
+        opacity    0.2s var(--ease-out),
+        transform  0.24s var(--ease-spring),
+        visibility 0.2s;
+}
+
+.notif-panel.show {
+    opacity:    1;
+    visibility: visible;
+    transform:  translateY(0) scale(1) translateZ(0);
+}

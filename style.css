@@ -1,0 +1,190 @@
+/* ==================== MRDEV STYLE — Serene Edition ==================== */
+
+/* 1. Variables & fonts */
+@import url('./assets/css/variables.css');
+
+/* 2. Reset */
+@import url('./assets/css/reset.css');
+
+/* 3. Header */
+@import url('./assets/css/header.css');
+/* 5. Main content */
+@import url('./assets/css/main.css');
+
+/* 6. User menu */
+@import url('./assets/css/user-menu.css');
+
+/* 7. Modal */
+@import url('./assets/css/modal.css');
+
+/* 8. Toast */
+@import url('./assets/css/toast.css');
+
+/* 9. Responsive */
+@import url('./assets/css/responsive.css');
+
+
+/* ==================== GLOBAL ANIMATIONS ==================== */
+
+:root {
+    --transition-fast:   0.12s var(--ease-out);
+    --transition-base:   0.2s var(--ease-out);
+    --transition-slow:   0.35s var(--ease-out);
+}
+
+/* Fade + slide up — generic utility */
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.fade-up { animation: fadeUp 0.4s var(--ease-out) both; }
+
+/* Stagger children */
+.stagger > *:nth-child(1) { animation-delay: 0.04s; }
+.stagger > *:nth-child(2) { animation-delay: 0.08s; }
+.stagger > *:nth-child(3) { animation-delay: 0.12s; }
+.stagger > *:nth-child(4) { animation-delay: 0.16s; }
+.stagger > *:nth-child(5) { animation-delay: 0.20s; }
+.stagger > *:nth-child(6) { animation-delay: 0.24s; }
+
+/* Skeleton shimmer */
+@keyframes shimmer {
+    0%   { background-position: -200% 0; }
+    100% { background-position:  200% 0; }
+}
+
+.skeleton {
+    background: linear-gradient(
+        90deg,
+        var(--surface-2) 25%,
+        var(--surface) 50%,
+        var(--surface-2) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.6s linear infinite;
+    border-radius: var(--radius-sm);
+}
+
+/* Scale in for popovers/modals */
+@keyframes scaleIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to   { opacity: 1; transform: scale(1); }
+}
+
+.scale-in { animation: scaleIn 0.22s var(--ease-spring) both; }
+
+/* Subtle pulse for notifications */
+@keyframes softPulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.65; }
+}
+
+.pulse { animation: softPulse 2s var(--ease-in-out) infinite; }
+
+/* Hover lift for cards */
+.hover-lift {
+    transition: transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out);
+}
+
+.hover-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+/* Glass surface */
+.glass {
+    background: var(--glass);
+    backdrop-filter: blur(20px) saturate(1.4);
+    -webkit-backdrop-filter: blur(20px) saturate(1.4);
+    border: 1px solid var(--glass-border);
+}
+
+/* Disabled */
+.disabled, [disabled] {
+    opacity: 0.4;
+    cursor: not-allowed !important;
+    pointer-events: none;
+}
+
+/* Truncate */
+.truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+/* ==================== UTILITIES ==================== */
+
+/* Flex */
+.flex          { display: flex; }
+.flex-col      { flex-direction: column; }
+.items-center  { align-items: center; }
+.justify-center  { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.flex-1        { flex: 1; }
+.flex-shrink-0 { flex-shrink: 0; }
+.gap-4  { gap: 4px; }
+.gap-8  { gap: 8px; }
+.gap-12 { gap: 12px; }
+.gap-16 { gap: 16px; }
+
+/* Spacing */
+.mt-8  { margin-top: 8px;  }
+.mt-16 { margin-top: 16px; }
+.mt-24 { margin-top: 24px; }
+.mb-8  { margin-bottom: 8px;  }
+.mb-16 { margin-bottom: 16px; }
+.p-16  { padding: 16px; }
+.p-24  { padding: 24px; }
+
+/* Text */
+.text-center { text-align: center; }
+.text-sm   { font-size: 12px; }
+.text-base { font-size: 14px; }
+.text-lg   { font-size: 16px; }
+.font-medium { font-weight: 500; }
+.font-bold   { font-weight: 600; }
+.text-primary   { color: var(--text); }
+.text-secondary { color: var(--text-2); }
+.text-tertiary  { color: var(--text-3); }
+.text-accent    { color: var(--accent); }
+.text-red       { color: var(--red); }
+.text-green     { color: var(--green); }
+
+/* Borders */
+.rounded-sm   { border-radius: var(--radius-sm); }
+.rounded-md   { border-radius: var(--radius-md); }
+.rounded-lg   { border-radius: var(--radius-lg); }
+.rounded-full { border-radius: var(--radius-full); }
+.border       { border: 1px solid var(--border); }
+
+/* Shadows */
+.shadow-sm { box-shadow: var(--shadow-sm); }
+.shadow-md { box-shadow: var(--shadow-md); }
+
+/* Display */
+.d-none        { display: none; }
+.d-flex        { display: flex; }
+.d-block       { display: block; }
+.d-inline-flex { display: inline-flex; }
+
+/* Position */
+.relative { position: relative; }
+.absolute { position: absolute; }
+.fixed    { position: fixed; }
+
+/* Width */
+.w-full { width: 100%; }
+
+/* Cursor */
+.cursor-pointer { cursor: pointer; }
+
+/* Overflow */
+.overflow-hidden { overflow: hidden; }
+
+/* Z-index */
+.z-10  { z-index: 10; }
+.z-50  { z-index: 50; }
+.z-100 { z-index: 100; }

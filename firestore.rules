@@ -1,0 +1,187 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ==========================================
+    // FOYDALANUVCHILAR
+    // ==========================================
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      // BUG FIX: ilgari "allow delete: if false" edi — foydalanuvchi o'z hisobini o'chirolmasdi
+      allow delete: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // FIX: users/{userId} subcollection larni ham qamrab oladi
+    // smartSave/smartLoad users/{uid}/collection_name ga saqlaydi
+    match /users/{userId}/{rest=**} {
+      allow read, write, delete: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // ==========================================
+    // VAULT
+    // ==========================================
+    match /vault_files/{userId}/{fileId} {
+      allow read, write, delete: if request.auth != null && request.auth.uid == userId;
+    }
+    match /vault_shares/{userId}/{shareId} {
+      allow read, write, delete: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // ==========================================
+    // EXAMER
+    // ==========================================
+    match /exams/{userId}/{examId} {
+      allow read, write, delete: if request.auth != null && request.auth.uid == userId;
+    }
+    match /exam_results/{userId}/{resultId} {
+      allow read, write, delete: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // ==========================================
+    // BOARD
+    // ==========================================
+    match /board_data/{userId}/{boardId} {
+      allow read, write, delete: if request.auth != null && request.auth.uid == userId;
+    }
+    match /board_elements/{userId}/{elemId} {
+      allow read, write, delete: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // ==========================================
+    // MRGRAM
+    // ==========================================
+    match /messages/{userId}/{msgId} {
+      allow read, write, delete: if request.auth != null && request.auth.uid == userId;
+    }
+    match /channels/{userId}/{chanId} {
+      allow read, write, delete: if request.auth != null && request.auth.uid == userId;
+    }
+    match /posts/{userId}/{postId} {
+      allow read, write, delete: if request.auth != null && request.auth.uid == userId;
+    }
+    match /comments/{userId}/{commentId} {
+      allow read, write, delete: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // ==========================================
+    // NOTES
+    // ==========================================
+    match /notes/{userId}/{noteId} {
+      allow read, write, delete: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // ==========================================
+    // TODO
+    // ==========================================
+    match /todos/{userId}/{todoId} {
+      allow read, write, delete: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // ==========================================
+    // NOTIFY HUB — faqat admin yoza oladi
+    // ==========================================
+    match /system/{docId} {
+      allow read: if request.auth != null;
+      allow write: if false; // Faqat Admin SDK (server-side) yoza oladi
+    }
+
+    // ==========================================
+    // WEATHER
+    // ==========================================
+    match /weather_cache/{userId}/{cacheId} {
+      allow read, write, delete: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // ==========================================
+    // AI SUHBATLARI
+    // ==========================================
+    match /ai_conversations/{userId}/{convId} {
+      allow read, write, delete: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // ==========================================
+    // CODE STUDIO
+    // ==========================================
+    match /code_projects/{userId}/{projectId} {
+      allow read, write, delete: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // ==========================================
+    // LEARN CODE
+    // ==========================================
+    match /user_progress/{userId}/{progressId} {
+      allow read, write, delete: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // ==========================================
+    // GROUP BOARD
+    // ==========================================
+    match /group_boards/{boardId} {
+      // Faqat boardni yaratgan egasi o'zgartira oladi
+      allow read:   if request.auth != null;
+      allow create: if request.auth != null;
+      allow update: if request.auth != null && resource.data.ownerId == request.auth.uid;
+      allow delete: if request.auth != null && resource.data.ownerId == request.auth.uid;
+    }
+
+    // ==========================================
+    // SECURITY
+    // ==========================================
+    match /user_security/{userId}/{docId} {
+      allow read, write, delete: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // ==========================================
+    // TYPING TEST — leaderboard ommaviy o'qiladi
+    // ==========================================
+    match /typing_results/{userId}/{resultId} {
+      allow read, write, delete: if request.auth != null && request.auth.uid == userId;
+    }
+    match /typing_leaderboard/{docId} {
+      allow read: if true; // Har kim ko'ra oladi
+      allow write: if request.auth != null; // Login bo'lsa yoza oladi
+    }
+
+    // ==========================================
+    // VIDEO HUB
+    // ==========================================
+    match /videos/{userId}/{videoId} {
+      allow read, write, delete: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // ==========================================
+    // MINI ILOVALAR
+    // ==========================================
+    match /calc_history/{userId}/{itemId} {
+      allow read, write, delete: if request.auth != null && request.auth.uid == userId;
+    }
+    match /clock_settings/{userId}/{itemId} {
+      allow read, write, delete: if request.auth != null && request.auth.uid == userId;
+    }
+    match /timer_presets/{userId}/{itemId} {
+      allow read, write, delete: if request.auth != null && request.auth.uid == userId;
+    }
+    match /stopwatch_laps/{userId}/{itemId} {
+      allow read, write, delete: if request.auth != null && request.auth.uid == userId;
+    }
+    match /qr_history/{userId}/{itemId} {
+      allow read, write, delete: if request.auth != null && request.auth.uid == userId;
+    }
+    match /splitview_layouts/{userId}/{itemId} {
+      allow read, write, delete: if request.auth != null && request.auth.uid == userId;
+    }
+    match /music_playlists/{userId}/{itemId} {
+      allow read, write, delete: if request.auth != null && request.auth.uid == userId;
+    }
+    match /bingo_scores/{userId}/{itemId} {
+      allow read, write, delete: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // ==========================================
+    // DEFAULT: hamma narsaga taqiq
+    // ==========================================
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

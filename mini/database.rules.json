@@ -1,0 +1,25 @@
+{
+  "rules": {
+    ".read": true,
+    ".write": "auth != null",
+    
+    "todo_tasks": {
+      "$userId": {
+        ".read": "$userId === auth.uid",
+        ".write": "$userId === auth.uid"
+      }
+    },
+    
+    "notes": {
+      "$userId": {
+        ".read": "$userId === auth.uid",
+        ".write": "$userId === auth.uid"
+      }
+    },
+    
+    "timer_settings": {
+      ".read": true,
+      ".write": "auth != null"
+    }
+  }
+}

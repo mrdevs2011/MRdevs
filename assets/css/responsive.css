@@ -1,0 +1,208 @@
+/* ==================== MRDEV RESPONSIVE v5.0 — 2026 Edition ==================== */
+
+/* ══════════════════════════════════════
+   TABLET — 860px
+   ══════════════════════════════════════ */
+@media (max-width: 860px) {
+    .container {
+        padding:  calc(var(--header-h) + 20px) 24px 72px;
+    }
+
+    .page-title { font-size: 34px; }
+
+    .app-grid {
+        grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+        gap: 6px;
+    }
+
+    .app-item--feature { grid-column: span 2; }
+}
+
+/* ══════════════════════════════════════
+   MOBILE — 720px
+   ══════════════════════════════════════ */
+@media (max-width: 720px) {
+    .container {
+        padding: calc(var(--header-h) + 16px) 16px 64px;
+    }
+
+    .page-title {
+        font-size:      28px;
+        letter-spacing: -0.8px;
+    }
+
+    .hero-section {
+        margin-bottom: 32px;
+    }
+
+    /* App grid — 4 columns, compact */
+    .app-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 6px;
+    }
+
+    /* App cards — tighter on mobile */
+    .app-item {
+        padding:       14px 6px 12px;
+        border-radius: var(--radius-md);
+    }
+
+    .app-item:hover { transform: none; }
+
+    .app-icon {
+        width:         50px;
+        height:        50px;
+        border-radius: var(--radius-md);
+        margin-bottom: 9px;
+    }
+
+    .app-icon img { width: 28px; height: 28px; }
+
+    .app-name { font-size: 10.5px; }
+
+    /* Feature variant becomes normal on mobile */
+    .app-item--feature {
+        grid-column:    span 2;
+        flex-direction: column;
+        align-items:    center;
+        padding:        14px 6px 12px;
+        gap:            0;
+    }
+
+    .app-item--feature .app-icon { margin-bottom: 9px; }
+    .app-item--feature .app-name { text-align: center; font-size: 10.5px; }
+
+    /* Header adjustments */
+    .header-center     { display: none !important; }
+    .mobile-search-btn { display: flex; }
+
+    /* Tabs — scrollable pill row */
+    .tabs {
+        overflow-x:  auto;
+        overflow-y:  hidden;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+        width:       auto;
+        margin-left: -16px;
+        margin-right: -16px;
+        padding-left: 16px;
+        padding-right: 16px;
+        border-radius: 0;
+        border:        none;
+        background:    transparent;
+        gap: 6px;
+    }
+
+    .tabs::-webkit-scrollbar { display: none; }
+
+    .tab {
+        flex-shrink: 0;
+        padding:     6px 14px;
+        font-size:   12.5px;
+        border:      1.5px solid var(--border);
+        background:  var(--surface);
+    }
+
+    .tab.active {
+        border-color: var(--accent);
+    }
+
+    /* User trigger on mobile — avatar only */
+    .header-user-info,
+    .header-user-arrow { display: none; }
+
+    .header-user-trigger {
+        padding:       3px;
+        border-radius: var(--radius-full);
+        max-width:     none;
+    }
+
+    /* Mobile search section */
+    .search-section { display: block; }
+
+    /* Section label smaller */
+    .section-label { font-size: 10px; }
+
+    /* Modal full-screen on mobile */
+    .modal-content {
+        max-width:     100%;
+        border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+        position:      fixed;
+        bottom:        0;
+        left:          0;
+        right:         0;
+    }
+}
+
+/* ══════════════════════════════════════
+   SMALL MOBILE — 380px
+   ══════════════════════════════════════ */
+@media (max-width: 380px) {
+    .page-title { font-size: 24px; }
+
+    .app-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 4px;
+    }
+
+    .app-icon { width: 44px; height: 44px; }
+    .app-icon img { width: 24px; height: 24px; }
+    .app-name { font-size: 10px; }
+}
+
+/* ══════════════════════════════════════
+   DESKTOP ONLY — hide mobile elements
+   ══════════════════════════════════════ */
+@media (min-width: 721px) {
+    .search-section    { display: none !important; }
+    .header-center     { display: flex; }
+    .mobile-search-btn { display: none; }
+}
+
+/* ══════════════════════════════════════
+   LARGE DESKTOP — 1280px+
+   ══════════════════════════════════════ */
+@media (min-width: 1280px) {
+    .container { padding: calc(var(--header-h) + 32px) 48px 112px; }
+    .page-title { font-size: 48px; letter-spacing: -1.5px; }
+    .app-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
+}
+
+/* ══════════════════════════════════════
+   ULTRA-WIDE — 1600px+
+   ══════════════════════════════════════ */
+@media (min-width: 1600px) {
+    .container { max-width: 1160px; }
+}
+
+/* ══════════════════════════════════════
+   HOVER CAPABLE DEVICES ONLY
+   (disable hover effects on touch screens)
+   ══════════════════════════════════════ */
+@media (hover: none) {
+    .app-item:hover {
+        transform:    none;
+        box-shadow:   none;
+        border-color: transparent;
+    }
+
+    .app-item:hover .app-icon {
+        transform: none;
+        box-shadow: none;
+    }
+
+    .app-item:active {
+        background:   var(--surface-2);
+        border-color: var(--border);
+        transform:    scale(0.96);
+    }
+}
+
+/* ══════════════════════════════════════
+   PRINT
+   ══════════════════════════════════════ */
+@media print {
+    header, .tabs, .search-section { display: none; }
+    .container { padding: 0; }
+    .app-item { border: 1px solid #ddd; break-inside: avoid; }
+}

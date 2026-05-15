@@ -1,0 +1,36 @@
+/* ==================== MRDEV TOAST v4.0 ==================== */
+
+.toast {
+    position:    fixed;
+    bottom:      28px;
+    left:        50%;
+    background:  var(--text);
+    color:       var(--text-inv);
+    padding:     9px 20px;
+    border-radius: var(--radius-full);
+    font-size:   13px;
+    font-weight: 500;
+    font-family: var(--font-sans);
+    z-index:     10000;
+    white-space: nowrap;
+    pointer-events: none;
+    box-shadow:  var(--shadow-lg);
+    will-change: transform, opacity;
+    animation:
+        _toastIn  0.24s var(--ease-spring) forwards,
+        _toastOut 0.22s 2.78s var(--ease-out) forwards;
+}
+
+@keyframes _toastIn {
+    from { opacity: 0; transform: translateX(-50%) translateY(10px) translateZ(0); }
+    to   { opacity: 1; transform: translateX(-50%) translateY(0)    translateZ(0); }
+}
+
+@keyframes _toastOut {
+    from { opacity: 1; transform: translateX(-50%) translateY(0)   translateZ(0); }
+    to   { opacity: 0; transform: translateX(-50%) translateY(6px) translateZ(0); }
+}
+
+.toast.success { background: var(--green);  }
+.toast.error   { background: var(--red);    }
+.toast.info    { background: var(--accent); }

@@ -1,0 +1,10 @@
+{
+  "rules": {
+    "weather_cache": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid"
+      }
+    }
+  }
+}

@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="description" content="Notify Hub — MRDEV platformasining markaziy bildirishnoma va boshqaruv tizimi">
+    <meta name="theme-color" content="#6366f1">
+    <title>Notify Hub | MRDEV</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236366f1'%3E%3Cpath d='M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9'/%3E%3Cpath d='M13.73 21a2 2 0 0 1-3.46 0'/%3E%3C/svg%3E">
+    
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Firebase -->
+    <!-- TODO: migrate to modular firebase (npm). See MIGRATION.md -->
+    
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ==================== HEADER ==================== -->
+<header class="notify-header">
+    <div class="header-left">
+        <a href="../../popular/" class="back-btn" aria-label="Orqaga">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="15 18 9 12 15 6"/>
+            </svg>
+        </a>
+        <div class="logo">
+            <span class="logo-accent">NOTIFY</span><span class="logo-normal">HUB</span>
+        </div>
+    </div>
+    <div class="header-right">
+        <button id="themeBtn" class="theme-btn" aria-label="Rejimni almashtirish">
+            <i class="fas fa-moon"></i>
+        </button>
+    </div>
+</header>
+
+<!-- ==================== MODE SELECTOR ==================== -->
+<div id="modeSelector" class="mode-selector">
+    <div class="mode-selector-content">
+        <h1 class="mode-title">
+            <span class="accent">NOTIFY</span>HUB
+        </h1>
+        <p class="mode-subtitle">Markaziy bildirishnoma tizimi</p>
+        
+        <button class="mode-btn admin-btn" onclick="checkAdminAccess()">
+            <div class="mode-icon admin-icon">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <div class="mode-text">
+                <strong>Admin Panel</strong>
+                <small>Boshqaruv va sozlamalar</small>
+            </div>
+        </button>
+        
+        <button class="mode-btn" onclick="switchToMonitor()">
+            <div class="mode-icon monitor-icon">
+                <i class="fas fa-tv"></i>
+            </div>
+            <div class="mode-text">
+                <strong>Monitor Ko'rinishi</strong>
+                <small>Katta ekran uchun</small>
+            </div>
+        </button>
+    </div>
+</div>
+
+<!-- ==================== ADMIN PANEL ==================== -->
+<div id="adminPanel" class="admin-panel" style="display: none;">
+    <div class="admin-tabs">
+        <button class="tab-btn active" data-tab="weekly">
+            <i class="fas fa-calendar-week"></i> Haftalik
+        </button>
+        <button class="tab-btn" data-tab="daily">
+            <i class="fas fa-bullhorn"></i> E'lon
+        </button>
+        <button class="tab-btn" data-tab="sos">
+            <i class="fas fa-exclamation-triangle"></i> SOS
+        </button>
+        <button class="tab-btn" data-tab="history">
+            <i class="fas fa-history"></i> Tarix
+        </button>
+    </div>
+    
+    <div class="admin-content">
+        <!-- Weekly Tab -->
+        <div id="weeklyTab" class="tab-content active">
+            <div class="card">
+                <h3><i class="fas fa-plus-circle"></i> Yangi jadval qo'shish</h3>
+                <div class="form-group">
+                    <label>Hafta kuni</label>
+                    <select id="weekDay" class="form-control">
+                        <option value="1">Dushanba</option>
+                        <option value="2">Seshanba</option>
+                        <option value="3">Chorshanba</option>
+                        <option value="4">Payshanba</option>
+                        <option value="5">Juma</option>
+                        <option value="6">Shanba</option>
+                        <option value="0">Yakshanba</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Boshlanish vaqti</label>
+                        <input type="time" id="weekStart" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Tugash vaqti</label>
+                        <input type="time" id="weekEnd" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Matn</label>
+                    <input type="text" id="weekMsg" class="form-control" placeholder="Masalan: Matematika darsi">
+                </div>
+                <button class="btn btn-primary" onclick="saveWeekly()">
+                    <i class="fas fa-save"></i> Saqlash
+                </button>
+            </div>
+            <div class="card">
+                <h3><i class="fas fa-list"></i> Haftalik jadvallar</h3>
+                <div id="weeklyList" class="list-container"></div>
+            </div>
+        </div>
+        
+        <!-- Daily Tab -->
+        <div id="dailyTab" class="tab-content">
+            <div class="card">
+                <h3><i class="fas fa-plus-circle"></i> Yangi e'lon qo'shish</h3>
+                <div class="form-group">
+                    <label>Sana</label>
+                    <input type="date" id="dailyDate" class="form-control">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Boshlanish vaqti</label>
+                        <input type="time" id="dailyStart" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Tugash vaqti</label>
+                        <input type="time" id="dailyEnd" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>E'lon matni</label>
+                    <textarea id="dailyMsg" class="form-control" rows="3" placeholder="E'lon matni..."></textarea>
+                </div>
+                <button class="btn btn-primary" onclick="saveDaily()">
+                    <i class="fas fa-paper-plane"></i> Yuborish
+                </button>
+            </div>
+            <div class="card">
+                <h3><i class="fas fa-list"></i> E'lonlar ro'yxati</h3>
+                <div id="dailyList" class="list-container"></div>
+            </div>
+        </div>
+        
+        <!-- SOS Tab -->
+        <div id="sosTab" class="tab-content">
+            <div class="card sos-card">
+                <div class="sos-timer" id="sosTimer">00:00</div>
+                <div class="form-group">
+                    <label>SOS xabari</label>
+                    <textarea id="sosMsg" class="form-control" rows="2" placeholder="Favqulodda xabar..."></textarea>
+                </div>
+                <div class="sos-buttons">
+                    <button class="btn btn-danger" onclick="activateSOS(true)">
+                        <i class="fas fa-bell"></i> SOS NI YOQISH
+                    </button>
+                    <button class="btn btn-secondary" onclick="activateSOS(false)">
+                        <i class="fas fa-stop"></i> TO'XTATISH
+                    </button>
+                </div>
+            </div>
+            <div class="card">
+                <h3><i class="fas fa-history"></i> SOS tarixi</h3>
+                <div id="sosHistoryList" class="list-container"></div>
+            </div>
+        </div>
+        
+        <!-- History Tab -->
+        <div id="historyTab" class="tab-content">
+            <div class="card">
+                <h3><i class="fas fa-database"></i> Barcha xabarlar tarixi</h3>
+                <div id="allHistoryList" class="list-container"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== MONITOR PAGE ==================== -->
+<div id="monitorPage" class="monitor-page" style="display: none;">
+    <div class="monitor-header">
+        <div class="monitor-clock" id="monitorClock">00:00:00</div>
+        <div class="monitor-status" id="monitorStatus">
+            <i class="fas fa-circle"></i>
+        </div>
+    </div>
+    <div class="monitor-content" id="monitorContent">
+        <div class="monitor-message" id="monitorMessage">TIZIM TAYYOR...</div>
+    </div>
+    <div class="monitor-footer">
+        <span>NOTIFYHUB v2.0</span>
+        <span>MRDEV Platform</span>
+    </div>
+</div>
+
+<!-- Scripts -->
+    <script type="importmap">
+    {
+      "imports": {
+        "firebase/app": "https://esm.sh/firebase/app",
+        "firebase/auth": "https://esm.sh/firebase/auth",
+        "firebase/firestore": "https://esm.sh/firebase/firestore",
+        "firebase/database": "https://esm.sh/firebase/database",
+        "firebase/storage": "https://esm.sh/firebase/storage",
+        "firebase/analytics": "https://esm.sh/firebase/analytics",
+        "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js"
+      }
+    }
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>

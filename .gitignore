@@ -1,0 +1,108 @@
+# ==================== DEPENDENCIES ====================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# ==================== BUILD OUTPUT ====================
+dist/
+build/
+.next/
+out/
+.env
+.env.local
+.env.production
+.env.development
+.env.test
+*.env
+env.js
+.env.example
+
+# ==================== IDE & EDITORS ====================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Desktop.ini
+Thumbs.db
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# ==================== LOGS ====================
+logs/
+*.log
+*.log.*
+
+# ==================== OS FILES ====================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*.tmp
+
+# ==================== FIREBASE & SUPABASE KEYS ====================
+# MUHIM! Bu kalitlarni HECH QACHON push qilmang!
+firebase-key.json
+firebase-credentials.json
+serviceAccountKey.json
+*.pem
+*.key
+*.crt
+supabase-key.json
+
+# ==================== MRDEV SPECIFIC ====================
+# Kalitlar faqat Vercel Environment Variables da saqlanadi
+# Bu fayllar hech qachon Githubga tushmasligi kerak!
+/assets/js/env.js
+/env.js
+/config.local.js
+*.secrets.js
+mrdev-config.json
+
+# Local storage files
+.local/
+.cache/
+.temp/
+tmp/
+
+# ==================== BACKUP FILES ====================
+*.bak
+*.backup
+*.old
+*.orig
+*.rej
+
+# ==================== TESTING ====================
+coverage/
+.nyc_output/
+*.test.js
+*.spec.js
+__tests__/
+__mocks__/
+
+# ==================== ZIP & ARCHIVES ====================
+*.zip
+*.tar.gz
+*.rar
+*.7z
+Mrdevs*.zip
+
+# ==================== MISC ====================
+*.pid
+*.seed
+*.pid.lock
+*.tgz
+*.cache
+.vercel
+vercel.json.backup
+.env.local
+env.local

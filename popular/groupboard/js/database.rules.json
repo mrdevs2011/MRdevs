@@ -1,0 +1,10 @@
+{
+  "rules": {
+    "group_boards": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid"
+      }
+    }
+  }
+}

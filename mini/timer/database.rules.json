@@ -1,0 +1,10 @@
+{
+  "rules": {
+    "timer_presets": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid"
+      }
+    }
+  }
+}

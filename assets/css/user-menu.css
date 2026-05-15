@@ -1,0 +1,138 @@
+/* ==================== USER MENU DROPDOWN v4.0 ==================== */
+
+.user-menu {
+    position:       absolute;
+    top:            calc(var(--header-h) + 6px);
+    right:          12px;
+    width:          268px;
+    background:     var(--surface);
+    border:         1px solid var(--border);
+    border-radius:  var(--radius-lg);
+    box-shadow:     var(--shadow-lg);
+    z-index:        150;
+    overflow:       hidden;
+    will-change:    transform, opacity;
+    transform-origin: top right;
+
+    /* Hidden */
+    opacity:    0;
+    visibility: hidden;
+    transform:  translateY(-8px) scale(0.97) translateZ(0);
+    transition:
+        opacity    0.2s var(--ease-out),
+        transform  0.22s var(--ease-spring),
+        visibility 0.2s;
+}
+
+.user-menu.show {
+    opacity:    1;
+    visibility: visible;
+    transform:  translateY(0) scale(1) translateZ(0);
+}
+
+/* ── Header ── */
+.user-menu-header {
+    display:       flex;
+    align-items:   center;
+    gap:           12px;
+    padding:       14px 16px;
+    border-bottom: 1px solid var(--border);
+}
+
+.user-menu-avatar {
+    width:         40px;
+    height:        40px;
+    border-radius: 50%;
+    background:    var(--accent);
+    display:       flex;
+    align-items:   center;
+    justify-content: center;
+    font-size:     16px;
+    font-weight:   600;
+    color:         white;
+    flex-shrink:   0;
+    overflow:      hidden;
+}
+
+.user-menu-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+.user-menu-info { flex: 1; min-width: 0; }
+
+.user-menu-name {
+    font-size:     13px;
+    font-weight:   500;
+    color:         var(--text);
+    white-space:   nowrap;
+    overflow:      hidden;
+    text-overflow: ellipsis;
+}
+
+.user-menu-email {
+    font-size:     11px;
+    color:         var(--text-3);
+    white-space:   nowrap;
+    overflow:      hidden;
+    text-overflow: ellipsis;
+    margin-top:    1px;
+}
+
+.user-menu-mrdev-id {
+    font-size:   10px;
+    color:       var(--accent);
+    font-weight: 500;
+    font-family: var(--font-mono);
+    margin-top:  1px;
+}
+
+/* ── Login prompt ── */
+.user-menu-login button {
+    width:         100%;
+    padding:       13px 16px;
+    background:    none;
+    border:        none;
+    color:         var(--accent);
+    font-size:     13px;
+    font-weight:   500;
+    cursor:        pointer;
+    text-align:    left;
+    display:       flex;
+    align-items:   center;
+    gap:           10px;
+    font-family:   var(--font-sans);
+    transition:    background 0.13s;
+}
+
+.user-menu-login button:hover { background: var(--accent-dim); }
+
+/* ── Menu items ── */
+.user-menu a,
+.user-menu > button {
+    display:     flex;
+    align-items: center;
+    gap:         10px;
+    padding:     10px 16px;
+    color:       var(--text-2);
+    font-size:   13px;
+    cursor:      pointer;
+    font-family: var(--font-sans);
+    border:      none;
+    background:  none;
+    width:       100%;
+    text-align:  left;
+    transition:  background 0.13s, color 0.13s;
+}
+
+.user-menu a:hover,
+.user-menu > button:hover { background: var(--hover-strong); color: var(--text); }
+
+.user-menu a svg,
+.user-menu > button svg {
+    flex-shrink: 0;
+    color:       var(--text-4);
+    transition:  color 0.13s;
+}
+
+.user-menu a:hover svg,
+.user-menu > button:hover svg { color: var(--text-3); }
+
+.user-menu-divider { height: 1px; background: var(--border); margin: 3px 0; }

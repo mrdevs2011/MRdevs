@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title data-i18n="app_title">MRDEV</title>
+
+    <!-- ==================== FLASH FIX: ENG BIRINCHI ==================== -->
+        <script type="importmap">
+    {
+      "imports": {
+        "firebase/app": "https://esm.sh/firebase/app",
+        "firebase/auth": "https://esm.sh/firebase/auth",
+        "firebase/firestore": "https://esm.sh/firebase/firestore",
+        "firebase/database": "https://esm.sh/firebase/database",
+        "firebase/storage": "https://esm.sh/firebase/storage",
+        "firebase/analytics": "https://esm.sh/firebase/analytics",
+        "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js"
+      }
+    }
+    </script>
+    <script src="./assets/js/core/theme-flash-fix.js"></script>
+
+    <!-- ==================== CSS (parallel <link>, @import emas) ==================== -->
+    <link rel="stylesheet" href="./assets/css/variables.css">
+    <link rel="stylesheet" href="./assets/css/reset.css">
+    <link rel="stylesheet" href="./assets/css/header.css">
+
+    <link rel="stylesheet" href="./assets/css/main.css">
+    <link rel="stylesheet" href="./assets/css/modal.css">
+    <link rel="stylesheet" href="./assets/css/user-menu.css">
+    <link rel="stylesheet" href="./assets/css/dropdown.css">
+    <link rel="stylesheet" href="./assets/css/auth.css">
+    <link rel="stylesheet" href="./assets/css/mrdev-login.css">
+    <link rel="stylesheet" href="./assets/css/loading.css">
+    <link rel="stylesheet" href="./assets/css/splash.css">
+    <link rel="stylesheet" href="./assets/css/toast.css">
+    <link rel="stylesheet" href="./assets/css/responsive.css">
+    <link rel="stylesheet" href="./assets/css/notification-system.css">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+</head>
+<body>
+
+    <!-- ==================== NOTIFICATION SYSTEM ROOT ==================== -->
+    <div id="mrdev-notif-root"></div>
+
+    <!-- ==================== HEADER ==================== -->
+    <header role="banner">
+        <div class="header-left">
+            <a href="./" class="logo" onclick="switchTab('all'); return false;" aria-label="MRDEV bosh sahifasi">
+                <span class="logo-mr" aria-hidden="true">MR</span><span class="logo-dev" aria-hidden="true">DEV</span>
+            </a>
+        </div>
+
+        <div class="header-center" id="headerCenter">
+            <div class="header-search" role="search">
+                <svg class="search-icon-small" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <circle cx="11" cy="11" r="8"/>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+                <!-- FIX #19: label qo'shildi — screen reader uchun field maqsadi aniq -->
+                <label for="headerSearchInput" class="sr-only">Ilovalarni qidirish</label>
+                <input
+                    type="search"
+                    id="headerSearchInput"
+                    class="header-search-input"
+                    data-i18n-placeholder="search_placeholder"
+                    placeholder="Ilovalarni qidirish..."
+                    autocomplete="off"
+                    aria-label="Ilovalarni qidirish">
+            </div>
+        </div>
+
+        <div class="header-right">
+            <button class="header-btn mobile-search-btn" id="mobileSearchBtn" onclick="toggleMobileSearch()" aria-label="Qidiruvni ochish" aria-expanded="false" aria-controls="mobileSearchSection">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <circle cx="11" cy="11" r="8"/>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+            </button>
+
+            <!-- FIX #7: JS da trigger.classList.toggle('open') qilish kerak -->
+            <button class="header-user-trigger" id="headerUserTrigger" onclick="toggleUserMenu()" aria-haspopup="true" aria-expanded="false" aria-controls="userMenu">
+                <div class="header-user-avatar" id="headerUserAvatar" aria-hidden="true">?</div>
+                <div class="header-user-info">
+                    <span class="header-user-name" id="headerUserName" data-i18n="guest">Mehmon</span>
+                    <span class="header-user-role" data-i18n="user_role">Foydalanuvchi</span>
+                </div>
+                <svg class="header-user-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <polyline points="6 9 12 15 18 9"/>
+                </svg>
+            </button>
+
+            <!-- FIX #20: icon qo'shildi aria-hidden bilan, tugma bo'sh emas -->
+            <button id="theme-btn" class="header-btn theme-btn" onclick="toggleTheme()" aria-label="Tungi rejimni yoqish / o'chirish">
+                <svg class="icon theme-icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <circle cx="12" cy="12" r="5"/>
+                    <line x1="12" y1="1" x2="12" y2="3"/>
+                    <line x1="12" y1="21" x2="12" y2="23"/>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                    <line x1="1" y1="12" x2="3" y2="12"/>
+                    <line x1="21" y1="12" x2="23" y2="12"/>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- ==================== USER DROPDOWN MENU ==================== -->
+    <div id="userMenu" class="user-menu" role="menu" aria-label="Foydalanuvchi menyusi">
+        <div class="user-menu-header" id="userMenuHeader" style="display: none;">
+            <div class="user-menu-avatar" id="menuAvatar" aria-hidden="true">U</div>
+            <div class="user-menu-info">
+                <div class="user-menu-name" id="menuName">User</div>
+                <div class="user-menu-email" id="menuEmail"></div>
+                <div class="user-menu-mrdev-id" id="menuMrdevId"></div>
+            </div>
+        </div>
+
+        <div class="user-menu-login" id="userMenuLogin">
+            <button onclick="showAuthModal()" role="menuitem">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <circle cx="12" cy="8" r="4"/>
+                    <path d="M5 20v-2a7 7 0 0 1 14 0v2"/>
+                </svg>
+                <span data-i18n="login">Hisobga kirish</span>
+            </button>
+        </div>
+
+        <div class="user-menu-divider" role="separator"></div>
+
+        <a href="#" onclick="switchTab('all'); closeUserMenu(); return false;" role="menuitem">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="2" y1="12" x2="22" y2="12"/>
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+            </svg>
+            <span data-i18n="all_apps">Barcha ilovalar</span>
+        </a>
+        <a href="#" onclick="switchTab('popular'); closeUserMenu(); return false;" role="menuitem">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/>
+            </svg>
+            <span data-i18n="popular_apps">Asosiy ilovalar</span>
+        </a>
+        <a href="#" onclick="switchTab('mini'); closeUserMenu(); return false;" role="menuitem">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <rect x="2" y="2" width="20" height="20" rx="2"/>
+                <line x1="8" y1="2" x2="8" y2="22"/>
+                <line x1="16" y1="2" x2="16" y2="22"/>
+            </svg>
+            <span data-i18n="mini_apps">Yordamchi ilovalar</span>
+        </a>
+
+        <div class="user-menu-divider" role="separator"></div>
+
+        <a href="./settings/index.html" onclick="closeUserMenu();" role="menuitem">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+            </svg>
+            <span data-i18n="settings">Sozlamalar</span>
+        </a>
+
+        <a href="#" onclick="showPassNotifications(); closeUserMenu(); return false;" id="notifMenuLink" style="display:none;" role="menuitem">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+            </svg>
+            <span data-i18n="pass_notifications">Parol xabarlari</span>
+        </a>
+
+        <div class="user-menu-divider" role="separator"></div>
+
+        <button id="userMenuLogout" style="display: none;" onclick="logout()" role="menuitem">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                <polyline points="16 17 21 12 16 7"/>
+                <line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+            <span data-i18n="logout">Chiqish</span>
+        </button>
+    </div>
+
+    <!-- ==================== MAIN ==================== -->
+    <main class="container" id="mainContent">
+        <div class="hero-section">
+            <h1 class="page-title" id="pageTitle" data-i18n="app_title">MR DEV</h1>
+            <p class="page-subtitle" id="pageSubtitle" data-i18n="all_apps">Barcha ilovalar</p>
+        </div>
+
+        <!-- Mobile qidiruv -->
+        <section class="search-section" id="mobileSearchSection" aria-label="Qidiruv" aria-hidden="true">
+            <div class="search-box" role="search">
+                <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <circle cx="11" cy="11" r="8"/>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+                <label for="searchInput" class="sr-only">Ilovalarni qidirish</label>
+                <input
+                    type="search"
+                    id="searchInput"
+                    class="search-input"
+                    data-i18n-placeholder="search_placeholder"
+                    placeholder="Ilova qidirish..."
+                    autocomplete="off">
+                <!-- FIX: clear button aniq label -->
+                <button id="clearSearch" class="clear-search" aria-label="Qidiruvni tozalash">✕</button>
+            </div>
+        </section>
+
+        <!-- Tab navigatsiya -->
+        <div class="tabs" role="tablist" aria-label="Ilova kategoriyalari">
+            <button class="tab active" role="tab" aria-selected="true"  data-tab="all"     onclick="switchTab('all')"     data-i18n="all_apps">Barcha ilovalar</button>
+            <button class="tab"        role="tab" aria-selected="false" data-tab="popular" onclick="switchTab('popular')" data-i18n="popular_apps">Asosiy ilovalar</button>
+            <button class="tab"        role="tab" aria-selected="false" data-tab="mini"    onclick="switchTab('mini')"    data-i18n="mini_apps">Yordamchi ilovalar</button>
+        </div>
+
+        <div class="apps-container">
+            <!-- FIX #17: App itemlar JS da yaratilganda to'g'ri href va aria-label berilsin:
+                 <a href="/mini/calculator/" class="app-item" aria-label="Kalkulyator ilovasini ochish"> -->
+            <div id="allGrid" class="apps-grid" role="tabpanel" aria-labelledby="tab-all">
+                <div class="section-label" data-i18n="popular_apps">Asosiy ilovalar</div>
+                <div class="app-grid" id="popularGrid" role="list">
+            <a href="./popular/ai/" class="app-item" role="listitem">
+                <div class="app-icon">
+                    <img src="./assets/favicons/ai.svg" alt="AI" loading="lazy" width="56" height="56">
+                </div>
+                <span class="app-name">AI</span>
+            </a>
+            <a href="./popular/groupboard/" class="app-item" role="listitem">
+                <div class="app-icon">
+                    <img src="./assets/favicons/groupboard.svg" alt="Jamoaviy-Doska" loading="lazy" width="56" height="56">
+                </div>
+                <span class="app-name">Jamoaviy-Doska</span>
+            </a>
+            <a href="./popular/learncode/" class="app-item" role="listitem">
+                <div class="app-icon">
+                    <img src="./assets/favicons/learncode.svg" alt="LearnCode" loading="lazy" width="56" height="56">
+                </div>
+                <span class="app-name">LearnCode</span>
+            </a>
+            <a href="./popular/mrgram/" class="app-item" role="listitem">
+                <div class="app-icon">
+                    <img src="./assets/favicons/mrgram.svg" alt="MrGram" loading="lazy" width="56" height="56">
+                </div>
+                <span class="app-name">MrGram</span>
+            </a>
+            <a href="./popular/notifyhub/" class="app-item" role="listitem">
+                <div class="app-icon">
+                    <img src="./assets/favicons/notifyhub.svg" alt="Xabarlar-Markazi" loading="lazy" width="56" height="56">
+                </div>
+                <span class="app-name">Xabarlar-Markazi</span>
+            </a>
+            <a href="./popular/typing/" class="app-item" role="listitem">
+                <div class="app-icon">
+                    <img src="./assets/favicons/typing.svg" alt="Typing" loading="lazy" width="56" height="56">
+                </div>
+                <span class="app-name">Typing</span>
+            </a>
+            <a href="./popular/security/" class="app-item" role="listitem">
+                <div class="app-icon">
+                    <img src="./assets/favicons/security.svg" alt="Xavfsizlik" loading="lazy" width="56" height="56">
+                </div>
+                <span class="app-name">Xavfsizlik</span>
+            </a>
+            <a href="./popular/codestudio/" class="app-item" role="listitem">
+                <div class="app-icon">
+                    <img src="./assets/favicons/codestudio.svg" alt="CodeStudio" loading="lazy" width="56" height="56">
+                </div>
+                <span class="app-name">CodeStudio</span>
+            </a>
+            <a href="./popular/videohub/" class="app-item" role="listitem">
+                <div class="app-icon">
+                    <img src="./assets/favicons/videohub.svg" alt="Videolarim" loading="lazy" width="56" height="56">
+                </div>
+                <span class="app-name">Videolarim</span>
+            </a>
+            <a href="./popular/weather/" class="app-item" role="listitem">
+                <div class="app-icon">
+                    <img src="./assets/favicons/weather.svg" alt="ObHavo" loading="lazy" width="56" height="56">
+                </div>
+                <span class="app-name">ObHavo</span>
+            </a>
+            <a href="./popular/notes/" class="app-item" role="listitem">
+                <div class="app-icon">
+                    <img src="./assets/favicons/notes.svg" alt="Eslatmalar" loading="lazy" width="56" height="56">
+                </div>
+                <span class="app-name">Eslatmalar</span>
+            </a>
+            <a href="./popular/todo/" class="app-item" role="listitem">
+                <div class="app-icon">
+                    <img src="./assets/favicons/todo.svg" alt="Kun-Tartibi" loading="lazy" width="56" height="56">
+                </div>
+                <span class="app-name">Kun-Tartibi</span>
+            </a>
+            </div>
+                <div class="section-label" style="margin-top: 32px;" data-i18n="mini_apps">Yordamchi ilovalar</div>
+                <div class="app-grid" id="miniGrid" role="list">
+            <a href="./mini/calculator/" class="app-item" role="listitem">
+                <div class="app-icon">
+                    <img src="./assets/favicons/calculator.svg" alt="Kalkulyator" loading="lazy" width="56" height="56">
+                </div>
+                <span class="app-name">Kalkulyator</span>
+            </a>
+            <a href="./mini/bingo/" class="app-item" role="listitem">
+                <div class="app-icon">
+                    <img src="./assets/favicons/bingo.svg" alt="Bingo" loading="lazy" width="56" height="56">
+                </div>
+                <span class="app-name">Bingo</span>
+            </a>
+            <a href="./mini/board/" class="app-item" role="listitem">
+                <div class="app-icon">
+                    <img src="./assets/favicons/board.svg" alt="Doska" loading="lazy" width="56" height="56">
+                </div>
+                <span class="app-name">Doska</span>
+            </a>
+            <a href="./mini/music/" class="app-item" role="listitem">
+                <div class="app-icon">
+                    <img src="./assets/favicons/music.svg" alt="Musiqalarim" loading="lazy" width="56" height="56">
+                </div>
+                <span class="app-name">Musiqalarim</span>
+            </a>
+            <a href="./mini/splitview/" class="app-item" role="listitem">
+                <div class="app-icon">
+                    <img src="./assets/favicons/splitview.svg" alt="KopOyna" loading="lazy" width="56" height="56">
+                </div>
+                <span class="app-name">KopOyna</span>
+            </a>
+            <a href="./mini/examer/" class="app-item" role="listitem">
+                <div class="app-icon">
+                    <img src="./assets/favicons/examer.svg" alt="Examer" loading="lazy" width="56" height="56">
+                </div>
+                <span class="app-name">Examer</span>
+            </a>
+            <a href="./mini/clock/" class="app-item" role="listitem">
+                <div class="app-icon">
+                    <img src="./assets/favicons/clock.svg" alt="Soat" loading="lazy" width="56" height="56">
+                </div>
+                <span class="app-name">Soat</span>
+            </a>
+            <a href="./mini/stopwatch/" class="app-item" role="listitem">
+                <div class="app-icon">
+                    <img src="./assets/favicons/stopwatch.svg" alt="Sekundnomer" loading="lazy" width="56" height="56">
+                </div>
+                <span class="app-name">Sekundnomer</span>
+            </a>
+            <a href="./mini/timer/" class="app-item" role="listitem">
+                <div class="app-icon">
+                    <img src="./assets/favicons/timer.svg" alt="Taymer" loading="lazy" width="56" height="56">
+                </div>
+                <span class="app-name">Taymer</span>
+            </a>
+            <a href="./mini/qr/" class="app-item" role="listitem">
+                <div class="app-icon">
+                    <img src="./assets/favicons/qr.svg" alt="QR kod" loading="lazy" width="56" height="56">
+                </div>
+                <span class="app-name">QR kod</span>
+            </a>
+            </div>
+            </div>
+            <div id="popularOnlyGrid" class="apps-grid" style="display: none;" role="tabpanel" aria-labelledby="tab-popular">
+                <div class="section-label" data-i18n="popular_apps">Asosiy ilovalar</div>
+                <div class="app-grid" id="popularOnlyList" role="list">
+            <a href="./popular/ai/" class="app-item" role="listitem">
+                <div class="app-icon">
+                    <img src="./assets/favicons/ai.svg" alt="AI" loading="lazy" width="56" height="56">
+                </div>
+                <span class="app-name">AI</span>
+            </a>
+            <a href="./popular/groupboard/" class="app-item" role="listitem">
+                <div class="app-icon">
+                    <img src="./assets/favicons/groupboard.svg" alt="Jamoaviy-Doska" loading="lazy" width="56" height="56">
+                </div>
+                <span class="app-name">Jamoaviy-Doska</span>
+            </a>
+            <a href="./popular/learncode/" class="app-item" role="listitem">
+                <div class="app-icon">
+                    <img src="./assets/favicons/learncode.svg" alt="LearnCode" loading="lazy" width="56" height="56">
+                </div>
+                <span class="app-name">LearnCode</span>
+            </a>
+            <a href="./popular/mrgram/" class="app-item" role="listitem">
+                <div class="app-icon">
+                    <img src="./assets/favicons/mrgram.svg" alt="MrGram" loading="lazy" width="56" height="56">
+                </div>
+                <span class="app-name">MrGram</span>
+            </a>
+            <a href="./popular/notifyhub/" class="app-item" role="listitem">
+                <div class="app-icon">
+                    <img src="./assets/favicons/notifyhub.svg" alt="Xabarlar-Markazi" loading="lazy" width="56" height="56">
+                </div>
+                <span class="app-name">Xabarlar-Markazi</span>
+            </a>
+            <a href="./popular/typing/" class="app-item" role="listitem">
+                <div class="app-icon">
+                    <img src="./assets/favicons/typing.svg" alt="Typing" loading="lazy" width="56" height="56">
+                </div>
+                <span class="app-name">Typing</span>
+            </a>
+            <a href="./popular/security/" class="app-item" role="listitem">
+                <div class="app-icon">
+                    <img src="./assets/favicons/security.svg" alt="Xavfsizlik" loading="lazy" width="56" height="56">
+                </div>
+                <span class="app-name">Xavfsizlik</span>
+            </a>
+            <a href="./popular/codestudio/" class="app-item" role="listitem">
+                <div class="app-icon">
+                    <img src="./assets/favicons/codestudio.svg" alt="CodeStudio" loading="lazy" width="56" height="56">
+                </div>
+                <span class="app-name">CodeStudio</span>
+            </a>
+            <a href="./popular/videohub/" class="app-item" role="listitem">
+                <div class="app-icon">
+                    <img src="./assets/favicons/videohub.svg" alt="Videolarim" loading="lazy" width="56" height="56">
+                </div>
+                <span class="app-name">Videolarim</span>
+            </a>
+            <a href="./popular/weather/" class="app-item" role="listitem">
+                <div class="app-icon">
+                    <img src="./assets/favicons/weather.svg" alt="ObHavo" loading="lazy" width="56" height="56">
+                </div>
+                <span class="app-name">ObHavo</span>
+            </a>
+            <a href="./popular/notes/" class="app-item" role="listitem">
+                <div class="app-icon">
+                    <img src="./assets/favicons/notes.svg" alt="Eslatmalar" loading="lazy" width="56" height="56">
+                </div>
+                <span class="app-name">Eslatmalar</span>
+            </a>
+            <a href="./popular/todo/" class="app-item" role="listitem">
+                <div class="app-icon">
+                    <img src="./assets/favicons/todo.svg" alt="Kun-Tartibi" loading="lazy" width="56" height="56">
+                </div>
+                <span class="app-name">Kun-Tartibi</span>
+            </a>
+            </div>
+            </div>
+            <div id="miniOnlyGrid" class="apps-grid" style="display: none;" role="tabpanel" aria-labelledby="tab-mini">
+                <div class="section-label" data-i18n="mini_apps">Yordamchi ilovalar</div>
+                <div class="app-grid" id="miniOnlyList" role="list">
+            <a href="./mini/calculator/" class="app-item" role="listitem">
+                <div class="app-icon">
+                    <img src="./assets/favicons/calculator.svg" alt="Kalkulyator" loading="lazy" width="56" height="56">
+                </div>
+                <span class="app-name">Kalkulyator</span>
+            </a>
+            <a href="./mini/bingo/" class="app-item" role="listitem">
+                <div class="app-icon">
+                    <img src="./assets/favicons/bingo.svg" alt="Bingo" loading="lazy" width="56" height="56">
+                </div>
+                <span class="app-name">Bingo</span>
+            </a>
+            <a href="./mini/board/" class="app-item" role="listitem">
+                <div class="app-icon">
+                    <img src="./assets/favicons/board.svg" alt="Doska" loading="lazy" width="56" height="56">
+                </div>
+                <span class="app-name">Doska</span>
+            </a>
+            <a href="./mini/music/" class="app-item" role="listitem">
+                <div class="app-icon">
+                    <img src="./assets/favicons/music.svg" alt="Musiqalarim" loading="lazy" width="56" height="56">
+                </div>
+                <span class="app-name">Musiqalarim</span>
+            </a>
+            <a href="./mini/splitview/" class="app-item" role="listitem">
+                <div class="app-icon">
+                    <img src="./assets/favicons/splitview.svg" alt="KopOyna" loading="lazy" width="56" height="56">
+                </div>
+                <span class="app-name">KopOyna</span>
+            </a>
+            <a href="./mini/examer/" class="app-item" role="listitem">
+                <div class="app-icon">
+                    <img src="./assets/favicons/examer.svg" alt="Examer" loading="lazy" width="56" height="56">
+                </div>
+                <span class="app-name">Examer</span>
+            </a>
+            <a href="./mini/clock/" class="app-item" role="listitem">
+                <div class="app-icon">
+                    <img src="./assets/favicons/clock.svg" alt="Soat" loading="lazy" width="56" height="56">
+                </div>
+                <span class="app-name">Soat</span>
+            </a>
+            <a href="./mini/stopwatch/" class="app-item" role="listitem">
+                <div class="app-icon">
+                    <img src="./assets/favicons/stopwatch.svg" alt="Sekundnomer" loading="lazy" width="56" height="56">
+                </div>
+                <span class="app-name">Sekundnomer</span>
+            </a>
+            <a href="./mini/timer/" class="app-item" role="listitem">
+                <div class="app-icon">
+                    <img src="./assets/favicons/timer.svg" alt="Taymer" loading="lazy" width="56" height="56">
+                </div>
+                <span class="app-name">Taymer</span>
+            </a>
+            <a href="./mini/qr/" class="app-item" role="listitem">
+                <div class="app-icon">
+                    <img src="./assets/favicons/qr.svg" alt="QR kod" loading="lazy" width="56" height="56">
+                </div>
+                <span class="app-name">QR kod</span>
+            </a>
+            </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ==================== AUTH MODAL ==================== -->
+    <!-- FIX #2: modal transition endi visibility/opacity bilan ishlaydi (modal.css da to'g'irlandi) -->
+    <div id="authModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle" data-i18n="login">Hisobga kirish</h3>
+                <button class="modal-close" onclick="closeAuthModal()" aria-label="Oynani yopish">✕</button>
+            </div>
+            <div class="modal-body">
+                <div id="registerFields" style="display:none;">
+                    <div class="input-group">
+                        <label for="registerName" data-i18n="name">Ism Familiya</label>
+                        <input type="text" id="registerName" class="input-field" data-i18n-placeholder="name" placeholder="Sardor Karimov" autocomplete="name">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label for="loginEmail" data-i18n="email">Username yoki email</label>
+                    <input type="text" id="loginEmail" class="input-field" data-i18n-placeholder="email" placeholder="username@mrdev.uz" autocomplete="username">
+                </div>
+                <div class="input-group">
+                    <label for="loginPassword" data-i18n="password">Parol</label>
+                    <input type="password" id="loginPassword" class="input-field" data-i18n-placeholder="password" placeholder="••••••••" autocomplete="current-password">
+                </div>
+                <p id="authError" style="display:none;" role="alert" aria-live="assertive"></p>
+                <button id="authSubmitBtn" class="auth-submit-btn" onclick="submitAuthForm()" style="margin-top:14px;" data-i18n="login">Kirish</button>
+                <div class="auth-divider"><span data-i18n="or">yoki</span></div>
+                <button class="google-auth-btn" onclick="signInWithGoogle()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/>
+                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                    </svg>
+                    <span data-i18n="google_login">Google orqali kirish</span>
+                </button>
+                <button class="mrdev-auth-btn" onclick="showMrdevLogin()" style="margin-top:10px;">
+                    <span data-i18n="mrdev_login">MRDEV ID orqali kirish</span>
+                </button>
+                <div class="auth-toggle">
+                    <span id="authToggleText" data-i18n="no_account">Hisobingiz yo'qmi?</span>
+                    <a href="#" id="authToggleLink" onclick="event.preventDefault(); toggleAuthMode();" data-i18n="register">Ro'yxatdan o'tish</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MRDEV LOGIN MODAL ==================== -->
+    <div id="mrdevLoginModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="mrdevModalTitle">
+        <div class="modal-content" style="max-width: 420px; position: relative; overflow: hidden;">
+            <div class="modal-header">
+                <h3 id="mrdevModalTitle" data-i18n="mrdev_login">MRDEV orqali kirish</h3>
+                <button class="modal-close" onclick="closeMrdevLoginModal()" aria-label="Oynani yopish">✕</button>
+            </div>
+            <div class="modal-body" style="padding: 24px 20px; position: relative;">
+
+                <div id="mrdevSuccessOverlay" class="mrdev-success-overlay" aria-hidden="true">
+                    <svg class="mrdev-check-svg" viewBox="0 0 52 52" width="120" height="120">
+                        <circle class="mrdev-check-circle" cx="26" cy="26" r="23"/>
+                        <path class="mrdev-check-path" d="M14.5 27.5l7 7 16-16"/>
+                    </svg>
+                </div>
+
+                <div id="mrdevStep1">
+                    <div class="mrdev-icon-wrap" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"/>
+                            <line x1="8" y1="12" x2="16" y2="12"/>
+                        </svg>
+                    </div>
+                    <p class="mrdev-heading" data-i18n="mrdev_id">MRDEV ID kiriting</p>
+                    <p class="mrdev-subheading" data-i18n="mrdev_id_desc"># belgisi bilan boshlanadigan 7 xonali kod</p>
+                    <label for="mrdevIdInput" class="sr-only">MRDEV ID raqamingiz</label>
+                    <input
+                        type="text"
+                        id="mrdevIdInput"
+                        class="mrdev-id-input"
+                        data-i18n-placeholder="mrdev_id_placeholder"
+                        placeholder="# _ _ _ _ _ _"
+                        maxlength="7"
+                        autocomplete="off"
+                        inputmode="numeric"
+                        aria-describedby="mrdevIdHint">
+                    <p id="mrdevIdHint" class="sr-only">6 xonali raqam, # belgisi bilan boshlanadi</p>
+                    <div class="mrdev-toggle-section">
+                        <a href="javascript:void(0)" onclick="toggleMrdevInfoBox()" class="mrdev-toggle-link" data-i18n="mrdev_what" aria-expanded="false" aria-controls="mrdevInfoBox">
+                            MRDEV ID nima? ▼
+                        </a>
+                    </div>
+                    <div id="mrdevInfoBox" class="mrdev-info-panel" hidden>
+                        <p data-i18n="mrdev_what_desc">MRDEV ID — shaxsiy raqamingiz</p>
+                        <small data-i18n="mrdev_what_desc_small">6 xonali raqam, # bilan boshlanadi. Kirish va ilovalardan foydalanish uchun kerak bo'ladi.</small>
+                        <div class="more-info-link">
+                            <a href="./about/#mrdev-id" data-i18n="more_info">Ko'proq bilish →</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="mrdevStep2" style="display:none;" aria-live="polite">
+                    <div class="mrdev-icon-wrap success" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="11" width="18" height="11" rx="2"/>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                        </svg>
+                    </div>
+                    <p class="mrdev-heading" data-i18n="enter_code">Kodni kiriting</p>
+                    <p class="mrdev-subheading" data-i18n="code_sent">Hisob egasiga yuborilgan 6 xonali kod</p>
+                    <div class="mrdev-otp-wrap" id="mrdevOtpWrap" role="group" aria-label="6 xonali tasdiqlash kodi">
+                        <input type="text" maxlength="1" class="mrdev-otp-box" id="otp1" inputmode="numeric" autocomplete="one-time-code" aria-label="1-raqam">
+                        <input type="text" maxlength="1" class="mrdev-otp-box" id="otp2" inputmode="numeric" aria-label="2-raqam">
+                        <input type="text" maxlength="1" class="mrdev-otp-box" id="otp3" inputmode="numeric" aria-label="3-raqam">
+                        <input type="text" maxlength="1" class="mrdev-otp-box" id="otp4" inputmode="numeric" aria-label="4-raqam">
+                        <input type="text" maxlength="1" class="mrdev-otp-box" id="otp5" inputmode="numeric" aria-label="5-raqam">
+                        <input type="text" maxlength="1" class="mrdev-otp-box" id="otp6" inputmode="numeric" aria-label="6-raqam">
+                    </div>
+                    <div class="mrdev-timer-row">
+                        <span id="mrdevTimer" aria-live="polite" aria-label="Qolgan vaqt">02:00</span>
+                    </div>
+                    <div class="mrdev-toggle-section">
+                        <a href="javascript:void(0)" onclick="toggleMrdevHelpBox()" class="mrdev-toggle-link" data-i18n="resend_code" aria-expanded="false" aria-controls="mrdevHelpBox">
+                            Kod kelmadimi? ▼
+                        </a>
+                    </div>
+                    <div id="mrdevHelpBox" class="mrdev-info-panel" hidden>
+                        <p data-i18n="code_sent_desc">Kod "Parol xabarlari" bo'limiga yuboriladi</p>
+                        <div class="more-info-link">
+                            <a href="javascript:void(0)" onclick="moreInfo()" data-i18n="more_info">Ko'proq bilish →</a>
+                        </div>
+                    </div>
+                </div>
+
+                <p id="mrdevError" class="mrdev-error-msg" role="alert" aria-live="assertive"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== PASS NOTIFICATIONS MODAL ==================== -->
+    <div id="passNotifModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="passNotifTitle">
+        <div class="modal-content" style="max-width:450px;">
+            <div class="modal-header">
+                <h3 id="passNotifTitle" data-i18n="pass_notifications">Parol xabarlari</h3>
+                <button class="modal-close" onclick="closePassNotifModal()" aria-label="Oynani yopish">✕</button>
+            </div>
+            <div class="modal-body" id="passNotifList" style="max-height:60vh; overflow-y:auto;" aria-live="polite">
+                <div style="text-align:center; padding:20px; color:var(--text-3);" data-i18n="loading">Yuklanmoqda...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== SCRIPTS ==================== -->
+    <script type="module" src="./assets/js/config.js"></script>
+    <!-- theme-flash-fix head da allaqachon yuklangan, bu yerda ikkinchi marta shart emas -->
+    <script src="./assets/js/core/splash.js"></script>
+    <script src="./assets/js/core/loading.js"></script>
+    <script type="module" src="./script.js"></script>
+
+</body>
+</html>

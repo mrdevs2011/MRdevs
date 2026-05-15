@@ -1,0 +1,18 @@
+{
+    "buildCommand": "npm run build",
+    "outputDirectory": "dist",
+    "framework": null,
+    "rewrites": [
+        { "source": "/settings",       "destination": "/settings/index.html" },
+        { "source": "/about",          "destination": "/about/index.html" },
+        { "source": "/popular/:app",   "destination": "/popular/:app/index.html" },
+        { "source": "/mini/:app",      "destination": "/mini/:app/index.html" },
+        { "source": "/(.*)",           "destination": "/404.html" }
+    ],
+    "headers": [
+        {
+            "source": "/env.js",
+            "headers": [{ "key": "x-custom-deny", "value": "true" }]
+        }
+    ]
+}
