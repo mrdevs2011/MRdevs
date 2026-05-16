@@ -1,18 +1,18 @@
-/* ==================== MRDEV RESPONSIVE v5.0 — 2026 Edition ==================== */
+/* ==================== MRDEV RESPONSIVE v5.1 ==================== */
 
 /* ══════════════════════════════════════
    TABLET — 860px
    ══════════════════════════════════════ */
 @media (max-width: 860px) {
     .container {
-        padding:  calc(var(--header-h) + 20px) 24px 72px;
+        padding: calc(var(--header-h) + var(--header-top) + 28px) 24px 72px;
     }
 
-    .page-title { font-size: 34px; }
+    .page-title { font-size: 32px; }
 
     .app-grid {
-        grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
-        gap: 6px;
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 7px;
     }
 
     .app-item--feature { grid-column: span 2; }
@@ -23,74 +23,73 @@
    ══════════════════════════════════════ */
 @media (max-width: 720px) {
     .container {
-        padding: calc(var(--header-h) + 16px) 16px 64px;
+        padding: calc(var(--header-h) + var(--header-top) + 22px) 14px 60px;
     }
 
     .page-title {
-        font-size:      28px;
-        letter-spacing: -0.8px;
+        font-size:      26px;
+        letter-spacing: -0.7px;
     }
 
-    .hero-section {
-        margin-bottom: 32px;
-    }
+    .hero-section { margin-bottom: 28px; }
 
-    /* App grid — 4 columns, compact */
+    /* App grid — 4 columns on mobile */
     .app-grid {
         grid-template-columns: repeat(4, 1fr);
         gap: 6px;
     }
 
-    /* App cards — tighter on mobile */
+    /* App cards — compact */
     .app-item {
-        padding:       14px 6px 12px;
+        padding:       13px 5px 11px;
         border-radius: var(--radius-md);
     }
 
     .app-item:hover { transform: none; }
 
     .app-icon {
-        width:         50px;
-        height:        50px;
-        border-radius: var(--radius-md);
-        margin-bottom: 9px;
+        width:         46px;
+        height:        46px;
+        border-radius: var(--radius-sm);
+        margin-bottom: 8px;
     }
 
-    .app-icon img { width: 28px; height: 28px; }
+    .app-icon img { width: 26px; height: 26px; }
 
-    .app-name { font-size: 10.5px; }
+    .app-name { font-size: 10px; }
 
-    /* Feature variant becomes normal on mobile */
+    /* Feature variant becomes normal */
     .app-item--feature {
         grid-column:    span 2;
         flex-direction: column;
         align-items:    center;
-        padding:        14px 6px 12px;
+        padding:        13px 5px 11px;
         gap:            0;
     }
 
-    .app-item--feature .app-icon { margin-bottom: 9px; }
-    .app-item--feature .app-name { text-align: center; font-size: 10.5px; }
+    .app-item--feature .app-icon { margin-bottom: 8px; }
+    .app-item--feature .app-name { text-align: center; font-size: 10px; }
 
-    /* Header adjustments */
+    /* Header */
     .header-center     { display: none !important; }
     .mobile-search-btn { display: flex; }
 
-    /* Tabs — scrollable pill row */
+    /* Tabs — scrollable row */
     .tabs {
-        overflow-x:  auto;
-        overflow-y:  hidden;
+        overflow-x:   auto;
+        overflow-y:   hidden;
         scrollbar-width: none;
         -webkit-overflow-scrolling: touch;
-        width:       auto;
-        margin-left: -16px;
-        margin-right: -16px;
-        padding-left: 16px;
-        padding-right: 16px;
+        width:        auto;
+        margin-left:  -14px;
+        margin-right: -14px;
+        padding-left: 14px;
+        padding-right: 14px;
         border-radius: 0;
         border:        none;
         background:    transparent;
-        gap: 6px;
+        gap:           6px;
+        margin-bottom: 28px;
     }
 
     .tabs::-webkit-scrollbar { display: none; }
@@ -98,16 +97,17 @@
     .tab {
         flex-shrink: 0;
         padding:     6px 14px;
-        font-size:   12.5px;
+        font-size:   12px;
         border:      1.5px solid var(--border);
         background:  var(--surface);
     }
 
     .tab.active {
         border-color: var(--accent);
+        background:   var(--accent-dim);
     }
 
-    /* User trigger on mobile — avatar only */
+    /* User trigger — avatar only */
     .header-user-info,
     .header-user-arrow { display: none; }
 
@@ -120,10 +120,9 @@
     /* Mobile search section */
     .search-section { display: block; }
 
-    /* Section label smaller */
-    .section-label { font-size: 10px; }
+    .section-label { font-size: 9.5px; }
 
-    /* Modal full-screen on mobile */
+    /* Modal — bottom sheet on mobile */
     .modal-content {
         max-width:     100%;
         border-radius: var(--radius-xl) var(--radius-xl) 0 0;
@@ -132,26 +131,54 @@
         left:          0;
         right:         0;
     }
+
+    /* Mini apps — 5 columns on medium mobile */
+    #miniGrid,
+    #miniOnlyList {
+        grid-template-columns: repeat(5, 1fr);
+    }
 }
 
 /* ══════════════════════════════════════
-   SMALL MOBILE — 380px
+   SMALL MOBILE — 480px
    ══════════════════════════════════════ */
-@media (max-width: 380px) {
-    .page-title { font-size: 24px; }
+@media (max-width: 480px) {
+    .container {
+        padding: calc(var(--header-h) + var(--header-top) + 18px) 10px 56px;
+    }
 
+    .page-title { font-size: 22px; }
+
+    .app-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 5px;
+    }
+
+    .app-icon { width: 42px; height: 42px; }
+    .app-icon img { width: 22px; height: 22px; }
+    .app-name { font-size: 9.5px; }
+
+    .app-item {
+        padding: 11px 4px 10px;
+    }
+}
+
+/* ══════════════════════════════════════
+   VERY SMALL — 360px
+   ══════════════════════════════════════ */
+@media (max-width: 360px) {
     .app-grid {
         grid-template-columns: repeat(4, 1fr);
         gap: 4px;
     }
 
-    .app-icon { width: 44px; height: 44px; }
-    .app-icon img { width: 24px; height: 24px; }
-    .app-name { font-size: 10px; }
+    .app-icon { width: 38px; height: 38px; }
+    .app-icon img { width: 20px; height: 20px; }
+    .app-name { font-size: 9px; }
 }
 
 /* ══════════════════════════════════════
-   DESKTOP ONLY — hide mobile elements
+   DESKTOP ONLY
    ══════════════════════════════════════ */
 @media (min-width: 721px) {
     .search-section    { display: none !important; }
@@ -163,9 +190,16 @@
    LARGE DESKTOP — 1280px+
    ══════════════════════════════════════ */
 @media (min-width: 1280px) {
-    .container { padding: calc(var(--header-h) + 32px) 48px 112px; }
-    .page-title { font-size: 48px; letter-spacing: -1.5px; }
-    .app-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
+    .container {
+        padding: calc(var(--header-h) + var(--header-top) + 40px) 48px 112px;
+    }
+    .page-title {
+        font-size:      46px;
+        letter-spacing: -1.5px;
+    }
+    .app-grid {
+        grid-template-columns: repeat(auto-fill, minmax(128px, 1fr));
+    }
 }
 
 /* ══════════════════════════════════════
@@ -176,25 +210,32 @@
 }
 
 /* ══════════════════════════════════════
-   HOVER CAPABLE DEVICES ONLY
-   (disable hover effects on touch screens)
+   TOUCH DEVICES — disable hover effects
    ══════════════════════════════════════ */
 @media (hover: none) {
     .app-item:hover {
         transform:    none;
         box-shadow:   none;
-        border-color: transparent;
+        border-color: var(--border);
+        background:   var(--surface);
     }
 
     .app-item:hover .app-icon {
-        transform: none;
-        box-shadow: none;
+        transform:   none;
+        box-shadow:  none;
+        border-color: var(--border);
     }
+
+    .app-item:hover .app-name { color: var(--text-3); }
 
     .app-item:active {
         background:   var(--surface-2);
-        border-color: var(--border);
-        transform:    scale(0.96);
+        border-color: var(--accent);
+        transform:    scale(0.95);
+    }
+
+    .app-item:active .app-icon {
+        border-color: var(--accent);
     }
 }
 

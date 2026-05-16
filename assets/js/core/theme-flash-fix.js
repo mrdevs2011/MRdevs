@@ -10,7 +10,7 @@
             : document.documentElement.classList.add('dark'); // body henuz yo'q bo'lsa
     }
 
-    const bgColor = theme === 'dark' ? '#1f1f1f' : '#f8fafd';
+    const bgColor = theme === 'dark' ? '#09090b' : '#f4f4f5';
     document.documentElement.style.backgroundColor = bgColor;
 
     document.documentElement.style.visibility = 'hidden';

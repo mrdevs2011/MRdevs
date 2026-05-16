@@ -1,23 +1,25 @@
-/* ==================== MRDEV HEADER v5.0 — 2026 Edition ==================== */
+/* ==================== MRDEV HEADER v5.1 — Floating Edition ==================== */
 
 /* ══════════════════════════════════════
-   HEADER — clean, borderless, depth via blur
+   HEADER — floating, fixed, no border-radius
    ══════════════════════════════════════ */
 header {
     height:          var(--header-h);
     display:         flex;
     align-items:     center;
     justify-content: space-between;
-    padding:         0 20px;
-    position:        sticky;
-    top:             0;
+    padding:         0 16px;
+    position:        fixed;
+    top:             var(--header-top);
+    left:            var(--header-side);
+    right:           var(--header-side);
     z-index:         100;
+    border-radius:   0;
 
-    /* Glass surface — no border, shadow instead */
     background:      var(--glass);
-    border-bottom:   1px solid transparent;
+    border:          1px solid var(--border);
+    box-shadow:      var(--shadow-md);
 
-    /* GPU layer */
     will-change:     transform;
     transform:       translateZ(0);
 
@@ -27,17 +29,16 @@ header {
         box-shadow   0.3s;
 }
 
-/* Blur when scrolled — JS adds .scrolled class to <header> */
-header.scrolled {
-    border-bottom-color: var(--border);
-    box-shadow: 0 1px 0 var(--border), var(--shadow-sm);
-}
-
 @supports (backdrop-filter: blur(1px)) {
     header {
         backdrop-filter:         saturate(1.8) blur(20px);
         -webkit-backdrop-filter: saturate(1.8) blur(20px);
     }
+}
+
+header.scrolled {
+    border-color: var(--border-strong);
+    box-shadow:   var(--shadow-lg);
 }
 
 /* ── Sides ── */
@@ -50,11 +51,11 @@ header.scrolled {
 }
 
 /* ══════════════════════════════════════
-   HEADER BUTTON — icon-only actions
+   HEADER BUTTON
    ══════════════════════════════════════ */
 .header-btn {
-    width:           36px;
-    height:          36px;
+    width:           34px;
+    height:          34px;
     border-radius:   var(--radius-md);
     border:          none;
     background:      transparent;
@@ -73,23 +74,23 @@ header.scrolled {
 .header-btn:active { background: var(--surface-3); }
 
 /* ══════════════════════════════════════
-   LOGO — bolder, gradient mark
+   LOGO
    ══════════════════════════════════════ */
 .logo {
     font-family:     var(--font-sans);
-    font-size:       16px;
+    font-size:       15px;
     font-weight:     600;
     letter-spacing:  -0.5px;
     text-decoration: none;
     display:         flex;
     align-items:     baseline;
     color:           var(--text);
-    padding:         6px 10px;
+    padding:         5px 8px;
     border-radius:   var(--radius-md);
     transition:      opacity 0.15s, background 0.15s;
 }
 
-.logo:hover { background: var(--hover-strong); opacity: 1; }
+.logo:hover { background: var(--hover-strong); }
 
 .logo-mr {
     background:              var(--gradient-accent);
@@ -105,14 +106,14 @@ header.scrolled {
 }
 
 /* ══════════════════════════════════════
-   HEADER SEARCH — pill, centered
+   HEADER SEARCH
    ══════════════════════════════════════ */
 .header-center {
     flex:            1;
     display:         flex;
     justify-content: center;
-    max-width:       380px;
-    margin:          0 12px;
+    max-width:       360px;
+    margin:          0 10px;
 }
 
 .header-search {
@@ -121,9 +122,9 @@ header.scrolled {
     background:    var(--surface-2);
     border:        1.5px solid var(--border);
     border-radius: var(--radius-full);
-    padding:       0 16px;
+    padding:       0 14px;
     width:         100%;
-    height:        36px;
+    height:        34px;
     transition:
         border-color 0.18s var(--ease-out),
         background   0.18s var(--ease-out),
@@ -133,14 +134,14 @@ header.scrolled {
 .header-search:focus-within {
     border-color: var(--accent);
     background:   var(--surface);
-    box-shadow:   0 0 0 4px var(--accent-dim);
+    box-shadow:   0 0 0 3px var(--accent-dim);
 }
 
 .search-icon-small { color: var(--text-4); flex-shrink: 0; }
 
 .header-search-input {
     flex:        1;
-    padding:     0 10px;
+    padding:     0 8px;
     background:  transparent;
     border:      none;
     color:       var(--text);
@@ -152,29 +153,10 @@ header.scrolled {
 
 .header-search-input::placeholder { color: var(--text-4); }
 
-/* Keyboard shortcut hint */
-.header-search-kbd {
-    display:         flex;
-    align-items:     center;
-    gap:             2px;
-    color:           var(--text-4);
-    font-size:       11px;
-    font-family:     var(--font-mono);
-    background:      var(--surface-3);
-    border:          1px solid var(--border);
-    border-radius:   var(--radius-xs);
-    padding:         2px 6px;
-    pointer-events:  none;
-    white-space:     nowrap;
-    transition:      opacity 0.15s;
-}
-
-.header-search:focus-within .header-search-kbd { opacity: 0; }
-
 .mobile-search-btn { display: none; }
 
 /* ══════════════════════════════════════
-   USER TRIGGER — avatar-first, cleaner
+   USER TRIGGER
    ══════════════════════════════════════ */
 .header-user-trigger {
     display:       flex;
@@ -185,7 +167,7 @@ header.scrolled {
     border:        1.5px solid var(--border);
     background:    var(--surface);
     cursor:        pointer;
-    max-width:     200px;
+    max-width:     190px;
     position:      relative;
     will-change:   transform;
     transition:
@@ -207,13 +189,13 @@ header.scrolled {
 
 /* ── Avatar ── */
 .header-user-avatar {
-    width:           30px;
-    height:          30px;
+    width:           28px;
+    height:          28px;
     border-radius:   var(--radius-full);
     background:      var(--accent-dim);
     color:           var(--accent);
     border:          1.5px solid var(--accent-light);
-    font-size:       12px;
+    font-size:       11px;
     font-weight:     600;
     display:         flex;
     align-items:     center;
@@ -223,13 +205,8 @@ header.scrolled {
     transition:      border-color 0.14s;
 }
 
-.header-user-avatar img {
-    width:  100%;
-    height: 100%;
-    object-fit: cover;
-}
+.header-user-avatar img { width: 100%; height: 100%; object-fit: cover; }
 
-/* ── User info ── */
 .header-user-info {
     display:        flex;
     flex-direction: column;
@@ -239,7 +216,7 @@ header.scrolled {
 }
 
 .header-user-name {
-    font-size:     13px;
+    font-size:     12px;
     font-weight:   500;
     color:         var(--text);
     white-space:   nowrap;
@@ -249,12 +226,11 @@ header.scrolled {
 }
 
 .header-user-role {
-    font-size:  11px;
-    color:      var(--text-4);
+    font-size:   10px;
+    color:       var(--text-4);
     line-height: 1.2;
 }
 
-/* ── Arrow ── */
 .header-user-arrow {
     color:       var(--text-4);
     flex-shrink: 0;
@@ -266,7 +242,6 @@ header.scrolled {
     color:     var(--text-3);
 }
 
-/* ── Theme button ── */
 .theme-btn { margin-left: 2px; }
 
 .theme-icon-sun,
@@ -282,8 +257,8 @@ body:not(.dark) .theme-icon-moon { display: none; }
     position:      absolute;
     top:           4px;
     right:         4px;
-    width:         8px;
-    height:        8px;
+    width:         7px;
+    height:        7px;
     border-radius: var(--radius-full);
     background:    var(--accent);
     border:        2px solid var(--glass);
@@ -296,14 +271,34 @@ body:not(.dark) .theme-icon-moon { display: none; }
 }
 
 /* ══════════════════════════════════════
-   SCROLL BEHAVIOR — JS hooks
-   ══════════════════════════════════════
-
-   Add to app.js or app-shell.js:
-
-   const header = document.querySelector('header');
-   const onScroll = () => {
-       header.classList.toggle('scrolled', window.scrollY > 8);
-   };
-   window.addEventListener('scroll', onScroll, { passive: true });
+   RESPONSIVE
    ══════════════════════════════════════ */
+@media (max-width: 720px) {
+    :root {
+        --header-top:  8px;
+        --header-side: 8px;
+    }
+
+    header {
+        padding: 0 12px;
+    }
+
+    .header-center     { display: none !important; }
+    .mobile-search-btn { display: flex; }
+
+    .header-user-info,
+    .header-user-arrow { display: none; }
+
+    .header-user-trigger {
+        padding:       3px;
+        border-radius: var(--radius-full);
+        max-width:     none;
+    }
+}
+
+@media (max-width: 480px) {
+    :root {
+        --header-top:  6px;
+        --header-side: 6px;
+    }
+}

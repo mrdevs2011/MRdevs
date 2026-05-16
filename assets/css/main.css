@@ -1,32 +1,33 @@
-/* ==================== MRDEV MAIN v5.0 — 2026 Edition ==================== */
+/* ==================== MRDEV MAIN v5.1 ==================== */
 
 /* ══════════════════════════════════════
-   CONTAINER
+   CONTAINER — accounts for floating fixed header
    ══════════════════════════════════════ */
 .container {
     max-width: var(--content-w, 1040px);
     margin:    0 auto;
-    padding:   calc(var(--header-h) + 24px) 32px 96px;
+    /* top: header height + header-top offset + extra gap */
+    padding:   calc(var(--header-h) + var(--header-top) + 32px) 32px 96px;
     contain:   layout;
 }
 
 /* ══════════════════════════════════════
-   HERO SECTION — bold, editorial
+   HERO SECTION
    ══════════════════════════════════════ */
 .hero-section {
     text-align:    center;
-    margin-bottom: 48px;
+    margin-bottom: 40px;
     animation:     _heroIn 0.5s var(--ease-out) both;
     will-change:   opacity, transform;
 }
 
 @keyframes _heroIn {
-    from { opacity: 0; transform: translateY(16px) translateZ(0); }
-    to   { opacity: 1; transform: translateY(0)    translateZ(0); }
+    from { opacity: 0; transform: translateY(14px) translateZ(0); }
+    to   { opacity: 1; transform: translateY(0) translateZ(0); }
 }
 
 .page-title {
-    font-size:      40px;
+    font-size:      38px;
     font-weight:    600;
     color:          var(--text);
     letter-spacing: -1.2px;
@@ -35,7 +36,7 @@
 }
 
 .page-title .logo-mr {
-    background:             var(--gradient-accent);
+    background:              var(--gradient-accent);
     -webkit-background-clip: text;
     background-clip:         text;
     -webkit-text-fill-color: transparent;
@@ -43,22 +44,20 @@
 }
 
 .page-subtitle {
-    font-size:      14px;
-    color:          var(--text-4);
-    font-weight:    400;
-    letter-spacing: 0;
-    line-height:    1.5;
+    font-size:   13px;
+    color:       var(--text-4);
+    font-weight: 400;
+    line-height: 1.5;
 }
 
 /* ══════════════════════════════════════
    MOBILE SEARCH
    ══════════════════════════════════════ */
 .search-section {
-    margin-bottom: 32px;
+    margin-bottom: 28px;
     max-height:    0;
     opacity:       0;
     overflow:      hidden;
-    will-change:   max-height, opacity;
     transition:
         max-height    0.3s var(--ease-out),
         opacity       0.26s var(--ease-out),
@@ -68,7 +67,7 @@
 .search-section.show {
     max-height:    72px;
     opacity:       1;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
 }
 
 .search-box {
@@ -77,16 +76,15 @@
     background:    var(--surface);
     border:        1.5px solid var(--border);
     border-radius: var(--radius-full);
-    padding:       0 18px;
-    height:        44px;
+    padding:       0 16px;
+    height:        42px;
     box-shadow:    var(--shadow-sm);
-    transition:    border-color 0.18s, box-shadow 0.18s, background 0.18s;
+    transition:    border-color 0.18s, box-shadow 0.18s;
 }
 
 .search-box:focus-within {
     border-color: var(--accent);
-    background:   var(--surface);
-    box-shadow:   0 0 0 4px var(--accent-dim), var(--shadow-sm);
+    box-shadow:   0 0 0 3px var(--accent-dim), var(--shadow-sm);
 }
 
 .search-icon { color: var(--text-4); flex-shrink: 0; }
@@ -106,13 +104,13 @@
 .search-input::placeholder { color: var(--text-4); }
 
 .clear-search {
-    width:           28px;
-    height:          28px;
+    width:           26px;
+    height:          26px;
     border-radius:   var(--radius-full);
     border:          none;
     background:      var(--surface-2);
     color:           var(--text-3);
-    font-size:       12px;
+    font-size:       11px;
     cursor:          pointer;
     display:         none;
     align-items:     center;
@@ -123,11 +121,11 @@
 .clear-search:hover { background: var(--surface-3); color: var(--text-2); }
 
 /* ══════════════════════════════════════
-   TABS — pill style, modern
+   TABS
    ══════════════════════════════════════ */
 .tabs {
     display:         flex;
-    margin-bottom:   40px;
+    margin-bottom:   36px;
     justify-content: center;
     gap:             4px;
     animation:       _heroIn 0.5s 0.07s var(--ease-out) both;
@@ -141,7 +139,7 @@
 }
 
 .tab {
-    padding:       7px 20px;
+    padding:       7px 18px;
     background:    transparent;
     border:        none;
     border-radius: var(--radius-full);
@@ -167,12 +165,12 @@
    SECTION LABEL
    ══════════════════════════════════════ */
 .section-label {
-    font-size:      11px;
+    font-size:      10.5px;
     font-weight:    600;
     color:          var(--text-4);
     letter-spacing: 0.8px;
     text-transform: uppercase;
-    margin-bottom:  16px;
+    margin-bottom:  14px;
     padding-left:   2px;
     display:        flex;
     align-items:    center;
@@ -180,35 +178,34 @@
 }
 
 .section-label::after {
-    content:          '';
-    flex:             1;
-    height:           1px;
-    background:       var(--border);
-    max-width:        120px;
+    content:   '';
+    flex:      1;
+    height:    1px;
+    background: var(--border);
+    max-width: 100px;
 }
 
 /* ══════════════════════════════════════
-   APP GRID — bento-inspired, larger cards
+   APP GRID
    ══════════════════════════════════════ */
 .apps-grid {
     animation: _gridIn 0.35s var(--ease-out) both;
-    will-change: opacity, transform;
 }
 
 @keyframes _gridIn {
-    from { opacity: 0; transform: translateY(10px) translateZ(0); }
-    to   { opacity: 1; transform: translateY(0)    translateZ(0); }
+    from { opacity: 0; transform: translateY(8px) translateZ(0); }
+    to   { opacity: 1; transform: translateY(0) translateZ(0); }
 }
 
 .app-grid {
     display:               grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(118px, 1fr));
     gap:                   8px;
     margin-bottom:         8px;
 }
 
 /* ══════════════════════════════════════
-   APP ITEM — card-style, expressive
+   APP ITEM — clean card style
    ══════════════════════════════════════ */
 .app-item {
     display:         flex;
@@ -216,9 +213,10 @@
     align-items:     center;
     text-decoration: none;
     color:           var(--text-3);
-    padding:         20px 10px 16px;
+    padding:         18px 10px 14px;
     border-radius:   var(--radius-lg);
-    border:          1.5px solid transparent;
+    border:          1.5px solid var(--border);
+    background:      var(--surface);
     cursor:          pointer;
     position:        relative;
     will-change:     transform;
@@ -231,32 +229,13 @@
     overflow:        hidden;
 }
 
-/* Subtle surface on rest */
-.app-item {
-    background: var(--surface);
-}
-
 .app-item:hover {
-    background:   var(--surface);
-    border-color: var(--border-strong);
-    transform:    translateY(-3px) translateZ(0);
-    box-shadow:   var(--shadow-md);
+    border-color: var(--accent);
+    transform:    translateY(-2px) translateZ(0);
+    box-shadow:   0 4px 16px var(--accent-dim), var(--shadow-sm);
     color:        var(--text-2);
+    background:   var(--surface);
 }
-
-/* Accent border reveal on hover */
-.app-item::before {
-    content:          '';
-    position:         absolute;
-    inset:            0;
-    border-radius:    inherit;
-    border:           1.5px solid var(--accent);
-    opacity:          0;
-    transition:       opacity 0.2s var(--ease-out);
-    pointer-events:   none;
-}
-
-.app-item:hover::before { opacity: 0.4; }
 
 .app-item:active {
     transform:           translateY(0) scale(0.96) translateZ(0);
@@ -265,15 +244,15 @@
 
 /* ── Icon container ── */
 .app-icon {
-    width:           58px;
-    height:          58px;
+    width:           54px;
+    height:          54px;
     border-radius:   var(--radius-md);
     background:      var(--surface-2);
     border:          1.5px solid var(--border);
     display:         flex;
     align-items:     center;
     justify-content: center;
-    margin-bottom:   12px;
+    margin-bottom:   10px;
     overflow:        hidden;
     will-change:     transform;
     transition:
@@ -284,16 +263,27 @@
 }
 
 .app-item:hover .app-icon {
-    box-shadow:   var(--shadow-md);
-    transform:    scale(1.08) translateZ(0);
-    border-color: var(--border-strong);
+    box-shadow:   0 4px 12px var(--accent-dim);
+    transform:    scale(1.06) translateZ(0);
+    border-color: var(--accent);
 }
 
-.app-icon img { width: 32px; height: 32px; object-fit: contain; }
+/* ── SVG favicons — dark mode fix ── */
+.app-icon img {
+    width:      32px;
+    height:     32px;
+    object-fit: contain;
+    transition: filter 0.2s;
+}
+
+/* Dark mode: brighten SVG icons with hard-coded dark colors */
+body.dark .app-icon img {
+    filter: brightness(1.9) saturate(0.85);
+}
 
 /* ── App name ── */
 .app-name {
-    font-size:   11.5px;
+    font-size:   11px;
     font-weight: 500;
     text-align:  center;
     color:       var(--text-3);
@@ -307,14 +297,14 @@
 .app-item--feature {
     grid-column:    span 2;
     flex-direction: row;
-    padding:        18px 20px;
-    gap:            16px;
+    padding:        16px 18px;
+    gap:            14px;
     align-items:    center;
 }
 
 .app-item--feature .app-icon {
-    width:        52px;
-    height:       52px;
+    width:        48px;
+    height:       48px;
     margin-bottom: 0;
     flex-shrink:  0;
 }
@@ -327,17 +317,37 @@
 /* ── New badge ── */
 .app-badge {
     position:      absolute;
-    top:           8px;
-    right:         8px;
+    top:           7px;
+    right:         7px;
     background:    var(--accent);
     color:         white;
     font-size:     9px;
     font-weight:   600;
     letter-spacing: 0.4px;
     text-transform: uppercase;
-    padding:       2px 6px;
+    padding:       2px 5px;
     border-radius: var(--radius-full);
     line-height:   1.5;
+}
+
+/* ══════════════════════════════════════
+   MINI APPS — special styling
+   ══════════════════════════════════════ */
+#miniGrid .app-item,
+#miniOnlyList .app-item {
+    background:    var(--surface);
+    border-color:  var(--border);
+}
+
+#miniGrid .app-item:hover,
+#miniOnlyList .app-item:hover {
+    border-color: var(--accent);
+    background:   var(--accent-dim);
+}
+
+#miniGrid .app-icon,
+#miniOnlyList .app-icon {
+    background: var(--bg-alt);
 }
 
 /* ══════════════════════════════════════
@@ -346,24 +356,10 @@
 .empty-state {
     grid-column: 1 / -1;
     text-align:  center;
-    padding:     72px 20px;
+    padding:     64px 20px;
     color:       var(--text-4);
     font-size:   13px;
     line-height: 1.6;
 }
 
-.empty-state svg {
-    margin-bottom: 12px;
-    opacity:       0.4;
-}
-
-/* ══════════════════════════════════════
-   SCROLL REVEAL — progressive entry
-   ══════════════════════════════════════ */
-@supports (animation-timeline: scroll()) {
-    .app-item {
-        animation:          none;
-        opacity:            1;
-        transform:          none;
-    }
-}
+.empty-state svg { margin-bottom: 12px; opacity: 0.4; }
