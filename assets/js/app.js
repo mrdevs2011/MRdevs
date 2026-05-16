@@ -2,6 +2,7 @@
 
 import { initTheme, toggleTheme } from './core/theme.js';
 import { initAuth, logout } from './core/auth.js';
+import { initSidebar, toggleSidebar, closeSidebar } from './ui/sidebar.js';
 import { initTabs, switchTab } from './ui/tabs.js';
 import { initSearch } from './ui/search.js';
 import { initModals, showModal, closeModal } from './ui/modal.js';
@@ -18,12 +19,11 @@ import {
     closePassNotifModal
 } from './features/pass-notifications.js';
 import { showToast } from './core/toast.js';
-import logger from './core/logger.js';
-import { initNotificationSystem } from './core/notification-system.js';
-import { initOtpWatcher } from './core/otp-watcher.js';
 
 // ==================== WINDOW EXPORTS ====================
 window.toggleTheme        = toggleTheme;
+window.toggleSidebar      = toggleSidebar;
+window.closeSidebar       = closeSidebar;
 window.switchTab          = switchTab;
 window.signInWithGoogle   = signInWithGoogle;
 window.logout             = logout;
@@ -67,16 +67,15 @@ window.toggleMobileSearch = function () {
 
 // ==================== INIT ====================
 document.addEventListener('DOMContentLoaded', () => {
-    logger.platformStart();
+    console.log('🚀 MRDEV v7.3 ishga tushmoqda...');
 
     initTheme();
     initAuth();
+    initSidebar();
     initTabs();
     initSearch();
     initModals();
     initUserMenu();
-    initNotificationSystem();
-    initOtpWatcher();
 
     // Click outside — user menu yopilishi
     document.addEventListener('click', (e) => {
@@ -91,5 +90,5 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    logger.platformReady();
+    console.log('✅ MRDEV Platform tayyor');
 });

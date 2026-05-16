@@ -1,17 +1,18 @@
-// ==================== MRDEV THEME FLASH FIX v2.2 ====================
+// ==================== MRDEV THEME FLASH FIX v2.1 ====================
 (function() {
     'use strict';
 
-    const theme = localStorage.getItem('mrdev_theme') || localStorage.getItem('theme') || 'dark';
+    const theme = localStorage.getItem('theme') || 'dark';
 
     if (theme === 'dark') {
-        document.body
-            ? document.body.classList.add('dark')
-            : document.documentElement.classList.add('dark'); // body henuz yo'q bo'lsa
+        document.documentElement.classList.add('dark');
+    } else {
+        document.documentElement.classList.remove('dark');
     }
 
-    const bgColor = theme === 'dark' ? '#09090b' : '#f4f4f5';
+    const bgColor = theme === 'dark' ? '#1f1f1f' : '#f8fafd';
     document.documentElement.style.backgroundColor = bgColor;
+    document.documentElement.style.setProperty('background-color', bgColor, 'important');
 
     document.documentElement.style.visibility = 'hidden';
 
@@ -26,19 +27,11 @@
     document.head.appendChild(style);
 
     function revealPage() {
-        // body mavjud bo'lganda .dark ni body ga ko'chirish
-        const t = localStorage.getItem('mrdev_theme') || localStorage.getItem('theme') || 'dark';
-        if (t === 'dark') {
-            document.body.classList.add('dark');
-        } else {
-            document.body.classList.remove('dark');
-        }
-        document.documentElement.classList.remove('dark');
-
         const fixStyle = document.getElementById('flash-fix-style');
         if (fixStyle) fixStyle.remove();
 
         document.documentElement.style.backgroundColor = '';
+        document.documentElement.style.removeProperty('background-color');
         document.documentElement.style.visibility = '';
         document.documentElement.style.opacity = '0';
         document.documentElement.style.transition = 'opacity 0.15s ease-out';

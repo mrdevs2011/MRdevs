@@ -1,5 +1,5 @@
 import { db } from "./firebase-config.js";
-import { collection, onSnapshot, doc, deleteDoc } from 'firebase/firestore';
+import { collection, onSnapshot, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { showToast } from "./ui-helpers.js";
 
 let isAdmin = false;

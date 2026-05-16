@@ -1,488 +1,243 @@
-/* ==================== MRDEV MAIN v5.2 — Bug-Fixed Edition ==================== */
-/* FIXES: #1 Tab Active State, #3 Card Shadows, #4 Typography */
-
-/* ══════════════════════════════════════
-   CONTAINER — floating fixed header offset
-   ══════════════════════════════════════ */
+/* ==================== CONTAINER ==================== */
 .container {
-    max-width: var(--content-w, 1040px);
-    margin:    0 auto;
-    padding:   calc(var(--header-h) + var(--header-top) + 36px) 32px 96px;
-    contain:   layout;
+    max-width: 1020px;
+    margin: 0 auto;
+    padding: 56px 28px 88px;
 }
 
-/* ══════════════════════════════════════
-   HERO SECTION
-   FIX #4a: richer, more confident typography
-   ══════════════════════════════════════ */
+/* ==================== HERO ==================== */
 .hero-section {
-    text-align:    center;
-    margin-bottom: 40px;
-    animation:     _heroIn 0.5s var(--ease-out) both;
-    will-change:   opacity, transform;
+    text-align: center;
+    margin-bottom: 48px;
+    animation: heroReveal 0.5s var(--ease-out) both;
 }
 
-@keyframes _heroIn {
-    from { opacity: 0; transform: translateY(14px) translateZ(0); }
-    to   { opacity: 1; transform: translateY(0) translateZ(0); }
+@keyframes heroReveal {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
 
-/* FIX #4b: stronger title — more weight, tighter tracking */
 .page-title {
-    font-size:      44px;
-    font-weight:    700;
-    color:          var(--text);
-    letter-spacing: -2.5px;
-    line-height:    1.0;
-    margin-bottom:  10px;
+    font-size: 36px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: -0.8px;
+    line-height: 1.15;
+    margin-bottom: 6px;
 }
 
-.page-title .logo-mr {
-    background:              var(--gradient-accent);
-    -webkit-background-clip: text;
-    background-clip:         text;
-    -webkit-text-fill-color: transparent;
-    color:                   transparent;
-}
+.page-title .logo-mr { color: var(--accent); }
 
-/* FIX #4c: subtitle — visible, elegant, not invisible */
 .page-subtitle {
-    font-size:      13px;
-    color:          var(--text-3);
-    font-weight:    500;
-    letter-spacing: 0.3px;
-    line-height:    1.5;
-    display:        inline-flex;
-    align-items:    center;
-    gap:            6px;
+    font-size: 13px;
+    color: var(--text-4);
+    font-weight: 400;
+    letter-spacing: 0.1px;
 }
 
-/* Subtle decorative dot for subtitle */
-.page-subtitle::before {
-    content:       '';
-    display:       inline-block;
-    width:         5px;
-    height:        5px;
-    border-radius: 50%;
-    background:    var(--accent);
-    opacity:       0.7;
-}
-
-/* ══════════════════════════════════════
-   MOBILE SEARCH
-   ══════════════════════════════════════ */
+/* ==================== MOBILE SEARCH ==================== */
 .search-section {
-    margin-bottom: 28px;
-    max-height:    0;
-    opacity:       0;
-    overflow:      hidden;
-    transition:
-        max-height    0.3s var(--ease-out),
-        opacity       0.26s var(--ease-out),
-        margin-bottom 0.3s var(--ease-out);
+    margin-bottom: 36px;
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 0.35s var(--ease-out),
+                opacity 0.3s var(--ease-out),
+                margin-bottom 0.35s var(--ease-out);
 }
 
 .search-section.show {
-    max-height:    72px;
-    opacity:       1;
-    margin-bottom: 20px;
+    max-height: 72px;
+    opacity: 1;
+    margin-bottom: 32px;
 }
 
 .search-box {
-    display:       flex;
-    align-items:   center;
-    background:    var(--surface);
-    border:        1.5px solid var(--border);
-    border-radius: var(--radius-full);
-    padding:       0 16px;
-    height:        42px;
-    box-shadow:    var(--shadow-sm);
-    transition:    border-color 0.18s, box-shadow 0.18s;
-}
-
-body:not(.dark) .search-box {
-    background:   #ffffff;
-    border-color: rgba(9, 9, 11, 0.12);
-    box-shadow:   0 1px 4px rgba(0,0,0,0.06), 0 0 0 0.5px rgba(9,9,11,0.04);
+    display: flex;
+    align-items: center;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 0 16px;
+    height: 44px;
+    box-shadow: var(--shadow-xs);
+    transition: all 0.2s var(--ease-out);
 }
 
 .search-box:focus-within {
     border-color: var(--accent);
-    box-shadow:   0 0 0 3px var(--accent-dim), var(--shadow-sm);
+    box-shadow: 0 0 0 3px var(--accent-dim);
 }
 
 .search-icon { color: var(--text-4); flex-shrink: 0; }
 
 .search-input {
-    flex:        1;
-    padding:     0 12px;
-    background:  transparent;
-    border:      none;
-    color:       var(--text);
-    font-size:   14px;
+    flex: 1;
+    padding: 0 10px;
+    background: transparent;
+    border: none;
+    color: var(--text);
+    font-size: 14px;
     font-family: var(--font-sans);
-    outline:     none;
-    height:      100%;
+    outline: none;
+    height: 100%;
 }
 
 .search-input::placeholder { color: var(--text-4); }
 
 .clear-search {
-    width:           26px;
-    height:          26px;
-    border-radius:   var(--radius-full);
-    border:          none;
-    background:      var(--surface-2);
-    color:           var(--text-3);
-    font-size:       11px;
-    cursor:          pointer;
-    display:         none;
-    align-items:     center;
+    width: 26px;
+    height: 26px;
+    border-radius: var(--radius-full);
+    border: none;
+    background: var(--surface-2);
+    color: var(--text-3);
+    font-size: 13px;
+    cursor: pointer;
+    display: none;
+    align-items: center;
     justify-content: center;
-    transition:      background 0.13s, color 0.13s;
+    transition: all 0.15s;
 }
 
-.clear-search:hover { background: var(--surface-3); color: var(--text-2); }
+.clear-search:hover {
+    background: var(--surface-3);
+    color: var(--text-2);
+}
 
-/* ══════════════════════════════════════
-   TABS — FIX #1: high-contrast active state
-   ══════════════════════════════════════ */
+/* ==================== TABS ==================== */
 .tabs {
-    display:         flex;
-    margin-bottom:   36px;
+    display: flex;
+    margin-bottom: 40px;
     justify-content: center;
-    gap:             3px;
-    animation:       _heroIn 0.5s 0.07s var(--ease-out) both;
-    border-radius:   var(--radius-full);
-    padding:         4px;
-    width:           fit-content;
-    margin-left:     auto;
-    margin-right:    auto;
-    border:          1.5px solid var(--border);
-
-    /* Light mode container — clear warm gray */
-    background:      var(--surface-2);
-}
-
-/* Dark mode tab container */
-body.dark .tabs {
-    background:   rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.08);
-}
-
-/* Light mode tab container */
-body:not(.dark) .tabs {
-    background:   #f0f0f1;
-    border-color: rgba(9, 9, 11, 0.1);
+    gap: 4px;
+    animation: heroReveal 0.5s 0.1s var(--ease-out) both;
 }
 
 .tab {
-    padding:       7px 20px;
-    background:    transparent;
-    border:        none;
+    padding: 7px 18px;
+    background: none;
+    border: 1px solid transparent;
     border-radius: var(--radius-full);
-    font-size:     13px;
-    font-weight:   500;
-    font-family:   var(--font-sans);
-    letter-spacing: 0.1px;
-    color:         var(--text-3);
-    cursor:        pointer;
-    transition:
-        background  0.18s var(--ease-out),
-        color       0.18s var(--ease-out),
-        box-shadow  0.18s var(--ease-out),
-        transform   0.15s var(--ease-spring);
-    user-select:   none;
-    white-space:   nowrap;
-    position:      relative;
-}
-
-.tab:hover:not(.active) {
-    color:      var(--text-2);
-    background: var(--hover-strong);
-}
-
-.tab:active {
-    transform:           scale(0.96);
-    transition-duration: 0.08s;
-}
-
-/* ═══════════════════════════════════════════
-   FIX #1: ACTIVE TAB — AAA contrast both modes
-   Light mode: dark pill (#0f172a) + white text
-   Dark mode:  white surface + accent text
-   ═══════════════════════════════════════════ */
-
-/* Light mode active tab — solid dark background, pure white text */
-body:not(.dark) .tab.active {
-    color:      #ffffff;
-    background: #0f172a;
-    box-shadow:
-        0 1px 4px rgba(0, 0, 0, 0.20),
-        0 0 0 0.5px rgba(0, 0, 0, 0.15);
-    font-weight: 600;
-}
-
-/* Dark mode active tab — bright surface, accent text */
-body.dark .tab.active {
-    color:      var(--text);
-    background: var(--surface-2);
-    box-shadow:
-        0 1px 4px rgba(0, 0, 0, 0.35),
-        0 0 0 0.5px rgba(255, 255, 255, 0.08);
-    font-weight: 600;
-}
-
-/* ══════════════════════════════════════
-   SECTION LABEL
-   FIX #4d: modern divider, not dated blue
-   ══════════════════════════════════════ */
-.section-label {
-    font-size:      10px;
-    font-weight:    700;
-    color:          var(--text-3);
-    letter-spacing: 1.2px;
-    text-transform: uppercase;
-    margin-bottom:  16px;
-    padding-left:   2px;
-    display:        flex;
-    align-items:    center;
-    gap:            10px;
-}
-
-/* FIX #4e: sleek single rule divider, not accent-colored */
-.section-label::after {
-    content:    '';
-    flex:       1;
-    height:     1px;
-    background: linear-gradient(
-        to right,
-        var(--border-strong),
-        var(--border) 60%,
-        transparent
-    );
-    max-width: 100%;
-    opacity:   0.8;
-}
-
-/* Light mode section label */
-body:not(.dark) .section-label {
-    color: #52525b;
-}
-
-/* ══════════════════════════════════════
-   APP GRID
-   ══════════════════════════════════════ */
-.apps-grid {
-    animation: _gridIn 0.35s var(--ease-out) both;
-}
-
-@keyframes _gridIn {
-    from { opacity: 0; transform: translateY(8px) translateZ(0); }
-    to   { opacity: 1; transform: translateY(0) translateZ(0); }
-}
-
-.app-grid {
-    display:               grid;
-    grid-template-columns: repeat(auto-fill, minmax(118px, 1fr));
-    gap:                   8px;
-    margin-bottom:         8px;
-}
-
-/* ══════════════════════════════════════
-   APP ITEM — FIX #3: modern card with shadows
-   ══════════════════════════════════════ */
-.app-item {
-    display:         flex;
-    flex-direction:  column;
-    align-items:     center;
-    text-decoration: none;
-    color:           var(--text-3);
-    padding:         18px 10px 14px;
-    border-radius:   var(--radius-lg);
-    border:          1.5px solid var(--border);
-    background:      var(--surface);
-    cursor:          pointer;
-    position:        relative;
-    will-change:     transform;
-    transition:
-        background    0.2s var(--ease-out),
-        border-color  0.2s var(--ease-out),
-        transform     0.22s var(--ease-spring),
-        box-shadow    0.22s var(--ease-out),
-        color         0.2s;
-    overflow:        hidden;
-}
-
-/* FIX #3a: Light mode cards — visible depth via shadow + stronger border */
-body:not(.dark) .app-item {
-    background:   #ffffff;
-    border-color: rgba(9, 9, 11, 0.07);
-    box-shadow:
-        0 1px 3px rgba(0, 0, 0, 0.05),
-        0 1px 8px rgba(0, 0, 0, 0.03),
-        0 0 0 0.5px rgba(9, 9, 11, 0.05);
-}
-
-/* FIX #3b: Dark mode — subtle glow border */
-body.dark .app-item {
-    border-color: rgba(255, 255, 255, 0.07);
-    box-shadow:   0 2px 8px rgba(0, 0, 0, 0.25);
-}
-
-/* FIX #3c: hover — lift animation + accent border + shadow */
-.app-item:hover {
-    border-color: var(--accent);
-    transform:    translateY(-3px) translateZ(0);
-    color:        var(--text-2);
-    background:   var(--surface);
-}
-
-body:not(.dark) .app-item:hover {
-    background:  #ffffff;
-    border-color: var(--accent);
-    box-shadow:
-        0 8px 24px rgba(14, 165, 233, 0.12),
-        0 4px 8px rgba(14, 165, 233, 0.08),
-        0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-body.dark .app-item:hover {
-    box-shadow:
-        0 8px 24px rgba(56, 189, 248, 0.15),
-        0 4px 8px rgba(0, 0, 0, 0.3);
-}
-
-.app-item:active {
-    transform:           translateY(0) scale(0.96) translateZ(0);
-    transition-duration: 0.08s;
-}
-
-/* ── Icon container ── */
-.app-icon {
-    width:           54px;
-    height:          54px;
-    border-radius:   var(--radius-md);
-    background:      var(--surface-2);
-    border:          1.5px solid var(--border);
-    display:         flex;
-    align-items:     center;
-    justify-content: center;
-    margin-bottom:   10px;
-    overflow:        hidden;
-    will-change:     transform;
-    transition:
-        box-shadow   0.2s var(--ease-out),
-        transform    0.2s var(--ease-spring),
-        border-color 0.2s;
-    flex-shrink:     0;
-}
-
-/* FIX #3d: Light mode icon container — visible on white card */
-body:not(.dark) .app-icon {
-    background:   #f4f4f5;
-    border-color: rgba(9, 9, 11, 0.08);
-    box-shadow:   inset 0 1px 2px rgba(9,9,11,0.04);
-}
-
-.app-item:hover .app-icon {
-    box-shadow:   0 4px 12px var(--accent-dim);
-    transform:    scale(1.06) translateZ(0);
-    border-color: var(--accent);
-}
-
-/* ── SVG favicons ── */
-.app-icon img {
-    width:      32px;
-    height:     32px;
-    object-fit: contain;
-    transition: filter 0.2s;
-}
-
-body.dark .app-icon img {
-    filter: brightness(1.9) saturate(0.85);
-}
-
-/* ── App name ── */
-.app-name {
-    font-size:   11px;
+    font-size: 13px;
     font-weight: 500;
-    text-align:  center;
-    color:       var(--text-3);
-    line-height: 1.3;
-    transition:  color 0.15s;
-    letter-spacing: 0.05px;
+    font-family: var(--font-sans);
+    color: var(--text-3);
+    cursor: pointer;
+    transition: all 0.2s var(--ease-out);
 }
 
-.app-item:hover .app-name { color: var(--text); }
-
-/* ── Feature card variant (2x wide) ── */
-.app-item--feature {
-    grid-column:    span 2;
-    flex-direction: row;
-    padding:        16px 18px;
-    gap:            14px;
-    align-items:    center;
-}
-
-.app-item--feature .app-icon {
-    width:        48px;
-    height:       48px;
-    margin-bottom: 0;
-    flex-shrink:  0;
-}
-
-.app-item--feature .app-name {
-    font-size:  13px;
-    text-align: left;
-}
-
-/* ── New badge ── */
-.app-badge {
-    position:       absolute;
-    top:            7px;
-    right:          7px;
-    background:     var(--accent);
-    color:          white;
-    font-size:      9px;
-    font-weight:    700;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    padding:        2px 6px;
-    border-radius:  var(--radius-full);
-    line-height:    1.5;
-}
-
-/* ══════════════════════════════════════
-   MINI APPS — special styling
-   ══════════════════════════════════════ */
-#miniGrid .app-item,
-#miniOnlyList .app-item {
-    background:   var(--surface);
+.tab:hover {
+    color: var(--text-2);
+    background: var(--hover-strong);
     border-color: var(--border);
 }
 
-#miniGrid .app-item:hover,
-#miniOnlyList .app-item:hover {
-    border-color: var(--accent);
-    background:   var(--accent-dim);
+.tab.active {
+    color: var(--accent);
+    background: var(--accent-dim);
+    border-color: var(--accent-light);
 }
 
-#miniGrid .app-icon,
-#miniOnlyList .app-icon {
-    background: var(--bg-alt);
+/* ==================== SECTION LABEL ==================== */
+.section-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-4);
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    padding-left: 4px;
 }
 
-/* ══════════════════════════════════════
-   EMPTY STATE
-   ══════════════════════════════════════ */
+/* ==================== APP GRID ==================== */
+.apps-grid {
+    animation: gridReveal 0.35s var(--ease-out) both;
+}
+
+@keyframes gridReveal {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.app-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+    gap: 6px;
+    margin-bottom: 8px;
+}
+
+/* ==================== APP ITEM ==================== */
+.app-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: var(--text-3);
+    padding: 16px 8px 12px;
+    border-radius: var(--radius-md);
+    border: 1px solid transparent;
+    transition: all 0.2s var(--ease-out);
+    cursor: pointer;
+    position: relative;
+}
+
+.app-item:hover {
+    background: var(--surface);
+    border-color: var(--border);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    color: var(--text-2);
+}
+
+.app-item:active {
+    transform: translateY(0);
+    transition-duration: 0.1s;
+}
+
+.app-icon {
+    width: 54px;
+    height: 54px;
+    border-radius: 14px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 9px;
+    overflow: hidden;
+    transition: all 0.2s var(--ease-out);
+    flex-shrink: 0;
+}
+
+.app-item:hover .app-icon {
+    box-shadow: var(--shadow-sm);
+    transform: scale(1.05);
+    border-color: var(--border-strong);
+}
+
+.app-icon img {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+}
+
+.app-name {
+    font-size: 11px;
+    font-weight: 500;
+    text-align: center;
+    color: var(--text-3);
+    line-height: 1.3;
+    transition: color 0.15s;
+}
+
+.app-item:hover .app-name { color: var(--text-2); }
+
+/* ==================== EMPTY STATE ==================== */
 .empty-state {
     grid-column: 1 / -1;
-    text-align:  center;
-    padding:     64px 20px;
-    color:       var(--text-4);
-    font-size:   13px;
-    line-height: 1.6;
+    text-align: center;
+    padding: 56px 20px;
+    color: var(--text-4);
+    font-size: 13px;
 }
-
-.empty-state svg { margin-bottom: 12px; opacity: 0.4; }

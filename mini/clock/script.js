@@ -1,5 +1,3 @@
-import { mt, initMiniI18n, onLangChange } from '../../assets/js/mini-i18n.js';
-import { getTheme, setTheme, toggleTheme } from '../../assets/js/core/global-settings.js';
 // ==================== MRDEV CLOCK v2.0 — Firebase + Local Sync ====================
 import { initAuth, getCurrentUser, getUserId } from '../../assets/js/firebase-helper.js';
 import { initMiniDropdown } from '../../assets/js/dropdown.js';
@@ -11,7 +9,7 @@ function getDB() {
     return _db;
 }
 
-import { collection, addDoc, query, orderBy, onSnapshot, deleteDoc, doc, updateDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, query, orderBy, onSnapshot, deleteDoc, doc, updateDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
 // ==================== DOM ====================
 var $ = function(id) { return document.getElementById(id); };
@@ -41,11 +39,25 @@ var editAlarmId = null;
 var canvas, ctx, animId;
 
 // ==================== THEME ====================
+function initTheme() {
+    var saved = localStorage.getItem('theme') || 'dark';
+    if (saved === 'dark') document.documentElement.classList.add('dark');
+    else document.documentElement.classList.remove('dark');
+    updateThemeIcon();
+    $('themeToggle').addEventListener('click', toggleTheme);
+}
+
+function toggleTheme() {
+    var isDark = document.documentElement.classList.toggle('dark');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    updateThemeIcon();
+    drawClock();
+}
 
 function updateThemeIcon() {
     var btn = $('themeToggle');
     if (!btn) return;
-    var isDark = document.body.classList.contains('dark');
+    var isDark = document.documentElement.classList.contains('dark');
     btn.innerHTML = isDark
         ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>'
         : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
@@ -77,8 +89,8 @@ async function syncTime() {
     } catch(e) { isOnline = false; }
 
     statusIndicator.className = 'status-indicator' + (isOnline ? '' : ' offline');
-    statusLabel.textContent = isOnline ? mt('online') : mt('offline');
-    sourceLabel.textContent = isOnline ? mt('internet_time') : mt('device_time');
+    statusLabel.textContent = isOnline ? 'Online' : 'Offline';
+    sourceLabel.textContent = isOnline ? 'Internet vaqti' : 'Qurilma vaqti';
 }
 
 function getNow() {
@@ -104,8 +116,8 @@ function updateDisplay() {
         timeText.textContent = String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
     }
 
-    var days = mt('days');
-    var months = mt('months');
+    var days = ['Yakshanba', 'Dushanba', 'Seshanba', 'Chorshanba', 'Payshanba', 'Juma', 'Shanba'];
+    var months = ['Yanvar', 'Fevral', 'Mart', 'Aprel', 'May', 'Iyun', 'Iyul', 'Avgust', 'Sentabr', 'Oktabr', 'Noyabr', 'Dekabr'];
     dateText.textContent = days[now.getDay()] + ', ' + now.getDate() + '-' + months[now.getMonth()] + ' ' + now.getFullYear();
 
     var tz = currentTimezone === 'local' ? 'Mahalliy' : currentTimezone.split('/').pop().replace('_', ' ');
@@ -265,13 +277,13 @@ async function deleteAlarmHandler(id) {
         alarms = alarms.filter(function(a) { return a.id !== id; });
         renderAlarms();
     }
-    showToast(mt('alarm_deleted'));
+    showToast('Alarm o\'chirildi');
 }
 
 // ==================== ALARM MODAL ====================
 $('addAlarmBtn').addEventListener('click', function() {
     editAlarmId = null;
-    alarmModalTitle.textContent = mt('new_alarm');
+    alarmModalTitle.textContent = 'Yangi alarm';
     alarmTime.value = '07:00';
     alarmLabel.value = '';
     alarmEnabled.checked = true;
@@ -303,7 +315,7 @@ $('saveAlarm').addEventListener('click', async function() {
         renderAlarms();
     }
     alarmModal.classList.remove('show');
-    showToast(mt('alarm_saved'));
+    showToast('Alarm saqlandi');
 });
 
 // ==================== CHECK ALARMS ====================
@@ -314,7 +326,7 @@ function checkAlarms(now) {
     lastAlarmCheck = current;
     alarms.forEach(function(a) {
         if (a.time === current && a.enabled !== false) {
-            showToast(mt('alarm_ringing') + (a.label || a.time), 'success');
+            showToast('Alarm: ' + (a.label || a.time), 'success');
         }
     });
 }
@@ -341,7 +353,7 @@ function updateUserUI(user) {
             }
         }
     } else {
-        if (triggerName) triggerName.textContent = mt('guest');
+        if (triggerName) triggerName.textContent = 'Mehmon';
         if (triggerAvatar) triggerAvatar.textContent = '?';
     }
 }
@@ -362,10 +374,8 @@ function tick() {
 
 // ==================== INIT ====================
 async function init() {
-    initMiniI18n();
-    // v2.0 ishga tushmoqda...');
-    const _t = getTheme(); if (_t === 'dark') document.body.classList.add('dark'); else document.body.classList.remove('dark'); updateThemeIcon();
-    $('themeToggle').addEventListener('click', toggleTheme);
+    console.log('MRDEV Clock v2.0 ishga tushmoqda...');
+    initTheme();
     initCanvas();
 
     var formatBtn = document.querySelector('.format-option[data-format="' + currentFormat + '"]');
@@ -378,7 +388,6 @@ async function init() {
 
     initAuth(function(user) {
         currentUser = user;
-        window.currentUser = user;
         updateUserUI(user);
         if (user) {
             loadAlarms();
@@ -393,17 +402,8 @@ async function init() {
         }
     });
 
-    //;
+    console.log('Clock tayyor!');
 }
 
-
-onLangChange(function() {
-    var syncBtn = document.getElementById('syncBtn');
-    if (syncBtn) {
-        syncBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg> ' + mt('sync');
-    }
-    var addBtn = document.getElementById('addAlarmBtn');
-    if (addBtn) addBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> ' + mt('new');
-});
 document.addEventListener('DOMContentLoaded', init);
 window.addEventListener('beforeunload', function() { if (animId) cancelAnimationFrame(animId); });

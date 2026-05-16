@@ -1,6 +1,5 @@
 // ==================== MRDEV TODO ====================
-import { initAuth, smartSave, smartLoad, smartDelete, clearAll, getCurrentUser, getUserId } from '../../assets/js/firebase-helper.js';
-import { getTheme, setTheme, toggleTheme } from '../../assets/js/core/global-settings.js';
+import { initAuth, smartSave, smartLoad, smartDelete, clearAll, getCurrentUser, getUserId } from '../../assets/firebase-helper.js';
 
 let currentUser = null;
 let tasks = [];
@@ -13,8 +12,12 @@ const taskTitle = document.getElementById('taskTitle');
 const toast = document.getElementById('toast');
 
 // ==================== THEME ====================
-const _t = getTheme(); if (_t === 'dark') document.body.classList.add('dark'); else document.body.classList.remove('dark');
-document.getElementById('themeToggle').addEventListener('click', () => { toggleTheme(); });
+const saved = localStorage.getItem('mrdev_theme') || 'dark';
+if (saved === 'dark') document.documentElement.classList.add('dark');
+document.getElementById('themeToggle').addEventListener('click', () => {
+    const d = document.documentElement.classList.toggle('dark');
+    localStorage.setItem('mrdev_theme', d ? 'dark' : 'light');
+});
 
 // ==================== AUTH ====================
 initAuth((user) => {
@@ -35,7 +38,7 @@ initAuth((user) => {
     }
     
     // Dropdown init
-    import('../../assets/js/dropdown.js').then(m => m.initDropdown(user, window.location.pathname));
+    import('../../assets/dropdown.js').then(m => m.initDropdown(user, window.location.pathname));
     
     // Load tasks
     loadTasks();
@@ -87,13 +90,13 @@ function renderTasks() {
 
     emptyState.classList.remove('show');
     taskList.innerHTML = filtered.map(task => `
-        <div class="task-content"" ${task.completed ? 'completed' : ''}" data-id="${task.id}">
+        <div class="tawindow.__ENV__?.OPENAI_API_KEY || "" ${task.completed ? 'completed' : ''}" data-id="${task.id}">
             <div class="check-circle ${task.completed ? 'checked' : ''}" data-toggle="${task.id}">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
             </div>
-            <div class="task-content">
-                <div class="task-title">${escapeHtml(task.title)}</div>
-                <div class="task-meta">${formatDate(task.createdAt || task.date)} · ${task.priority}</div>
+            <div class="tawindow.__ENV__?.OPENAI_API_KEY || """>
+                <div class="tawindow.__ENV__?.OPENAI_API_KEY || """>${escapeHtml(task.title)}</div>
+                <div class="tawindow.__ENV__?.OPENAI_API_KEY || """>${formatDate(task.createdAt || task.date)} · ${task.priority}</div>
             </div>
             <div class="priority-badge ${task.priority}"></div>
             <button class="delete-btn" data-delete="${task.id}">
@@ -134,7 +137,7 @@ async function toggleTask(id) {
     const uid = getUserId();
     if (uid && task.isCloud) {
         try {
-            const { getFirestore } = await import('../../assets/js/firebase-helper.js');
+            const { getFirestore } = await import('../../assets/firebase-helper.js');
             // updateCloudDoc orqali
         } catch {}
     }

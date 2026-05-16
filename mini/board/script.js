@@ -1,12 +1,10 @@
-import { mt, initMiniI18n, onLangChange } from '../../assets/js/mini-i18n.js';
-import { getTheme, setTheme, toggleTheme } from '../../assets/js/core/global-settings.js';
 // ==================== MRDEV BOARD v2.4 — Firebase + Local Sync ====================
 
 import logger from '../../assets/js/core/logger.js';
 import { initAuth, getCurrentUser, getUserId } from '../../assets/js/firebase-helper.js';
 import { db } from '../../assets/js/core/firebase-init.js';
 import { initMiniDropdown } from '../../assets/js/dropdown.js';
-import { doc, setDoc, onSnapshot, serverTimestamp } from 'firebase/firestore';
+import { doc, setDoc, onSnapshot, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
 // ==================== DOM ====================
 const $ = (id) => document.getElementById(id);
@@ -27,11 +25,26 @@ const state = {
 };
 
 // ==================== THEME ====================
+function initTheme() {
+    const saved = localStorage.getItem('theme') || 'dark';
+    if (saved === 'dark') document.documentElement.classList.add('dark');
+    else document.documentElement.classList.remove('dark');
+    updateThemeIcon();
+    const themeBtn = $('themeToggle');
+    if (themeBtn) themeBtn.addEventListener('click', toggleTheme);
+}
+
+function toggleTheme() {
+    const isDark = document.documentElement.classList.toggle('dark');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    updateThemeIcon();
+    render();
+}
 
 function updateThemeIcon() {
     const btn = $('themeToggle');
     if (!btn) return;
-    const isDark = document.body.classList.contains('dark');
+    const isDark = document.documentElement.classList.contains('dark');
     btn.innerHTML = isDark
         ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>'
         : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
@@ -59,7 +72,7 @@ function getWorld(cx, cy) {
 
 // ==================== RENDER ====================
 function render() {
-    var dark = document.body.classList.contains('dark');
+    var dark = document.documentElement.classList.contains('dark');
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.fillStyle = dark ? '#1a1a2e' : '#ffffff';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -119,7 +132,7 @@ canvas.addEventListener('pointerdown', function(e) {
     if (state.tool === 'pan') { state.isPanning = true; state.lastMouse = { x: e.clientX, y: e.clientY }; canvas.style.cursor = 'grabbing'; return; }
     state.isDrawing = true;
     var world = getWorld(e.clientX, e.clientY);
-    var dark = document.body.classList.contains('dark');
+    var dark = document.documentElement.classList.contains('dark');
     state.currentPath = { type: 'path', points: [world], color: state.tool === 'erase' ? (dark ? '#1a1a2e' : '#ffffff') : state.penColor, size: state.tool === 'erase' ? 20 : state.penSize };
 });
 canvas.addEventListener('pointermove', function(e) {
@@ -161,13 +174,13 @@ $('saveBoardBtn').addEventListener('click', async function() {
     if (uid && db) {
         try {
             await setDoc(doc(db, 'users', uid, 'board', 'current'), { data: data, elementsCount: state.elements.length, updatedAt: serverTimestamp() });
-            showToast(mt('cloud_saved'), 'success');
+            showToast('Bulutga saqlandi! ☁️', 'success');
         } catch(e) {
             logger.board.cloudSaveError(e);
-            showToast(mt('local_only'), 'error');
+            showToast('Faqat lokalga saqlandi', 'error');
         }
     } else {
-        showToast(mt('local_saved'), 'success');
+        showToast('Lokalga saqlandi', 'success');
     }
 });
 
@@ -205,7 +218,7 @@ function loadCloudBoard() {
 
 // ==================== CLEAR ====================
 $('clearBoardBtn').addEventListener('click', function() {
-    if (!confirm(mt('clear_board'))) return;
+    if (!confirm('Doskani tozalash?')) return;
     state.elements = []; addHistory(); render();
 });
 
@@ -231,7 +244,7 @@ function updateUserUI(user) {
         }
         logger.board.ui(dn);
     } else {
-        if (triggerName) triggerName.textContent = mt('guest');
+        if (triggerName) triggerName.textContent = 'Mehmon';
         if (triggerAvatar) triggerAvatar.textContent = '?';
         logger.board.guest();
     }
@@ -239,10 +252,8 @@ function updateUserUI(user) {
 
 // ==================== INIT ====================
 async function init() {
-    initMiniI18n();
     logger.board.init();
-    const _t = getTheme(); if (_t === 'dark') document.body.classList.add('dark'); else document.body.classList.remove('dark'); updateThemeIcon();
-    $('themeToggle').addEventListener('click', toggleTheme); resize(); addHistory(); loadLocalBoard(); render();
+    initTheme(); resize(); addHistory(); loadLocalBoard(); render();
 
     try {
         const savedAuth = localStorage.getItem('mrdev_local_auth');
@@ -261,7 +272,6 @@ async function init() {
     initAuth(function(user) {
         if (user?.isAuthenticated || user?.uid) {
             currentUser = user;
-        window.currentUser = user;
             updateUserUI(user);
             loadCloudBoard();
             try { initMiniDropdown(user); } catch(e) { logger.board.dropdownError(e); }
@@ -271,8 +281,4 @@ async function init() {
     logger.board.ready(getUserId());
 }
 
-
-onLangChange(function() {
-    // Board has no dynamic text lists, DOM re-render not needed
-});
 document.addEventListener('DOMContentLoaded', init);

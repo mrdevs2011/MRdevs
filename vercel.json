@@ -1,18 +1,21 @@
 {
     "buildCommand": "npm run build",
-    "outputDirectory": "dist",
+    "outputDirectory": ".",
     "framework": null,
-    "rewrites": [
-        { "source": "/settings",       "destination": "/settings/index.html" },
-        { "source": "/about",          "destination": "/about/index.html" },
-        { "source": "/popular/:app",   "destination": "/popular/:app/index.html" },
-        { "source": "/mini/:app",      "destination": "/mini/:app/index.html" },
-        { "source": "/(.*)",           "destination": "/404.html" }
-    ],
-    "headers": [
+    "routes": [
         {
-            "source": "/env.js",
-            "headers": [{ "key": "x-custom-deny", "value": "true" }]
+            "src": "/env\\.js",
+            "status": 404,
+            "dest": "/404.html"
+        },
+        {
+            "src": "/build\\.js",
+            "status": 404,
+            "dest": "/404.html"
+        },
+        {
+            "src": "/(.*)",
+            "dest": "/$1"
         }
     ]
 }

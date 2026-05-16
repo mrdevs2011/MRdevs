@@ -6,9 +6,9 @@
     <title>MR BOARD · Dashboard</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- TODO: migrate to modular firebase (npm). See MIGRATION.md -->
-    
-    
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
@@ -565,7 +565,7 @@
 
         // ========== FIREBASE ==========
         const firebaseConfig = {
-            apiKey: import.meta.env.VITE_GROUPBOARD_API_KEY || "",
+            apiKey: "window.__ENV__?.MAIN_API_KEY || """,
             authDomain: "basic-formula-484419-k8.firebaseapp.com",
             databaseURL: "https://basic-formula-484419-k8-default-rtdb.europe-west1.firebasedatabase.app",
             projectId: "basic-formula-484419-k8",
@@ -966,7 +966,7 @@
                     btn.innerHTML = `<i data-lucide="eye"></i> Xonalarimni ko'rish (${myRooms.length})`;
                     lucide.createIcons();
                 }
-            } else { window.location.href = '../../'; }
+            } else { window.location.href = 'board.html'; }
         });
 
         // ========== EVENT LISTENERS ==========

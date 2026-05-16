@@ -24,11 +24,6 @@ function getAssetsPath() {
 }
 
 const BASE = getBasePath();
-
-// ==================== INITIALIZATION FLAGS ====================
-// Event listenerlar faqat bir marta qo'shilishi uchun flag
-let _rootListenersSet = false;
-let _miniListenersSet = false;
 const ASSETS = getAssetsPath();
 
 const APPS_LIST = {
@@ -148,9 +143,6 @@ export function initDropdown(user) {
     renderRootAppsGrid('all');
     setupRootTrigger(user);
 
-    if (!_rootListenersSet) {
-      _rootListenersSet = true;
-
     document.getElementById('notifMenuItem')?.addEventListener('click', function (e) {
         e.preventDefault();
         closeRootDropdown();
@@ -191,8 +183,6 @@ export function initDropdown(user) {
         updateDropdownTexts();
         updateRootUserInfo(window.currentUser || null);
     });
-
-    } // end: _rootListenersSet
 }
 
 function updateDropdownTexts() {
@@ -314,31 +304,6 @@ export function initMiniDropdown(user) {
                     </div>
                 </div>
                 <div class="dropdown-apps" id="dropdownAppsMini"></div>
-                <div class="dropdown-menu-items dropdown-menu-items-mini">
-                    <a href="../../settings/" class="dropdown-menu-item" id="miniSettingsMenuItem">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="3"/>
-                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
-                        </svg>
-                        ${t('settings') || 'Settings'}
-                    </a>
-                    <button class="dropdown-menu-item danger" id="miniLogoutMenuItem">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-                            <polyline points="16 17 21 12 16 7"/>
-                            <line x1="21" y1="12" x2="9" y2="12"/>
-                        </svg>
-                        ${t('logout') || 'Logout'}
-                    </button>
-                    <a href="../../" class="dropdown-menu-item" id="miniLoginMenuItem">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
-                            <polyline points="10 17 15 12 10 7"/>
-                            <line x1="15" y1="12" x2="3" y2="12"/>
-                        </svg>
-                        ${t('login') || 'Login'}
-                    </a>
-                </div>
             </div>
         `;
         document.body.insertAdjacentHTML('beforeend', html);
@@ -351,14 +316,6 @@ export function initMiniDropdown(user) {
     const overlay = document.getElementById('mrdevDropdownOverlayMini');
     const dropdown = document.getElementById('mrdevDropdownMini');
     const trigger = document.getElementById('mrdevUserTriggerMini');
-
-    if (!_miniListenersSet) {
-      _miniListenersSet = true;
-
-    document.getElementById('miniLogoutMenuItem')?.addEventListener('click', function () {
-        closeMiniDropdown();
-        logout();
-    });
 
     trigger?.addEventListener('click', function (e) {
         e.stopPropagation();
@@ -383,27 +340,23 @@ export function initMiniDropdown(user) {
     document.addEventListener('languageChanged', () => {
         updateMiniUserInfo(window.currentUser || null);
     });
-
-    } // end: _miniListenersSet
 }
 
 function updateMiniDropdownTexts() {
-    const user = window.currentUser || null;
-    if (!user) return;
-    const nameEl  = document.getElementById('dropdownNameMini');
+    const nameEl = document.getElementById('dropdownNameMini');
     const emailEl = document.getElementById('dropdownEmailMini');
-    if (nameEl)  nameEl.textContent  = user.displayName || user.email?.split('@')[0] || 'User';
-    if (emailEl) emailEl.textContent = user.email || '';
-    // Trigger button ichini ham yangilash
-    setupMiniTrigger(user);
+    if (nameEl && window.currentUser) {
+        nameEl.textContent = window.currentUser.displayName || window.currentUser.email?.split('@')[0] || 'User';
+    }
+    if (emailEl && window.currentUser) {
+        emailEl.textContent = window.currentUser.email || '';
+    }
 }
 
 function updateMiniUserInfo(user) {
     const avatar = document.getElementById('dropdownAvatarMini');
     const name = document.getElementById('dropdownNameMini');
     const email = document.getElementById('dropdownEmailMini');
-    const logoutBtn = document.getElementById('miniLogoutMenuItem');
-    const loginLink = document.getElementById('miniLoginMenuItem');
 
     if (user) {
         const displayName = user.displayName || user.email?.split('@')[0] || 'User';
@@ -416,14 +369,10 @@ function updateMiniUserInfo(user) {
         }
         if (name) name.textContent = displayName;
         if (email) email.textContent = userEmail;
-        if (logoutBtn) logoutBtn.style.display = 'flex';
-        if (loginLink) loginLink.style.display = 'none';
     } else {
         if (avatar) avatar.textContent = '?';
         if (name) name.textContent = t('guest');
         if (email) email.textContent = t('login');
-        if (logoutBtn) logoutBtn.style.display = 'none';
-        if (loginLink) loginLink.style.display = 'flex';
     }
 }
 
@@ -448,23 +397,15 @@ function renderMiniAppsGrid() {
 }
 
 function setupMiniTrigger(user) {
-    // .trigger-avatar OR .header-user-avatar — ikkalasini qo'llab-quvvatlaydi
-    const avatarEl = document.querySelector('#mrdevUserTriggerMini .trigger-avatar') ||
-                     document.querySelector('#mrdevUserTriggerMini .header-user-avatar');
-    const nameEl   = document.querySelector('#mrdevUserTriggerMini .trigger-name') ||
-                     document.querySelector('#mrdevUserTriggerMini .header-user-name');
+    const avatarEl = document.querySelector('#mrdevUserTriggerMini .trigger-avatar');
+    const nameEl = document.querySelector('#mrdevUserTriggerMini .trigger-name');
 
-    if (avatarEl && nameEl) {
-        if (user) {
-            const displayName = user.displayName || user.email?.split('@')[0] || 'User';
-            avatarEl.innerHTML = user.photoURL
-                ? `<img src="${user.photoURL}" alt="${displayName}">`
-                : displayName.charAt(0).toUpperCase();
-            nameEl.textContent = displayName;
-        } else {
-            avatarEl.textContent = '?';
-            nameEl.textContent = t('guest');
-        }
+    if (user && avatarEl && nameEl) {
+        const displayName = user.displayName || user.email?.split('@')[0] || 'User';
+        avatarEl.innerHTML = user.photoURL
+            ? `<img src="${user.photoURL}" alt="${displayName}">`
+            : displayName.charAt(0).toUpperCase();
+        nameEl.textContent = displayName;
     }
 }
 

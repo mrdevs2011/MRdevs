@@ -1,403 +1,245 @@
-/* ==================== MRDEV AUTH v5.0 — 2026 Edition ==================== */
+/* ==================== AUTH STYLES ==================== */
 
-/* ══════════════════════════════════════
-   AUTH LAYOUT — gradient mesh, dark-first
-   ══════════════════════════════════════ */
-.auth-layout {
-    min-height:      100vh;
-    display:         flex;
-    align-items:     center;
-    justify-content: center;
-    padding:         24px;
-    background:      var(--bg);
-    position:        relative;
-    overflow:        hidden;
-}
-
-/* ── Gradient mesh background — modern, not blobby ── */
-.auth-layout::before {
-    content:  '';
-    position: absolute;
-    inset:    0;
-    background:
-        radial-gradient(ellipse 80% 60% at 20% 10%,  var(--accent-dim) 0%, transparent 60%),
-        radial-gradient(ellipse 60% 50% at 80% 90%,  rgba(99, 102, 241, 0.07) 0%, transparent 60%),
-        radial-gradient(ellipse 40% 40% at 60% 20%,  rgba(168, 85, 247, 0.05) 0%, transparent 50%);
-    pointer-events: none;
-    animation:      _meshShift 12s ease-in-out infinite alternate;
-    will-change:    background-position;
-}
-
-@keyframes _meshShift {
-    from { opacity: 0.7; transform: scale(1)    translateZ(0); }
-    to   { opacity: 1;   transform: scale(1.04) translateZ(0); }
-}
-
-/* Subtle grid pattern overlay */
-.auth-layout::after {
-    content:    '';
-    position:   absolute;
-    inset:      0;
-    background-image:
-        linear-gradient(var(--border) 1px, transparent 1px),
-        linear-gradient(90deg, var(--border) 1px, transparent 1px);
-    background-size: 40px 40px;
-    opacity:        0.4;
-    pointer-events: none;
-    mask-image:     radial-gradient(ellipse 80% 80% at 50% 50%, black 40%, transparent 100%);
-    -webkit-mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 40%, transparent 100%);
-}
-
-body.dark .auth-layout::before { opacity: 0.8; }
-body.dark .auth-layout::after  { opacity: 0.25; }
-
-/* ══════════════════════════════════════
-   AUTH CARD — premium, gradient border
-   ══════════════════════════════════════ */
-.auth-card {
-    width:          100%;
-    max-width:      420px;
-    background:     var(--surface);
-    border-radius:  var(--radius-xl);
-    padding:        36px 36px 32px;
-    box-shadow:     var(--shadow-xl);
-    position:       relative;
-    z-index:        1;
-    will-change:    opacity, transform;
-    animation:      _authCardIn 0.45s var(--ease-spring) both;
-
-    /* Gradient border trick */
-    border: 1.5px solid var(--border);
-}
-
-/* Glowing accent ring on card */
-.auth-card::before {
-    content:       '';
-    position:      absolute;
-    inset:         -1px;
-    border-radius: inherit;
-    background:    var(--gradient-accent);
-    opacity:       0;
-    z-index:       -1;
-    transition:    opacity 0.3s;
-    padding:       1px;
-    -webkit-mask:
-        linear-gradient(#fff 0 0) content-box,
-        linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-}
-
-body.dark .auth-card::before { opacity: 0.5; }
-
-@keyframes _authCardIn {
-    from { opacity: 0; transform: translateY(24px) scale(0.96) translateZ(0); }
-    to   { opacity: 1; transform: translateY(0)    scale(1)    translateZ(0); }
-}
-
-/* ══════════════════════════════════════
-   AUTH LOGO
-   ══════════════════════════════════════ */
-.auth-logo {
-    display:       flex;
-    align-items:   center;
-    gap:           12px;
-    margin-bottom: 28px;
-}
-
-.auth-logo-mark {
-    width:           40px;
-    height:          40px;
-    border-radius:   var(--radius-md);
-    background:      var(--gradient-accent);
-    display:         flex;
-    align-items:     center;
-    justify-content: center;
-    font-size:       16px;
-    font-weight:     700;
-    color:           white;
-    letter-spacing:  -0.5px;
-    box-shadow:      var(--shadow-accent);
-    flex-shrink:     0;
-}
-
-.auth-logo-text {
-    font-size:      18px;
-    font-weight:    600;
-    color:          var(--text);
-    letter-spacing: -0.5px;
-}
-
-.auth-logo-text span { color: var(--text-3); font-weight: 400; }
-
-/* ══════════════════════════════════════
-   AUTH HEADING
-   ══════════════════════════════════════ */
-.auth-title {
-    font-size:      22px;
-    font-weight:    600;
-    color:          var(--text);
-    letter-spacing: -0.5px;
-    line-height:    1.2;
-    margin-bottom:  6px;
-}
-
-.auth-subtitle {
-    font-size:     14px;
-    color:         var(--text-3);
-    margin-bottom: 28px;
-    line-height:   1.5;
-}
-
-/* ══════════════════════════════════════
-   AUTH FORM ELEMENTS
-   ══════════════════════════════════════ */
-.auth-form-group {
-    margin-bottom: 16px;
-}
-
-.auth-label {
-    display:       block;
-    font-size:     12.5px;
-    font-weight:   500;
-    color:         var(--text-2);
-    margin-bottom: 6px;
-    letter-spacing: 0.1px;
-}
-
-.auth-input {
-    width:         100%;
-    height:        44px;
-    padding:       0 14px;
-    background:    var(--surface-2);
-    border:        1.5px solid var(--border);
-    border-radius: var(--radius-md);
-    font-size:     14px;
-    font-family:   var(--font-sans);
-    color:         var(--text);
-    outline:       none;
-    transition:    border-color 0.18s, box-shadow 0.18s, background 0.18s;
-}
-
-.auth-input::placeholder { color: var(--text-4); }
-
-.auth-input:hover {
-    border-color: var(--border-strong);
-    background:   var(--surface);
-}
-
-.auth-input:focus {
-    border-color: var(--accent);
-    background:   var(--surface);
-    box-shadow:   0 0 0 4px var(--accent-dim);
-}
-
-.auth-input.error { border-color: var(--red); box-shadow: 0 0 0 4px var(--red-dim); }
-
-/* ── Input with icon ── */
-.auth-input-wrapper {
+/* ---- HEADER USER TRIGGER (auth.css override) ---- */
+.header-user-trigger {
     position: relative;
 }
 
-.auth-input-wrapper .auth-input {
-    padding-left: 42px;
-}
-
-.auth-input-icon {
-    position:    absolute;
-    left:        14px;
-    top:         50%;
-    transform:   translateY(-50%);
-    color:       var(--text-4);
-    pointer-events: none;
-}
-
-.auth-input-action {
-    position:    absolute;
-    right:       10px;
-    top:         50%;
-    transform:   translateY(-50%);
-    background:  none;
-    border:      none;
-    color:       var(--text-4);
-    cursor:      pointer;
-    padding:     4px;
-    border-radius: var(--radius-sm);
-    transition:  color 0.13s, background 0.13s;
-}
-
-.auth-input-action:hover {
-    color:       var(--text-2);
-    background:  var(--hover-strong);
-}
-
-/* ══════════════════════════════════════
-   AUTH BUTTON — gradient, premium
-   ══════════════════════════════════════ */
-.auth-btn {
-    width:           100%;
-    height:          46px;
-    background:      var(--gradient-accent);
-    border:          none;
-    border-radius:   var(--radius-md);
-    color:           white;
-    font-size:       14px;
-    font-weight:     600;
-    font-family:     var(--font-sans);
-    cursor:          pointer;
-    transition:      opacity 0.15s, transform 0.18s var(--ease-spring), box-shadow 0.18s;
-    box-shadow:      var(--shadow-accent);
-    margin-top:      8px;
-    letter-spacing:  0.1px;
-    position:        relative;
-    overflow:        hidden;
-}
-
-.auth-btn::after {
-    content:     '';
-    position:    absolute;
-    inset:       0;
-    background:  linear-gradient(rgba(255,255,255,0.15), transparent);
-    pointer-events: none;
-}
-
-.auth-btn:hover {
-    opacity:    0.92;
-    transform:  translateY(-1px) translateZ(0);
-    box-shadow: var(--shadow-accent), var(--shadow-md);
-}
-
-.auth-btn:active {
-    transform:           translateY(0) scale(0.98) translateZ(0);
-    transition-duration: 0.08s;
-}
-
-.auth-btn:disabled {
-    opacity: 0.5;
-    cursor:  not-allowed;
-    transform: none;
-}
-
-/* ── Secondary button ── */
-.auth-btn-secondary {
-    width:         100%;
-    height:        44px;
-    background:    var(--surface-2);
-    border:        1.5px solid var(--border);
-    border-radius: var(--radius-md);
-    color:         var(--text-2);
-    font-size:     14px;
-    font-weight:   500;
-    font-family:   var(--font-sans);
-    cursor:        pointer;
-    transition:    background 0.14s, border-color 0.14s, transform 0.18s var(--ease-spring);
-    display:       flex;
-    align-items:   center;
+/* Account count badge */
+.account-count-badge {
+    position: absolute;
+    top: -3px;
+    right: -3px;
+    background: var(--accent);
+    color: white;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    font-size: 9px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
     justify-content: center;
-    gap:           8px;
+    border: 2px solid var(--surface);
+    z-index: 1;
 }
 
-.auth-btn-secondary:hover {
-    background:   var(--surface-3);
+/* ---- ACCOUNT SWITCHER MODAL ---- */
+.account-switcher-modal { max-width: 420px !important; }
+
+.account-list-body {
+    padding: 0 !important;
+    max-height: 58vh;
+    overflow-y: auto;
+}
+
+.account-empty {
+    padding: 40px 20px;
+    text-align: center;
+    color: var(--text-3);
+}
+
+.account-empty svg { margin: 0 auto 12px; opacity: 0.3; }
+.account-empty p { font-size: 13px; margin: 0; }
+
+.account-list { display: flex; flex-direction: column; }
+
+.account-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 18px;
+    cursor: pointer;
+    transition: background 0.15s var(--ease-out);
+    border-bottom: 1px solid var(--border);
+    gap: 10px;
+}
+
+.account-item:last-child { border-bottom: none; }
+.account-item:hover     { background: var(--hover-strong); }
+.account-item.active    { background: var(--accent-dim); }
+
+.account-item-left {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    flex: 1;
+    min-width: 0;
+}
+
+.account-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    font-weight: 600;
+    color: white;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.account-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.account-info { flex: 1; min-width: 0; }
+
+.account-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    line-height: 1.3;
+}
+
+.active-badge {
+    font-size: 9px;
+    padding: 2px 7px;
+    border-radius: var(--radius-full);
+    background: var(--green);
+    color: white;
+    font-weight: 600;
+    flex-shrink: 0;
+    letter-spacing: 0.2px;
+}
+
+.account-email {
+    font-size: 11px;
+    color: var(--text-3);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 2px;
+}
+
+.account-meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 3px;
+    font-size: 10px;
+}
+
+.account-provider {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    color: var(--text-3);
+    padding: 2px 5px;
+    background: var(--surface-2);
+    border-radius: var(--radius-xs);
+    border: 1px solid var(--border);
+}
+
+.account-id {
+    color: var(--accent);
+    font-weight: 500;
+    font-size: 10px;
+    padding: 2px 6px;
+    background: var(--accent-dim);
+    border-radius: var(--radius-xs);
+    font-family: var(--font-mono);
+}
+
+.account-item-actions {
+    display: flex;
+    gap: 3px;
+    flex-shrink: 0;
+}
+
+.account-action-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-3);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s var(--ease-out);
+}
+
+.account-action-btn:hover         { background: var(--surface-2); color: var(--text-2); }
+.account-action-btn.switch-btn:hover { background: var(--accent-dim); color: var(--accent); border-color: var(--accent-light); }
+.account-action-btn.delete-btn:hover { background: var(--red-dim);    color: var(--red);    border-color: var(--red); }
+
+.account-switcher-footer {
+    padding: 12px 18px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.add-account-btn {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 16px;
+    background: var(--accent-dim);
+    border: 1px solid var(--accent-light);
+    border-radius: var(--radius-full);
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s var(--ease-out);
+    font-family: var(--font-sans);
+    white-space: nowrap;
+}
+
+.add-account-btn:hover {
+    background: var(--accent);
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 12px var(--accent-glow);
+}
+
+.add-account-btn:active { transform: scale(0.97); }
+
+.account-limit-text {
+    font-size: 10px;
+    color: var(--text-4);
+    white-space: nowrap;
+}
+
+/* ---- SIDEBAR ACCOUNT SWITCH ---- */
+.sidebar-account-switch { margin-top: 8px; }
+
+.switch-account-btn {
+    width: 100%;
+    padding: 9px 14px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    color: var(--text-3);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    transition: all 0.15s var(--ease-out);
+    font-family: var(--font-sans);
+}
+
+.switch-account-btn:hover {
+    background: var(--hover-strong);
+    color: var(--text-2);
     border-color: var(--border-strong);
 }
 
-.auth-btn-secondary:active {
-    transform: scale(0.98);
-}
+.switch-account-btn svg { flex-shrink: 0; color: var(--text-4); }
 
-/* ══════════════════════════════════════
-   AUTH DIVIDER
-   ══════════════════════════════════════ */
-.auth-divider {
-    display:     flex;
-    align-items: center;
-    gap:         12px;
-    margin:      20px 0;
-    color:       var(--text-4);
-    font-size:   12px;
-}
-
-.auth-divider::before,
-.auth-divider::after {
-    content:    '';
-    flex:       1;
-    height:     1px;
-    background: var(--border);
-}
-
-/* ══════════════════════════════════════
-   AUTH LINKS & FOOTER
-   ══════════════════════════════════════ */
-.auth-footer {
-    text-align:  center;
-    margin-top:  20px;
-    font-size:   13px;
-    color:       var(--text-3);
-}
-
-.auth-link {
-    color:       var(--accent);
-    font-weight: 500;
-    text-decoration: none;
-    transition:  opacity 0.13s;
-}
-
-.auth-link:hover { opacity: 0.75; }
-
-/* ── Error message ── */
-.auth-error {
-    background:    var(--red-dim);
-    border:        1px solid rgba(220, 38, 38, 0.2);
-    border-radius: var(--radius-md);
-    padding:       10px 14px;
-    font-size:     13px;
-    color:         var(--red);
-    margin-bottom: 16px;
-    display:       flex;
-    align-items:   center;
-    gap:           8px;
-    animation:     _shake 0.35s var(--ease-out);
-}
-
-@keyframes _shake {
-    0%, 100% { transform: translateX(0); }
-    20%, 60% { transform: translateX(-4px); }
-    40%, 80% { transform: translateX(4px); }
-}
-
-/* ── OTP input ── */
-.otp-inputs {
-    display:         flex;
-    gap:             10px;
-    justify-content: center;
-    margin:          20px 0;
-}
-
-.otp-input {
-    width:       48px;
-    height:      56px;
-    border:      1.5px solid var(--border);
-    border-radius: var(--radius-md);
-    background:  var(--surface-2);
-    font-size:   22px;
-    font-weight: 600;
-    text-align:  center;
-    color:       var(--text);
-    font-family: var(--font-mono);
-    outline:     none;
-    transition:  border-color 0.15s, box-shadow 0.15s, background 0.15s;
-    caret-color: var(--accent);
-}
-
-.otp-input:focus {
-    border-color: var(--accent);
-    background:   var(--surface);
-    box-shadow:   0 0 0 4px var(--accent-dim);
-}
-
-.otp-input.filled {
-    border-color: var(--accent);
-    background:   var(--accent-light);
-    color:        var(--accent);
+/* ---- RESPONSIVE ---- */
+@media (max-width: 720px) {
+    .account-switcher-modal { max-width: 100% !important; }
+    .account-item { padding: 11px 16px; }
 }

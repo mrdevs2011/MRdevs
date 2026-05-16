@@ -1,7 +1,6 @@
 /* ==================== MRDEV BOARD STYLE v2.0 ==================== */
 
 :root {
-    --header-h:      60px;
     --bg:            #f8fafd;
     --bg-alt:        #f1f5f9;
     --surface:       #ffffff;
@@ -50,7 +49,7 @@
     --font-sans:     'Google Sans', 'Roboto', 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
-body.dark {
+.dark {
     --bg:            #1f1f1f;
     --bg-alt:        #292a2d;
     --surface:       #2c2c2c;
@@ -123,13 +122,13 @@ img { -webkit-user-drag: none; }
 ::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.12); border-radius: 4px; }
-body.dark ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); }
+.dark ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); }
 
 ::selection { background: var(--accent-dim); color: var(--accent); }
 
 /* ==================== HEADER ==================== */
 .app-header {
-    height: var(--header-h);
+    height: 56px;
     display: flex;
     align-items: center;
     justify-content: space-between;

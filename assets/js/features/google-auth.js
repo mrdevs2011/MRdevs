@@ -4,10 +4,10 @@ import { auth, db } from '../core/firebase-init.js';
 import {
     GoogleAuthProvider,
     signInWithPopup
-} from 'firebase/auth';
+} from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 import {
     doc, setDoc, getDoc, serverTimestamp
-} from 'firebase/firestore';
+} from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { showToast } from '../core/toast.js';
 import { closeModal } from '../ui/modal.js';
 import { saveUserMrdevId } from '../notif-pass.js';
@@ -75,7 +75,7 @@ export async function signInWithGoogle() {
 
         logger.google.localSaved(mrdevId);
 
-        showToast(t('welcome'), 'success');
+        showToast(t('welcome') + ' ✨', 'success');
         closeModal('authModal');
         logger.auth.loginOk();
 

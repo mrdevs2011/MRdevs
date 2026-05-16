@@ -5,10 +5,10 @@ import {
     signInWithEmailAndPassword,
     createUserWithEmailAndPassword,
     updateProfile
-} from 'firebase/auth';
+} from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 import {
     doc, setDoc, serverTimestamp
-} from 'firebase/firestore';
+} from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { showToast } from '../core/toast.js';
 import { closeModal } from '../ui/modal.js';
 import { saveUserMrdevId } from '../notif-pass.js';
@@ -19,79 +19,11 @@ let _mode = 'login';
 
 function $(id) { return document.getElementById(id); }
 
-// ==================== SMOOTH UI HELPERS ====================
-
 function setErr(msg) {
     const el = $('authError');
     if (!el) return;
-    if (msg) {
-        el.textContent = msg;
-        el.style.display = 'block';
-        el.style.opacity = '0';
-        el.style.transform = 'translateY(-4px)';
-        el.style.transition = 'none';
-        requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-                el.style.transition = 'opacity 0.22s ease, transform 0.22s ease';
-                el.style.opacity = '1';
-                el.style.transform = 'translateY(0)';
-            });
-        });
-    } else {
-        el.style.transition = 'opacity 0.15s ease';
-        el.style.opacity = '0';
-        setTimeout(() => {
-            el.style.display = 'none';
-            el.textContent = '';
-            el.style.opacity = '';
-            el.style.transition = '';
-            el.style.transform = '';
-        }, 170);
-    }
-}
-
-function toggleRegFields(show) {
-    const el = $('registerFields');
-    if (!el) return;
-    if (show) {
-        el.style.display = 'block';
-        el.style.overflow = 'hidden';
-        el.style.opacity = '0';
-        el.style.maxHeight = '0';
-        el.style.transition = 'none';
-        // scrollHeight ni hisoblash uchun bir frame kutish
-        requestAnimationFrame(() => {
-            const h = el.scrollHeight;
-            requestAnimationFrame(() => {
-                el.style.transition = 'max-height 0.35s ease, opacity 0.28s ease';
-                el.style.maxHeight = h + 'px';
-                el.style.opacity = '1';
-            });
-        });
-        setTimeout(() => {
-            el.style.maxHeight = '';
-            el.style.overflow = '';
-            el.style.opacity = '';
-            el.style.transition = '';
-        }, 380);
-    } else {
-        const h = el.scrollHeight;
-        el.style.overflow = 'hidden';
-        el.style.maxHeight = h + 'px';
-        el.style.opacity = '1';
-        requestAnimationFrame(() => {
-            el.style.transition = 'max-height 0.28s ease, opacity 0.22s ease';
-            el.style.maxHeight = '0';
-            el.style.opacity = '0';
-        });
-        setTimeout(() => {
-            el.style.display = 'none';
-            el.style.maxHeight = '';
-            el.style.overflow = '';
-            el.style.opacity = '';
-            el.style.transition = '';
-        }, 310);
-    }
+    el.textContent = msg || '';
+    el.style.display = msg ? 'block' : 'none';
 }
 
 function clearErr() { setErr(''); }
@@ -219,7 +151,8 @@ export function setAuthMode(mode) {
     clearErr();
     const isReg = mode === 'register';
 
-    toggleRegFields(isReg);
+    const regFields = $('registerFields');
+    if (regFields) regFields.style.display = isReg ? 'block' : 'none';
 
     if ($('loginEmail')) {
         $('loginEmail').placeholder = isReg ? t('username_placeholder') : t('email_placeholder');
@@ -283,7 +216,7 @@ export async function signInWithEmail() {
             loginTime: Date.now()
         }));
 
-        showToast(t('welcome'), 'success');
+        showToast(t('welcome') + ' ✨', 'success');
         closeModal('authModal');
         _reset();
         setTimeout(() => window.location.reload(), 500);
@@ -364,7 +297,7 @@ export async function signUpWithEmail() {
             loginTime: Date.now()
         }));
 
-        showToast(t('account_created') + ' ' + t('welcome'), 'success');
+        showToast(t('account_created') + '! ' + t('welcome') + ' 🎉', 'success');
         closeModal('authModal');
         _reset();
         logger.auth.loginOk();

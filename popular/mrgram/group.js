@@ -1,5 +1,5 @@
 import { db } from "./firebase-config.js";
-import { collection, addDoc, getDocs, query, where, doc, updateDoc, arrayUnion, arrayRemove, deleteDoc, getDoc } from 'firebase/firestore';
+import { collection, addDoc, getDocs, query, where, doc, updateDoc, arrayUnion, arrayRemove, deleteDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { showToast } from "./ui-helpers.js";
 
 // ========== GURUH YARATISH ==========
@@ -302,7 +302,7 @@ export async function updateGroupInfo(groupId, userId, updates) {
 // ========== GURUHGA XABAR YUBORISH ==========
 export async function sendGroupMessage(groupId, userId, message, type = 'text') {
     try {
-        const { addDoc, collection, serverTimestamp } = await import("firebase/firestore");
+        const { addDoc, collection, serverTimestamp } = await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js");
         
         const messageData = {
             from: userId,

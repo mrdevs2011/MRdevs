@@ -2,25 +2,16 @@
 // Global notifications bilan integratsiyalashgan
 
 import { auth, rtdb } from '../core/firebase-init.js';
-import { ref, get } from 'firebase/database';
+import { ref, get } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 import { showToast } from '../core/toast.js';
 import { showModal, closeModal } from '../ui/modal.js';
 import { getNotificationsEnabled } from '../core/global-settings.js';
-import { t, getCurrentLang } from '../core/i18n.js';
-import logger from '../core/logger.js';
-import { notifyOTP, notifyError } from '../core/notification-system.js';
-
-// Til → locale mapping (toLocaleString uchun)
-const LANG_LOCALES = {
-    uz: 'uz-UZ',
-    ru: 'ru-RU',
-    en: 'en-US'
-};
+import { t } from '../core/i18n.js';
 
 export function showPassNotifications() {
     // Notifications sozlamasini tekshirish
     if (!getNotificationsEnabled()) {
-        showToast(t('notifications_disabled'), 'info');
+        showToast(t('notifications_disabled') || "Bildirishnomalar o'chirilgan", 'info');
         return;
     }
     
@@ -31,7 +22,7 @@ export function showPassNotifications() {
     if (auth && auth.currentUser) {
         uid = auth.currentUser.uid;
         email = auth.currentUser.email;
-        logger.notif.firebaseUser(uid);
+        console.log('🔥 [PassNotif] Firebase Auth user:', uid);
     }
 
     // 2. Local auth user tekshirish
@@ -41,15 +32,15 @@ export function showPassNotifications() {
             if (local && local.isLoggedIn && local.uid) {
                 uid = local.uid;
                 email = local.email;
-                logger.notif.localUser(uid);
+                console.log('📦 [PassNotif] Local auth user:', uid);
             }
         } catch (e) {
-            logger.notif.localParseError(e.message);
+            console.warn('[PassNotif] Local auth parse xatolik:', e.message);
         }
     }
 
     if (!uid) {
-        showToast(t('login_required'), 'error');
+        showToast(t('login_required') || 'Hisobga kiring', 'error');
         return;
     }
 
@@ -65,21 +56,21 @@ async function loadPassNotifications(uid, email) {
     const container = document.getElementById('passNotifList');
     if (!container) return;
 
-    container.innerHTML = `<div style="text-align:center;padding:20px;color:var(--text-3);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 1s linear infinite;vertical-align:middle"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10"/></svg> ${t('loading')}</div>`;
+    container.innerHTML = `<div style="text-align:center;padding:20px;color:var(--text-3);">⏳ ${t('loading') || 'Yuklanmoqda...'}</div>`;
 
     try {
         if (!rtdb) {
-            container.innerHTML = `<div style="text-align:center;padding:20px;color:var(--red);">${t('db_no_connection')}</div>`;
+            container.innerHTML = `<div style="text-align:center;padding:20px;color:var(--red);">Database ulanishi yo'q</div>`;
             return;
         }
 
-        logger.notif.searching(uid, email);
+        console.log('🔍 [PassNotif] Xabarlar qidirilmoqda... uid:', uid, 'email:', email);
 
         const notifRef = ref(rtdb, 'pass_notifications');
         const snapshot = await get(notifRef);
 
         if (!snapshot.exists()) {
-            container.innerHTML = `<div style="text-align:center;padding:30px;color:var(--text-3);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="vertical-align:middle;opacity:.5"><path d="M22 12h-6l-2 3H10l-2-3H2"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg> ${t('no_notifications')}</div>`;
+            container.innerHTML = `<div style="text-align:center;padding:30px;color:var(--text-3);">📭 ${t('no_notifications') || 'Xabarlar yo\'q'}</div>`;
             return;
         }
 
@@ -102,14 +93,12 @@ async function loadPassNotifications(uid, email) {
 
         items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
 
-        logger.notif.found(items.length);
+        console.log('📋 [PassNotif]', items.length, 'ta xabar topildi');
 
         if (!items.length) {
-            container.innerHTML = `<div style="text-align:center;padding:30px;color:var(--text-3);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="vertical-align:middle;opacity:.5"><path d="M22 12h-6l-2 3H10l-2-3H2"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg> ${t('no_notifications')}</div>`;
+            container.innerHTML = `<div style="text-align:center;padding:30px;color:var(--text-3);">📭 ${t('no_notifications') || 'Xabarlar yo\'q'}</div>`;
             return;
         }
-
-        const locale = LANG_LOCALES[getCurrentLang()] || 'en-US';
 
         container.innerHTML = items.map(data => {
             const date = new Date(data.createdAt || Date.now());
@@ -117,14 +106,14 @@ async function loadPassNotifications(uid, email) {
             const isUsed = data.used === true;
 
             let status = 'active';
-            let statusText = t('active_status');
+            let statusText = '✅ Faol';
 
             if (isUsed) {
                 status = 'used';
-                statusText = t('used');
+                statusText = '✓ Ishlatilgan';
             } else if (isExpired) {
                 status = 'expired';
-                statusText = t('expired');
+                statusText = '⏰ Muddati tugagan';
             }
 
             return `
@@ -134,20 +123,20 @@ async function loadPassNotifications(uid, email) {
                         <span class="pass-notif-status ${status}">${statusText}</span>
                     </div>
                     <div class="pass-notif-date">
-                        ${date.toLocaleString(locale)} | ID: ${data.mrdevId || '?'}
+                        ${date.toLocaleString('uz-UZ')} | ID: ${data.mrdevId || '?'}
                     </div>
                 </div>
             `;
         }).join('');
 
     } catch (error) {
-        logger.notif.error(error.message);
+        console.error('❌ [PassNotif] Load xatolik:', error.message);
         container.innerHTML = `
             <div style="text-align:center;padding:20px;color:var(--red);">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> ${t('error')}: ${error.message}
+                ⚠️ ${t('error') || 'Xatolik'}: ${error.message}
                 <button onclick="location.reload()"
                     style="display:block;margin:12px auto;padding:8px 16px;cursor:pointer;">
-                    ${t('reload')}
+                    ${t('reload') || 'Qayta yuklash'}
                 </button>
             </div>
         `;
@@ -156,5 +145,5 @@ async function loadPassNotifications(uid, email) {
 
 // Notifications o'zgarishini kuzatish
 document.addEventListener('notificationsChanged', (e) => {
-    logger.notif.settingsChanged(e.detail.enabled);
+    console.log('[PassNotif] Notifications enabled:', e.detail.enabled);
 });

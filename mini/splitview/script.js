@@ -1,5 +1,3 @@
-import { mt, initMiniI18n, onLangChange } from '../../assets/js/mini-i18n.js';
-import { getTheme, setTheme, toggleTheme } from '../../assets/js/core/global-settings.js';
 // ==================== MRDEV SPLITVIEW v2.0 — Firebase + Local Sync ====================
 import { initAuth, smartSave, smartLoad, smartDelete, getCurrentUser, getUserId } from '../../assets/js/firebase-helper.js';
 import { initMiniDropdown } from '../../assets/js/dropdown.js';
@@ -16,11 +14,24 @@ var urlModal = $('urlModal');
 var toast = $('toast');
 
 // ==================== THEME ====================
+function initTheme() {
+    var saved = localStorage.getItem('theme') || 'dark';
+    if (saved === 'dark') document.documentElement.classList.add('dark');
+    else document.documentElement.classList.remove('dark');
+    updateThemeIcon();
+    $('themeToggle').addEventListener('click', toggleTheme);
+}
+
+function toggleTheme() {
+    var isDark = document.documentElement.classList.toggle('dark');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    updateThemeIcon();
+}
 
 function updateThemeIcon() {
     var btn = $('themeToggle');
     if (!btn) return;
-    var isDark = document.body.classList.contains('dark');
+    var isDark = document.documentElement.classList.contains('dark');
     btn.innerHTML = isDark
         ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>'
         : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
@@ -48,7 +59,7 @@ function updateUserUI(user) {
         }
         loadCloudBookmarks();
     } else {
-        if (triggerName) triggerName.textContent = mt('guest');
+        if (triggerName) triggerName.textContent = 'Mehmon';
         if (triggerAvatar) triggerAvatar.textContent = '?';
         loadLocalBookmarks();
     }
@@ -151,7 +162,7 @@ function saveUrlToStorage(panelId, url) {
         }).catch(function(e) { console.warn('Cloud URL save failed:', e); });
     }
 
-    showToast(mt('url_saved'), 'success');
+    showToast('URL saqlandi', 'success');
 }
 
 function loadSavedUrls() {
@@ -186,12 +197,12 @@ $('muteAllBtn').addEventListener('click', function() {
             }), '*');
         }
     }
-    showToast(mt('muted'));
+    showToast('Ovozlar o\'chirildi');
 });
 
 // ==================== CLEAR ALL ====================
 $('clearAllBtn').addEventListener('click', function() {
-    if (!confirm(mt('clear_videos'))) return;
+    if (!confirm('Barcha videolarni tozalash?')) return;
 
     for (var i = 1; i <= panelCount; i++) {
         var iframe = $('iframe' + i);
@@ -208,7 +219,7 @@ $('clearAllBtn').addEventListener('click', function() {
         });
     }
 
-    showToast(mt('cleared'));
+    showToast('Tozalandi');
 });
 
 // ==================== BOOKMARK ====================
@@ -306,8 +317,8 @@ function loadLocalBookmarks() {
 $('bookmarkBtn').addEventListener('dblclick', async function() {
     var urls = JSON.parse(localStorage.getItem('splitview_urls') || '{}');
     var urlList = Object.values(urls).filter(Boolean);
-    if (!urlList.length) { showToast(mt('load_video'), 'error'); return; }
-    if (!currentUser) { showToast(mt('login_split'), 'error'); return; }
+    if (!urlList.length) { showToast('Avval video yuklang', 'error'); return; }
+    if (!currentUser) { showToast('Hisobga kiring', 'error'); return; }
 
     try {
         for (var i = 0; i < urlList.length; i++) {
@@ -315,9 +326,9 @@ $('bookmarkBtn').addEventListener('dblclick', async function() {
                 url: urlList[i], grid: currentGrid, savedAt: new Date().toISOString()
             });
         }
-        showToast(mt('all_saved'), 'success');
+        showToast('Barcha URL\'lar saqlandi!', 'success');
         loadCloudBookmarks();
-    } catch(e) { showToast(mt('error'), 'error'); }
+    } catch(e) { showToast('Xatolik', 'error'); }
 });
 
 // ==================== KEYBOARD ====================
@@ -327,15 +338,12 @@ document.addEventListener('keydown', function(e) {
 
 // ==================== INIT ====================
 function init() {
-    initMiniI18n();
-    // v2.0 ishga tushmoqda...');
-    const _t = getTheme(); if (_t === 'dark') document.body.classList.add('dark'); else document.body.classList.remove('dark'); updateThemeIcon();
-    $('themeToggle').addEventListener('click', toggleTheme);
+    console.log('MRDEV SplitView v2.0 ishga tushmoqda...');
+    initTheme();
     renderPanels();
 
     initAuth(function(user) {
         currentUser = user;
-        window.currentUser = user;
         updateUserUI(user);
         try {
             initMiniDropdown(user);
@@ -347,8 +355,4 @@ function init() {
     console.log('SplitView tayyor!');
 }
 
-
-onLangChange(function() {
-    // SplitView has no text-heavy dynamic list
-});
 document.addEventListener('DOMContentLoaded', init);

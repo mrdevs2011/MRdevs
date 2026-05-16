@@ -1,286 +1,313 @@
-/* ==================== MRDEV LOGIN v4.0 — Fluid ==================== */
+/* ==================== MRDEV LOGIN — Serene Edition ==================== */
 
-/* ── Step 1: ID input ── */
+/* ══════════════════════════════════════
+   STEP 1 — ID INPUT
+══════════════════════════════════════ */
 .mrdev-id-input {
-    width:          100%;
-    padding:        14px 18px;
-    font-size:      20px;
-    font-weight:    600;
+    width: 100%;
+    padding: 14px 18px;
+    font-size: 20px;
+    font-weight: 600;
     letter-spacing: 5px;
-    font-family:    var(--font-mono);
-    background:     var(--surface-2);
-    border:         1.5px solid var(--border);
-    border-radius:  var(--radius-md);
-    color:          var(--text);
-    text-align:     center;
-    caret-color:    var(--accent);
-    outline:        none;
-    box-sizing:     border-box;
-    margin-bottom:  20px;
-    transition:
-        border-color 0.18s var(--ease-out),
-        background   0.18s var(--ease-out),
-        box-shadow   0.18s var(--ease-out);
+    font-family: var(--font-mono);
+    background: var(--surface-2);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-md);
+    color: var(--text);
+    text-align: center;
+    caret-color: var(--accent);
+    outline: none;
+    box-sizing: border-box;
+    transition: all 0.2s var(--ease-out);
+    margin-bottom: 20px;
 }
 
 .mrdev-id-input:focus {
     border-color: var(--accent);
-    background:   var(--surface);
-    box-shadow:   0 0 0 3px var(--accent-dim);
+    background: var(--surface);
+    box-shadow: 0 0 0 3px var(--accent-dim);
 }
 
 .mrdev-id-input.success {
     border-color: var(--green) !important;
-    box-shadow:   0 0 0 3px var(--green-dim) !important;
-    background:   var(--green-dim) !important;
+    box-shadow: 0 0 0 3px var(--green-dim) !important;
+    background: var(--green-dim) !important;
 }
 
 .mrdev-id-input.error {
     border-color: var(--red) !important;
-    box-shadow:   0 0 0 3px var(--red-dim) !important;
-    animation:    _inputShake 0.38s var(--ease-out);
+    box-shadow: 0 0 0 3px var(--red-dim) !important;
+    animation: inputShake 0.4s var(--ease-out);
 }
 
-@keyframes _inputShake {
+@keyframes inputShake {
     0%, 100% { transform: translateX(0); }
-    20%       { transform: translateX(-5px); }
-    40%       { transform: translateX(5px); }
-    60%       { transform: translateX(-3px); }
-    80%       { transform: translateX(3px); }
+    20%       { transform: translateX(-6px); }
+    40%       { transform: translateX(6px); }
+    60%       { transform: translateX(-4px); }
+    80%       { transform: translateX(4px); }
 }
 
-/* ── Step 2: OTP boxes ── */
+/* ══════════════════════════════════════
+   STEP 2 — OTP BOXES
+══════════════════════════════════════ */
 .mrdev-otp-wrap {
-    display:         flex;
-    align-items:     flex-end;
+    display: flex;
+    align-items: flex-end;
     justify-content: center;
-    gap:             8px;
-    margin-bottom:   20px;
+    gap: 8px;
+    margin-bottom: 20px;
 }
 
 .mrdev-otp-box {
-    width:         44px;
-    height:        56px;
-    text-align:    center;
-    font-size:     22px;
-    font-weight:   700;
-    font-family:   var(--font-mono);
-    caret-color:   var(--accent);
-    background:    var(--surface-2);
-    border:        1.5px solid var(--border);
+    width: 44px;
+    height: 56px;
+    text-align: center;
+    font-size: 22px;
+    font-weight: 700;
+    font-family: var(--font-mono);
+    caret-color: var(--accent);
+    background: var(--surface-2);
+    border: 1.5px solid var(--border);
     border-radius: var(--radius-sm);
-    color:         var(--text);
-    outline:       none;
-    user-select:   none;
-    will-change:   transform, border-color;
-    transition:
-        transform    0.18s var(--ease-spring),
-        border-color 0.16s var(--ease-out),
-        background   0.16s var(--ease-out),
-        box-shadow   0.16s var(--ease-out);
+    color: var(--text);
+    transition: all 0.18s var(--ease-spring);
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
 }
 
 .mrdev-otp-box:focus {
-    transform:    translateY(-4px) translateZ(0);
+    transform: translateY(-4px);
     border-color: var(--accent);
-    background:   var(--surface);
-    box-shadow:   0 8px 20px var(--accent-glow), 0 0 0 2px var(--accent-dim);
+    background: var(--surface);
+    box-shadow: 0 8px 20px var(--accent-glow), 0 0 0 2px var(--accent-dim);
 }
 
 .mrdev-otp-box.filled {
     border-color: var(--accent);
-    background:   var(--accent-dim);
-    color:        var(--accent);
-    transform:    translateY(-2px) translateZ(0);
+    background: var(--accent-dim);
+    color: var(--accent);
+    transform: translateY(-2px);
 }
 
 .mrdev-otp-box.success {
     border-color: var(--green) !important;
-    background:   var(--green-dim) !important;
-    color:        var(--green) !important;
-    transform:    translateY(-4px) translateZ(0) !important;
-    box-shadow:   0 6px 18px rgba(39,133,90,0.14) !important;
-    animation:    _otpBounce 0.38s var(--ease-spring);
+    background: var(--green-dim) !important;
+    color: var(--green) !important;
+    transform: translateY(-4px) !important;
+    box-shadow: 0 6px 16px rgba(39, 133, 90, 0.15) !important;
+    animation: otpBounce 0.4s var(--ease-spring);
 }
 
 .mrdev-otp-box.error {
     border-color: var(--red) !important;
-    background:   var(--red-dim) !important;
-    color:        var(--red) !important;
-    animation:    _inputShake 0.38s var(--ease-out);
+    background: var(--red-dim) !important;
+    color: var(--red) !important;
+    animation: inputShake 0.4s var(--ease-out);
 }
 
-@keyframes _otpBounce {
-    0%   { transform: translateY(0) translateZ(0); }
-    40%  { transform: translateY(-8px) translateZ(0); }
-    70%  { transform: translateY(-3px) translateZ(0); }
-    100% { transform: translateY(-4px) translateZ(0); }
+@keyframes otpBounce {
+    0%   { transform: translateY(0); }
+    40%  { transform: translateY(-8px); }
+    70%  { transform: translateY(-3px); }
+    100% { transform: translateY(-4px); }
 }
 
-/* ── Info panel — smooth collapse ── */
+/* ══════════════════════════════════════
+   INFO PANEL — SMOOTH TRANSITION
+══════════════════════════════════════ */
 .mrdev-info-panel {
-    margin-top:    0;
-    padding:       0 14px;
-    background:    var(--surface-2);
+    margin-top: 10px;
+    padding: 0 14px;
+    background: var(--surface-2);
     border-radius: var(--radius-md);
-    border:        0px solid var(--border);
-    max-height:    0;
-    overflow:      hidden;
-    opacity:       0;
-    will-change:   max-height, opacity;
-    transition:
-        max-height   0.32s var(--ease-out),
-        opacity      0.26s var(--ease-out),
-        padding      0.28s var(--ease-out),
-        margin-top   0.28s var(--ease-out),
-        border-width 0.28s;
+    border: 1px solid var(--border);
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.35s var(--ease-out), 
+                opacity 0.3s var(--ease-out),
+                padding 0.3s var(--ease-out),
+                margin 0.3s var(--ease-out);
 }
 
 .mrdev-info-panel.show {
-    max-height:   200px;
-    opacity:      1;
-    padding:      14px;
-    margin-top:   12px;
-    border-width: 1px;
+    max-height: 200px;
+    opacity: 1;
+    padding: 14px;
+    margin-top: 12px;
 }
 
 .mrdev-info-panel p {
-    font-size:     12px;
-    font-weight:   500;
-    color:         var(--text-2);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-2);
     margin-bottom: 6px;
 }
 
 .mrdev-info-panel small {
-    font-size:   11px;
-    color:       var(--text-3);
+    font-size: 11px;
+    color: var(--text-3);
     line-height: 1.5;
 }
 
-/* More info link */
+/* ══════════════════════════════════════
+   MORE INFO LINK — RIGHT ALIGNED
+══════════════════════════════════════ */
 .mrdev-info-panel .more-info-link {
-    display:     block;
-    text-align:  right;
-    margin-top:  10px;
+    display: block;
+    text-align: right;
+    margin-top: 10px;
     padding-top: 8px;
-    border-top:  1px solid var(--border);
+    border-top: 1px solid var(--border);
 }
 
 .mrdev-info-panel .more-info-link a {
-    color:       var(--accent);
-    font-size:   12px;
+    color: var(--accent);
+    font-size: 12px;
+    text-decoration: none;
     font-weight: 500;
-    cursor:      pointer;
-    transition:  opacity 0.13s;
+    transition: opacity 0.15s;
+    cursor: pointer;
 }
 
-.mrdev-info-panel .more-info-link a:hover { opacity: 0.75; text-decoration: underline; }
+.mrdev-info-panel .more-info-link a:hover {
+    opacity: 0.8;
+    text-decoration: underline;
+}
 
-/* ── Toggle section ── */
-.mrdev-toggle-section { text-align: center; margin-top: 10px; }
+/* ══════════════════════════════════════
+   TOGGLE SECTION
+══════════════════════════════════════ */
+.mrdev-toggle-section {
+    text-align: center;
+    margin-top: 10px;
+}
 
 .mrdev-toggle-link {
-    font-size:   12px;
-    color:       var(--accent);
-    cursor:      pointer;
+    font-size: 12px;
+    color: var(--accent);
+    text-decoration: none;
+    cursor: pointer;
     font-weight: 500;
-    transition:  opacity 0.13s;
 }
 
-.mrdev-toggle-link:hover { opacity: 0.75; text-decoration: underline; }
+.mrdev-toggle-link:hover {
+    text-decoration: underline;
+}
 
-/* ── Timer & error ── */
+/* ══════════════════════════════════════
+   TIMER & ERROR
+══════════════════════════════════════ */
 .mrdev-timer-row {
-    text-align:     center;
-    font-size:      12px;
-    color:          var(--text-3);
-    margin-bottom:  10px;
-    font-family:    var(--font-mono);
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-3);
+    margin-bottom: 10px;
+    font-family: var(--font-mono);
 }
 
-#mrdevTimer { color: var(--accent); font-weight: 500; }
+#mrdevTimer {
+    color: var(--accent);
+    font-weight: 500;
+}
 
 .mrdev-error-msg {
-    display:    block;
+    display: block;
     min-height: 18px;
     text-align: center;
-    font-size:  12px;
-    color:      var(--red);
+    font-size: 12px;
+    color: var(--red);
     margin-top: 8px;
 }
 
-/* ── Success overlay ── */
+/* ══════════════════════════════════════
+   SUCCESS OVERLAY
+══════════════════════════════════════ */
 .mrdev-success-overlay {
-    position:       absolute;
-    inset:          0;
-    background:     var(--surface);
-    display:        flex;
-    align-items:    center;
+    position: absolute;
+    inset: 0;
+    background: var(--surface);
+    display: flex;
+    align-items: center;
     justify-content: center;
-    opacity:        0;
+    opacity: 0;
     pointer-events: none;
-    z-index:        10;
-    border-radius:  var(--radius-lg);
-    will-change:    opacity;
-    transition:     opacity 0.28s var(--ease-out);
+    transition: opacity 0.3s var(--ease-out);
+    z-index: 10;
+    border-radius: var(--radius-lg);
 }
 
-.mrdev-success-overlay.show { opacity: 1; pointer-events: all; }
+.mrdev-success-overlay.show {
+    opacity: 1;
+    pointer-events: all;
+}
 
-.mrdev-check-svg { display: block; }
+.mrdev-check-svg {
+    display: block;
+}
 
 .mrdev-check-circle {
-    fill:              none;
-    stroke:            var(--green);
-    stroke-width:      2;
-    stroke-dasharray:  166;
+    fill: none;
+    stroke: var(--green);
+    stroke-width: 2;
+    stroke-dasharray: 166;
     stroke-dashoffset: 166;
     stroke-miterlimit: 10;
-    animation:         _strokeIn 0.55s var(--ease-out) forwards;
+    animation: strokeIn 0.6s var(--ease-out) forwards;
 }
 
 .mrdev-check-path {
-    fill:              none;
-    stroke:            var(--green);
-    stroke-width:      2;
-    stroke-linecap:    round;
-    stroke-linejoin:   round;
-    stroke-dasharray:  48;
+    fill: none;
+    stroke: var(--green);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 48;
     stroke-dashoffset: 48;
-    animation:         _strokeIn 0.38s 0.48s var(--ease-out) forwards;
+    animation: strokeIn 0.4s 0.5s var(--ease-out) forwards;
 }
 
-@keyframes _strokeIn { to { stroke-dashoffset: 0; } }
+@keyframes strokeIn {
+    to { stroke-dashoffset: 0; }
+}
 
-/* ── Icon wrap ── */
+/* ══════════════════════════════════════
+   ICON WRAP
+══════════════════════════════════════ */
 .mrdev-icon-wrap {
-    width:         56px;
-    height:        56px;
+    width: 56px;
+    height: 56px;
     border-radius: 50%;
-    background:    var(--accent-dim);
-    border:        1px solid var(--accent-light);
-    display:       flex;
-    align-items:   center;
+    background: var(--accent-dim);
+    border: 1px solid var(--accent-light);
+    display: flex;
+    align-items: center;
     justify-content: center;
-    margin:        0 auto 16px;
-    color:         var(--accent);
+    margin: 0 auto 16px;
+    color: var(--accent);
 }
 
-.mrdev-icon-wrap.success { background: var(--green-dim); border-color: var(--green); color: var(--green); }
+.mrdev-icon-wrap.success {
+    background: var(--green-dim);
+    border-color: var(--green);
+    color: var(--green);
+}
 
 .mrdev-heading {
-    font-size:      15px;
-    font-weight:    600;
-    color:          var(--text);
-    text-align:     center;
-    margin-bottom:  5px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    text-align: center;
+    margin-bottom: 5px;
     letter-spacing: -0.2px;
 }
 
 .mrdev-subheading {
-    font-size:     12px;
-    color:         var(--text-3);
-    text-align:    center;
+    font-size: 12px;
+    color: var(--text-3);
+    text-align: center;
     margin-bottom: 20px;
-    line-height:   1.5;
+    line-height: 1.5;
 }

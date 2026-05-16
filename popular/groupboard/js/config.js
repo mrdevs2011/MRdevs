@@ -1,15 +1,17 @@
 // ==================== CONFIG — GroupBoard ====================
-// Kalitlar {} dan o'qiladi (Vite build vaqtida inline bo'ladi)
+// Kalitlar window.__ENV__ dan o'qiladi — to'g'ridan-to'g'ri yozilmaydi.
+
+const ENV = window.__ENV__ || {};
 
 export const firebaseConfig = {
-    apiKey:            '',
-    authDomain:        '',
-    databaseURL:       '',
-    projectId:         '',
-    storageBucket:     '',
-    messagingSenderId: '',
-    appId:             '',
-    measurementId:     ''
+    apiKey:            ENV.GROUPBOARD_API_KEY             || '',
+    authDomain:        ENV.GROUPBOARD_AUTH_DOMAIN         || '',
+    databaseURL:       ENV.GROUPBOARD_DATABASE_URL        || '',
+    projectId:         ENV.GROUPBOARD_PROJECT_ID          || '',
+    storageBucket:     ENV.GROUPBOARD_STORAGE_BUCKET      || '',
+    messagingSenderId: ENV.GROUPBOARD_MESSAGING_SENDER_ID || '',
+    appId:             ENV.GROUPBOARD_APP_ID              || '',
+    measurementId:     ENV.GROUPBOARD_MEASUREMENT_ID      || ''
 };
 
 if (!firebaseConfig.apiKey) {

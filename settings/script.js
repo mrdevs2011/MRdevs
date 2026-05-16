@@ -1,9 +1,8 @@
-// ==================== SETTINGS PAGE SCRIPT v3.0 ====================
-// Bug fix: MRDEV ID login uchun localStorage fallback
-// Yangi: Settings dropdown + loading animation
+// ==================== SETTINGS PAGE SCRIPT v2.1 ====================
+// Barcha importlar to'g'ri, initGlobalSettings() chaqiriladi
 
 import { auth } from '../assets/js/core/firebase-init.js';
-import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 import { showToast } from '../assets/js/core/toast.js';
 import { t, setLanguage, getCurrentLang, initI18n } from '../assets/js/core/i18n.js';
 import {
@@ -16,249 +15,161 @@ import {
 } from '../assets/js/core/global-settings.js';
 import { toggleTheme } from '../assets/js/core/theme.js';
 
-let currentUser   = null;
-let _isLoading    = true;
-let _dropdownOpen = false;
+let currentUser = null;
 
-// ==================== LOCAL AUTH FALLBACK ====================
-function getLocalAuth() {
-    try {
-        const data = JSON.parse(localStorage.getItem('mrdev_local_auth') || 'null');
-        if (!data || !data.isLoggedIn || !data.uid) return null;
-        const hours = (Date.now() - (data.loginTime || 0)) / 3600000;
-        if (hours > 24) return null;
-        return data;
-    } catch { return null; }
-}
+// ==================== UI YANGILASH ====================
 
-// ==================== LOADING STATE ====================
-function setLoading(loading) {
-    _isLoading = loading;
-    const trigger = document.getElementById('settingsUserTrigger');
-    if (trigger) trigger.classList.toggle('user-loading', loading);
-}
-
-// ==================== USER UI ====================
 function updateUserUI() {
-    const avatar = document.getElementById('settingsUserAvatar');
-    const name   = document.getElementById('settingsUserName');
-    setLoading(false);
+    const userName = document.getElementById('userName');
+    const userAvatar = document.getElementById('userAvatar');
+    if (!userName || !userAvatar) return;
 
     if (currentUser) {
-        const displayName = currentUser.displayName || currentUser.email?.split('@')[0] || 'User';
-        if (avatar) {
-            if (currentUser.photoURL) {
-                avatar.innerHTML = `<img src="${currentUser.photoURL}" alt="${displayName}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
-            } else {
-                avatar.textContent = displayName.charAt(0).toUpperCase();
-            }
-        }
-        if (name) name.textContent = displayName;
-    } else {
-        if (avatar) avatar.textContent = '?';
-        if (name)   name.textContent   = t('guest');
-    }
-    updateDropdownProfile();
-}
-
-// ==================== DROPDOWN ====================
-function buildDropdown() {
-    if (document.getElementById('settingsDropdown')) return;
-    const html = `
-        <div class="su-overlay" id="settingsDropdownOverlay"></div>
-        <div class="su-dropdown" id="settingsDropdown">
-            <div class="su-profile" id="suProfile">
-                <div class="su-profile-avatar" id="suAvatar"></div>
-                <div class="su-profile-info">
-                    <div class="su-profile-name" id="suName"></div>
-                    <div class="su-profile-email" id="suEmail"></div>
-                    <div class="su-profile-id" id="suMrdevId"></div>
-                </div>
-            </div>
-            <div class="su-divider"></div>
-            <a href="../" class="su-item">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/>
-                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-                </svg>
-                Bosh sahifa
-            </a>
-            <a href="../about/" class="su-item">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="10"/>
-                    <line x1="12" y1="8" x2="12" y2="12"/>
-                    <line x1="12" y1="16" x2="12.01" y2="16"/>
-                </svg>
-                Loyiha haqida
-            </a>
-            <div class="su-divider"></div>
-            <button class="su-item su-danger" id="suLogout">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-                    <polyline points="16 17 21 12 16 7"/>
-                    <line x1="21" y1="12" x2="9" y2="12"/>
-                </svg>
-                Chiqish
-            </button>
-        </div>`;
-    document.body.insertAdjacentHTML('beforeend', html);
-    document.getElementById('settingsDropdownOverlay')?.addEventListener('click', closeDropdown);
-    document.getElementById('suLogout')?.addEventListener('click', handleLogout);
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && _dropdownOpen) closeDropdown();
-    });
-    updateDropdownProfile();
-}
-
-function updateDropdownProfile() {
-    const avatar  = document.getElementById('suAvatar');
-    const name    = document.getElementById('suName');
-    const email   = document.getElementById('suEmail');
-    const mrdevId = document.getElementById('suMrdevId');
-    if (!avatar) return;
-
-    if (currentUser) {
-        const displayName = currentUser.displayName || currentUser.email?.split('@')[0] || 'User';
-        const userId      = currentUser.mrdevId || localStorage.getItem('mrdev_user_id') || '';
+        const name = currentUser.displayName || currentUser.email?.split('@')[0] || 'User';
+        userName.textContent = name;
         if (currentUser.photoURL) {
-            avatar.innerHTML = `<img src="${currentUser.photoURL}" alt="${displayName}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+            userAvatar.innerHTML = `<img src="${currentUser.photoURL}" alt="${name}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
         } else {
-            avatar.textContent = displayName.charAt(0).toUpperCase();
-        }
-        if (name)    name.textContent    = displayName;
-        if (email)   email.textContent   = currentUser.email || '';
-        if (mrdevId) {
-            mrdevId.textContent     = userId ? 'ID: ' + userId : '';
-            mrdevId.style.display   = userId ? 'block' : 'none';
+            userAvatar.textContent = name.charAt(0).toUpperCase();
         }
     } else {
-        avatar.textContent = '?';
-        if (name)    name.textContent  = t('guest');
-        if (email)   email.textContent = '';
-        if (mrdevId) mrdevId.style.display = 'none';
+        userName.textContent = t('guest');
+        userAvatar.textContent = '?';
     }
 }
 
-function openDropdown() {
-    buildDropdown();
-    updateDropdownProfile();
-    document.getElementById('settingsDropdown')?.classList.add('show');
-    document.getElementById('settingsDropdownOverlay')?.classList.add('show');
-    _dropdownOpen = true;
-}
-
-function closeDropdown() {
-    document.getElementById('settingsDropdown')?.classList.remove('show');
-    document.getElementById('settingsDropdownOverlay')?.classList.remove('show');
-    _dropdownOpen = false;
-}
-
-// ==================== LOGOUT ====================
-async function handleLogout() {
-    closeDropdown();
-    if (!confirm(t('logout_confirm') || 'Hisobdan chiqmoqchimisiz?')) return;
-    try {
-        if (auth?.currentUser) await signOut(auth);
-        localStorage.removeItem('mrdev_local_auth');
-        localStorage.removeItem('mrdev_auth_user');
-        window.location.href = '../';
-    } catch (e) {
-        showToast(e.message, 'error');
-    }
-}
-
-// ==================== CACHE ====================
 function updateCacheSize() {
-    const sz = getCacheSize();
-    const el = document.getElementById('cacheSize');
-    if (el) el.textContent = sz.kb + ' KB ' + t('cache_desc');
+    const cacheSize = getCacheSize();
+    const cacheEl = document.getElementById('cacheSize');
+    if (cacheEl) {
+        cacheEl.textContent = `${cacheSize.kb} KB ${t('cache_desc')}`;
+    }
 }
 
-// ==================== SETTINGS TOGGLES ====================
 function loadSettings() {
-    document.getElementById('themeToggle')?.classList.toggle('active', getTheme() === 'dark');
-    document.getElementById('notifToggle')?.classList.toggle('active', getNotificationsEnabled());
+    // Theme toggle holati
+    const theme = getTheme();
+    const themeToggle = document.getElementById('themeToggle');
+    if (themeToggle) {
+        if (theme === 'dark') {
+            themeToggle.classList.add('active');
+        } else {
+            themeToggle.classList.remove('active');
+        }
+    }
+
+    // Notification toggle holati
+    const notifications = getNotificationsEnabled();
+    const notifToggle = document.getElementById('notifToggle');
+    if (notifToggle) {
+        if (notifications) {
+            notifToggle.classList.add('active');
+        } else {
+            notifToggle.classList.remove('active');
+        }
+    }
+
+    // Aktiv til tugmasi
     const lang = getCurrentLang();
     document.querySelectorAll('.lang-option').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.lang === lang);
+        if (btn.dataset.lang === lang) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
     });
 }
 
 // ==================== EVENT LISTENERS ====================
+
 function initEventListeners() {
-    document.getElementById('settingsUserTrigger')?.addEventListener('click', (e) => {
-        e.stopPropagation();
-        _dropdownOpen ? closeDropdown() : openDropdown();
+    // --- THEME TOGGLE ---
+    const themeToggle = document.getElementById('themeToggle');
+    themeToggle?.addEventListener('click', () => {
+        toggleTheme();
+        loadSettings(); // toggle holatini yangilash
     });
 
-    document.getElementById('themeToggle')?.addEventListener('click', () => {
-        toggleTheme(); loadSettings();
+    // --- NOTIFICATION TOGGLE ---
+    const notifToggle = document.getElementById('notifToggle');
+    notifToggle?.addEventListener('click', () => {
+        const isActive = notifToggle.classList.contains('active');
+        setNotificationsEnabled(!isActive);
+        loadSettings();
     });
 
-    document.getElementById('notifToggle')?.addEventListener('click', () => {
-        setNotificationsEnabled(!getNotificationsEnabled()); loadSettings();
-    });
-
+    // --- TIL O'ZGARTIRISH ---
     document.querySelectorAll('.lang-option').forEach(btn => {
         btn.addEventListener('click', () => {
-            setLanguage(btn.dataset.lang);
-            loadSettings(); updateUserUI(); updateCacheSize();
+            const lang = btn.dataset.lang;
+            setLanguage(lang); // Bu ichida 'languageChanged' event dispatch qiladi
+            // initI18n() ni chaqirish shart emas - i18n.js o'zi 'languageChanged' ni tinglaydi
+            loadSettings();       // Til tugmalarini yangilash
+            updateUserUI();       // Foydalanuvchi ma'lumotini yangilash
+            updateCacheSize();    // Kesh hajmini yangilash
         });
     });
 
-    document.getElementById('clearCacheBtn')?.addEventListener('click', () => {
-        clearCache(); updateCacheSize();
+    // --- KESH TOZALASH ---
+    const clearBtn = document.getElementById('clearCacheBtn');
+    clearBtn?.addEventListener('click', () => {
+        clearCache(); // Ichida showToast chaqiriladi
+        updateCacheSize();
     });
 
-    document.getElementById('aboutBtn')?.addEventListener('click', () => {
+    // --- LOYIHA HAQIDA ---
+    const aboutBtn = document.getElementById('aboutBtn');
+    aboutBtn?.addEventListener('click', () => {
         window.location.href = '../about/';
     });
 
-    document.getElementById('logoutBtn')?.addEventListener('click', handleLogout);
-
-    document.addEventListener('languageChanged', () => {
-        loadSettings(); updateUserUI(); updateCacheSize();
-    });
-    document.addEventListener('themeChanged', loadSettings);
-}
-
-// ==================== AUTH ====================
-function initAuth() {
-    setLoading(true);
-
-    // MRDEV ID login uchun darhol localStorage dan ko'rsat
-    const localAuth = getLocalAuth();
-    if (localAuth) {
-        currentUser = {
-            uid:         localAuth.uid,
-            email:       localAuth.email       || '',
-            displayName: localAuth.displayName || localAuth.email?.split('@')[0] || 'User',
-            photoURL:    localAuth.photoURL    || null,
-            mrdevId:     localAuth.mrdevId     || localStorage.getItem('mrdev_user_id') || '',
-        };
-        updateUserUI();
-    }
-
-    // Firebase auth (Google / Email) kuzatish
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            currentUser = {
-                uid:         user.uid,
-                email:       user.email       || '',
-                displayName: user.displayName || user.email?.split('@')[0] || 'User',
-                photoURL:    user.photoURL    || null,
-                mrdevId:     localStorage.getItem('mrdev_user_id') || '',
-            };
-        } else if (!localAuth) {
-            currentUser = null;
+    // --- HISOBDAN CHIQISH ---
+    const logoutBtn = document.getElementById('logoutBtn');
+    logoutBtn?.addEventListener('click', async () => {
+        if (confirm(t('logout_confirm'))) {
+            try {
+                if (auth?.currentUser) {
+                    await signOut(auth);
+                }
+                localStorage.removeItem('mrdev_local_auth');
+                localStorage.removeItem('mrdev_auth_user');
+                window.location.href = '../';
+            } catch (e) {
+                showToast(e.message, 'error');
+            }
         }
+    });
+
+    // --- TIL O'ZGARGANDA SETTINGS UI YANGILASH ---
+    document.addEventListener('languageChanged', () => {
+        loadSettings();
         updateUserUI();
+        updateCacheSize();
+    });
+
+    // --- THEME O'ZGARGANDA SETTINGS UI YANGILASH ---
+    document.addEventListener('themeChanged', () => {
+        loadSettings();
     });
 }
 
-// ==================== INIT ====================
+// ==================== ISHGA TUSHIRISH ====================
+
+// 1. Global sozlamalarni boshlang'ich holga keltirish
+//    (theme qo'llash + DOM tarjimalar)
 initGlobalSettings();
+
+// 2. Settings UI ni yuklash
 loadSettings();
+
+// 3. Kesh hajmini ko'rsatish
 updateCacheSize();
+
+// 4. Event listener'larni ulash
 initEventListeners();
-initAuth();
+
+// 5. Firebase auth holati kuzatish
+onAuthStateChanged(auth, (user) => {
+    currentUser = user;
+    updateUserUI();
+});

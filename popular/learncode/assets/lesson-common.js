@@ -4,7 +4,7 @@
 // ============================================
 
 import { rtdb } from './firebase-config.js';
-import { ref, push, onValue } from 'firebase/database';
+import { ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
 window.LessonConfig = window.LessonConfig || { course: 'css', lessonId: '1', totalLessons: 63, youtubeWatchUrl: '#', lessonTitle: 'Dars' };
 

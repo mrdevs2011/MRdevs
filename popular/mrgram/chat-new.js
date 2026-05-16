@@ -1,5 +1,5 @@
 import { db } from "./firebase-config.js";
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { openChat } from "./chat.js";
 import { showToast } from "./ui-helpers.js";
 
@@ -95,7 +95,7 @@ function startPrivateChat(targetUser) {
 
 // Xabarlarni yuklash (agar chat.js da bo‘lmasa)
 export async function loadMessages(chatId) {
-    const { collection, query, orderBy, onSnapshot } = await import("firebase/firestore");
+    const { collection, query, orderBy, onSnapshot } = await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js");
     const { escapeHtml, viewFullImage } = await import("./ui-helpers.js");
     
     const chatMsgs = document.getElementById('chatMsgs');

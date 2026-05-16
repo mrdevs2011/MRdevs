@@ -45,7 +45,7 @@ const logger = {
     on() {
         enabled = true;
         localStorage.setItem('mrdev_debug', 'true');
-        console.log('[ON] MRDEV Logger: ON');
+        console.log('🟢 MRDEV Logger: ON');
     },
     off() {
         enabled = false;
@@ -60,148 +60,144 @@ const logger = {
     // ==================== CONFIG ====================
     config: {
         loaded(projectId, hasEnv) {
-            log('log', '[OK] Config loaded');
-            log('log', '[FIREBASE] MAIN Project:', projectId);
-            log('log', '[PKG] {} exists:', hasEnv);
+            log('log', '✅ Config loaded');
+            log('log', '🔥 MAIN Project:', projectId);
+            log('log', '📦 window.__ENV__ exists:', hasEnv);
         },
         error(msg) {
-            log('error', '[ERR] Config error:', msg);
+            log('error', '❌ Config error:', msg);
         },
         firebaseReady(projectId) {
-            log('log', '[FIREBASE] Firebase Config:', projectId);
+            log('log', '🔥 Firebase Config:', projectId);
         }
     },
     
     // ==================== FIREBASE INIT ====================
     firebase: {
-        start() { log('log', '[START] MRDEV Firebase Init v4.0'); },
+        start() { log('log', '🚀 MRDEV Firebase Init v4.0'); },
         info(hostname, protocol, isLocalhost, isVercel, isDev, projectId, hasApiKey) {
-            log('log', '[HOST] Hostname:', hostname);
-            log('log', '[SECURE] Protocol:', protocol);
-            log('log', '[LOCAL] Localhost:', isLocalhost);
-            log('log', '[PKG] Vercel:', isVercel);
-            log('log', '[FIREBASE] Project ID:', projectId);
-            log('log', '[KEY] API Key:', hasApiKey ? '[OK] Mavjud' : '[FAIL] Topilmadi');
+            log('log', '📍 Hostname:', hostname);
+            log('log', '🔒 Protocol:', protocol);
+            log('log', '🏠 Localhost:', isLocalhost);
+            log('log', '📦 Vercel:', isVercel);
+            log('log', '🔥 Project ID:', projectId);
+            log('log', '🔑 API Key:', hasApiKey ? '✓ Mavjud' : '✗ Topilmadi');
         },
-        newApp(name) { log('log', '[NEW] Yangi Firebase app yaratildi:', name); },
+        newApp(name) { log('log', '🆕 Yangi Firebase app yaratildi:', name); },
         ready(auth, firestore, rtdb) {
-            log('log', '[OK] Firebase servislari tayyor:');
-            log('log', '   - Auth:', auth ? '[OK]' : '[FAIL]');
-            log('log', '   - Firestore:', firestore ? '[OK]' : '[FAIL]');
-            log('log', '   - Realtime DB:', rtdb ? '[OK]' : '[FAIL]');
+            log('log', '✅ Firebase servislari tayyor:');
+            log('log', '   - Auth:', auth ? '✓' : '✗');
+            log('log', '   - Firestore:', firestore ? '✓' : '✗');
+            log('log', '   - Realtime DB:', rtdb ? '✓' : '✗');
         },
         done() {
-            log('log', '[OK] MRDEV Firebase Init v4.0 tayyor');
-            log('log', '---');
+            log('log', '✅ MRDEV Firebase Init v4.0 tayyor');
+            log('log', '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
         },
-        persistence(type) { log('log', '[SECURE] Persistence:', type); }
+        persistence(type) { log('log', '🔒 Persistence:', type); }
     },
     
     // ==================== AUTH ====================
     auth: {
-        init() { log('log', '[START] [Auth] initAuth v6.0 boshlandi'); },
-        start(version) { log('log', '[START] [Auth] initAuth', version, 'boshlandi'); },
-        firebaseUser(email, uid) { log('log', '[FIREBASE] [Auth] Firebase user:', email, '| uid:', uid); },
-        mrdevId(id) { log('log', '[OK] [Auth] MRDEV ID:', id); },
-        mrdevIdNull() { log('warn', '[WARN]️ [Auth] MRDEV ID null qaytdi!'); },
-        mrdevIdError(msg) { log('error', '[ERR] [Auth] saveUserMrdevId xatolik:', msg); },
-        currentUser(name, mrdevId) { log('log', '[USER] [Auth] currentUser:', name, '| MRDEV ID:', mrdevId); },
-        google(email) { log('log', '[OK] Firebase Auth:', email); },
-        mrdev(email) { log('log', '[PKG] Lokal auth:', email); },
-        none() { log('log', '[ERR] Hech qanday auth yo\'q'); },
-        saved(email) { log('log', '[PKG] Saqlangan akkaunt:', email); },
-        changed(email) { log('log', '[CHANGE] Auth o\'zgardi:', email || 'no user'); },
-        centerLinked(id, email) { log('log', '[OK] ' + id + ' -> ' + email + ' markaziga qo\'shildi'); },
-        firebaseLogin(email) { log('log', '[OK] Firebase Auth:', email); },
-        loginOk() { log('log', '[OK] MRDEV Login muvaffaqiyatli'); },
-        logout() { log('log', '[BYE] Auth logout'); }
+        init() { log('log', '🚀 [Auth] initAuth v6.0 boshlandi'); },
+        start(version) { log('log', '🚀 [Auth] initAuth', version, 'boshlandi'); },
+        firebaseUser(email, uid) { log('log', '🔥 [Auth] Firebase user:', email, '| uid:', uid); },
+        mrdevId(id) { log('log', '✅ [Auth] MRDEV ID:', id); },
+        mrdevIdNull() { log('warn', '⚠️ [Auth] MRDEV ID null qaytdi!'); },
+        mrdevIdError(msg) { log('error', '❌ [Auth] saveUserMrdevId xatolik:', msg); },
+        currentUser(name, mrdevId) { log('log', '👤 [Auth] currentUser:', name, '| MRDEV ID:', mrdevId); },
+        google(email) { log('log', '✅ Firebase Auth:', email); },
+        mrdev(email) { log('log', '📦 Lokal auth:', email); },
+        none() { log('log', '❌ Hech qanday auth yo\'q'); },
+        saved(email) { log('log', '📦 Saqlangan akkaunt:', email); },
+        changed(email) { log('log', '🔄 Auth o\'zgardi:', email || 'no user'); },
+        centerLinked(id, email) { log('log', '✅ ' + id + ' -> ' + email + ' markaziga qo\'shildi'); },
+        firebaseLogin(email) { log('log', '✅ Firebase Auth:', email); },
+        loginOk() { log('log', '✅ MRDEV Login muvaffaqiyatli'); },
+        logout() { log('log', '👋 Auth logout'); }
     },
     
     // ==================== MRDEV LOGIN ====================
     mrdev: {
-        searching(id) { log('log', '[SEARCH] MRDEV ID qidirilmoqda:', id); },
-        found(email) { log('log', '[OK] Foydalanuvchi topildi:', email); },
-        otpSent(key) { log('log', '[SEND] RTDB ga yuborildi:', key); },
-        otpSentDev(code) { if (isLocal) log('log', '[KEY] DEV Parol:', code); },
-        notify(id) { log('log', '[EMAIL] Parol xabarnomasi yuborildi:', id); },
-        verifying(id) { log('log', '[VERIFY] Parol tekshirilmoqda:', id); },
-        success() { log('log', '[OK] Parol to\'g\'ri!'); },
-        wrong() { log('log', '[ERR] Noto\'g\'ri parol yoki muddati tugagan'); },
-        loginOk() { log('log', '[OK] MRDEV Login muvaffaqiyatli!'); },
-        loaded() { log('log', '[OK] MRDEV ID Login yuklandi'); }
+        searching(id) { log('log', '🔍 MRDEV ID qidirilmoqda:', id); },
+        found(email) { log('log', '✅ Foydalanuvchi topildi:', email); },
+        otpSent(key) { log('log', '📤 RTDB ga yuborildi:', key); },
+        otpSentDev(code) { if (isLocal) log('log', '🔑 DEV Parol:', code); },
+        notify(id) { log('log', '📧 Parol xabarnomasi yuborildi:', id); },
+        verifying(id) { log('log', '🔐 Parol tekshirilmoqda:', id); },
+        success() { log('log', '✅ Parol to\'g\'ri!'); },
+        wrong() { log('log', '❌ Noto\'g\'ri parol yoki muddati tugagan'); },
+        loginOk() { log('log', '✅ MRDEV Login muvaffaqiyatli!'); },
+        loaded() { log('log', '✅ MRDEV ID Login yuklandi'); }
     },
     
     // ==================== GOOGLE AUTH ====================
     google: {
-        start() { log('log', '[KEY] [GoogleAuth] Google login...'); },
-        success(uid, email) { log('log', '[KEY] [GoogleAuth] Google login OK:', uid, email); },
-        newUser() { log('log', '[DOC] [GoogleAuth] Yangi Firestore doc yaratildi'); },
-        existingUser() { log('log', '[DOC] [GoogleAuth] Mavjud Firestore doc yangilandi'); },
-        mrdevId(id) { log('log', '[ID] [GoogleAuth] MRDEV ID:', id); },
+        start() { log('log', '🔑 [GoogleAuth] Google login...'); },
+        success(uid, email) { log('log', '🔑 [GoogleAuth] Google login OK:', uid, email); },
+        newUser() { log('log', '📄 [GoogleAuth] Yangi Firestore doc yaratildi'); },
+        existingUser() { log('log', '📄 [GoogleAuth] Mavjud Firestore doc yangilandi'); },
+        mrdevId(id) { log('log', '🆔 [GoogleAuth] MRDEV ID:', id); },
         mrdevIdError(msg) { log('warn', '[GoogleAuth] MRDEV ID xatolik:', msg); },
-        localSaved(mrdevId) { log('log', '[OK] [GoogleAuth] mrdev_local_auth saqlandi, mrdevId:', mrdevId); },
+        localSaved(mrdevId) { log('log', '✅ [GoogleAuth] mrdev_local_auth saqlandi, mrdevId:', mrdevId); },
         error(code, msg) { log('error', '[GoogleAuth] signInWithGoogle xatolik:', code, msg); }
     },
     
     // ==================== EMAIL AUTH ====================
     email: {
-        loginStart() { log('log', '[EMAIL] [EmailAuth] Email login...'); },
-        loginSuccess(uid) { log('log', '[OK] [EmailAuth] Firebase login OK:', uid); },
-        mrdevId(id) { log('log', '[ID] [EmailAuth] MRDEV ID:', id); },
+        loginStart() { log('log', '📧 [EmailAuth] Email login...'); },
+        loginSuccess(uid) { log('log', '✅ [EmailAuth] Firebase login OK:', uid); },
+        mrdevId(id) { log('log', '🆔 [EmailAuth] MRDEV ID:', id); },
         mrdevIdError(msg) { log('warn', '[EmailAuth] MRDEV ID xatosi:', msg); },
-        registerStart() { log('log', '[REG] [EmailAuth] Email register...'); },
-        registerSuccess(uid) { log('log', '[OK] [EmailAuth] Firebase register OK:', uid); },
-        docCreated() { log('log', '[DOC] [EmailAuth] Firestore doc yaratildi'); },
-        newMrdevId(id) { log('log', '[ID] [EmailAuth] Yangi MRDEV ID:', id); },
+        registerStart() { log('log', '📝 [EmailAuth] Email register...'); },
+        registerSuccess(uid) { log('log', '✅ [EmailAuth] Firebase register OK:', uid); },
+        docCreated() { log('log', '📄 [EmailAuth] Firestore doc yaratildi'); },
+        newMrdevId(id) { log('log', '🆔 [EmailAuth] Yangi MRDEV ID:', id); },
         error(code, msg) { log('error', '[EmailAuth] xatolik:', code, msg); }
     },
     
     // ==================== NOTIFICATIONS ====================
     notif: {
-        firebaseUser(uid) { log('log', '[FIREBASE] [PassNotif] Firebase Auth user:', uid); },
-        localUser(uid) { log('log', '[PKG] [PassNotif] Local auth user:', uid); },
-        localParseError(msg) { log('warn', '[PassNotif] Local auth parse xatolik:', msg); },
-        searching(uid, email) { log('log', '[SEARCH] [PassNotif] Xabarlar qidirilmoqda... uid:', uid, 'email:', email); },
-        found(count) { log('log', '[LIST] [PassNotif]', count, 'ta xabar topildi'); },
-        settingsChanged(enabled) { log('log', '[PassNotif] Notifications enabled:', enabled); },
-        error(msg) { log('error', '[ERR] [PassNotif] Load xatolik:', msg); }
+        firebaseUser(uid) { log('log', '🔥 [PassNotif] Firebase Auth user:', uid); },
+        localUser(uid) { log('log', '📦 [PassNotif] Local auth user:', uid); },
+        searching(uid, email) { log('log', '🔍 [PassNotif] Xabarlar qidirilmoqda... uid:', uid, 'email:', email); },
+        found(count) { log('log', '📋 [PassNotif]', count, 'ta xabar topildi'); },
+        error(msg) { log('error', '❌ [PassNotif] Load xatolik:', msg); }
     },
     
     // ==================== MRDEV CORE ====================
     core: {
-        saveStart(uid, email, linkedTo) { log('log', '[SEARCH] [MRDev] saveUserMrdevId:', { uid, email, linkedTo }); },
-        existing(id) { log('log', '[OK] [MRDev] Mavjud MRDEV ID:', id); },
+        saveStart(uid, email, linkedTo) { log('log', '🔍 [MRDev] saveUserMrdevId:', { uid, email, linkedTo }); },
+        existing(id) { log('log', '✅ [MRDev] Mavjud MRDEV ID:', id); },
         updateError(msg) { log('warn', '[MRDev] updateDoc xatolik:', msg); },
-        newUpdate(id) { log('log', '[NEW] [MRDev] Yangi MRDEV ID (update):', id); },
-        newCreate(id) { log('log', '[NEW] [MRDev] Yangi MRDEV ID (create):', id); },
-        error(msg) { log('error', '[ERR] [MRDev] saveUserMrdevId xatolik:', msg); },
-        loginStart(id) { log('log', '[SEARCH] [MRDev] loginWithMrdevId:', id); },
-        loginFound(email, linkedTo) { log('log', '[OK] [MRDev] Foydalanuvchi topildi:', email, '| linkedTo:', linkedTo || 'yo\'q'); },
-        loginError(msg) { log('error', '[ERR] [MRDev] loginWithMrdevId xatolik:', msg); },
-        linkStart(id) { log('log', '[LINK] [MRDev] getLinkedAccount:', id); },
-        linkAccount(uid, target) { log('log', '[LINK] [MRDev] linkAccount:', uid, '→', target); },
-        linkSuccess(uid, target) { log('log', '[OK] [MRDev] Hisob ulandi:', uid, '→', target); },
-        linkError(msg) { log('error', '[ERR] [MRDev] linkAccount xatolik:', msg); },
-        unlink(uid) { log('log', '[UNLINK] [MRDev] unlinkAccount:', uid); },
-        unlinkSuccess() { log('log', '[OK] [MRDev] Ulanish o\'chirildi'); },
-        unlinkError(msg) { log('error', '[ERR] [MRDev] unlinkAccount xatolik:', msg); },
-        noUser() { log('warn', '[MRDev] saveUserMrdevId: user.uid mavjud emas'); },
-        sendCode(id) { log('log', '[SEND] [MRDev] sendPassCode:', id); },
-        sendCodeSuccess(email) { log('log', '[OK] [MRDev] Pass code yuborildi'); },
-        sendCodeError(msg) { log('error', '[ERR] [MRDev] sendPassCode xatolik:', msg); },
-        verifyCode(id) { log('log', '[VERIFY] [MRDev] verifyPassCode:', id); },
-        verifySuccess() { log('log', '[OK] [MRDev] Pass code tasdiqlandi'); },
-        verifyError(msg) { log('error', '[ERR] [MRDev] verifyPassCode xatolik:', msg); }
+        newUpdate(id) { log('log', '🆕 [MRDev] Yangi MRDEV ID (update):', id); },
+        newCreate(id) { log('log', '🆕 [MRDev] Yangi MRDEV ID (create):', id); },
+        error(msg) { log('error', '❌ [MRDev] saveUserMrdevId xatolik:', msg); },
+        loginStart(id) { log('log', '🔍 [MRDev] loginWithMrdevId:', id); },
+        loginFound(email, linkedTo) { log('log', '✅ [MRDev] Foydalanuvchi topildi:', email, '| linkedTo:', linkedTo || 'yo\'q'); },
+        loginError(msg) { log('error', '❌ [MRDev] loginWithMrdevId xatolik:', msg); },
+        linkStart(id) { log('log', '🔗 [MRDev] getLinkedAccount:', id); },
+        linkAccount(uid, target) { log('log', '🔗 [MRDev] linkAccount:', uid, '→', target); },
+        linkSuccess(uid, target) { log('log', '✅ [MRDev] Hisob ulandi:', uid, '→', target); },
+        linkError(msg) { log('error', '❌ [MRDev] linkAccount xatolik:', msg); },
+        unlink(uid) { log('log', '🔓 [MRDev] unlinkAccount:', uid); },
+        unlinkSuccess() { log('log', '✅ [MRDev] Ulanish o\'chirildi'); },
+        sendCode(id) { log('log', '📤 [MRDev] sendPassCode:', id); },
+        sendCodeSuccess(email) { log('log', '✅ [MRDev] Pass code yuborildi'); },
+        sendCodeError(msg) { log('error', '❌ [MRDev] sendPassCode xatolik:', msg); },
+        verifyCode(id) { log('log', '🔐 [MRDev] verifyPassCode:', id); },
+        verifySuccess() { log('log', '✅ [MRDev] Pass code tasdiqlandi'); },
+        verifyError(msg) { log('error', '❌ [MRDev] verifyPassCode xatolik:', msg); }
     },
     
     // ==================== BOARD ====================
     board: {
-        init() { log('log', '[THEME] MRDEV Board ishga tushmoqda...'); },
-        ready(uid) { log('log', '[OK] Board tayyor! UID:', uid); },
-        save(uid) { log('log', '[SAVE] Saqlash UID:', uid); },
-        load(uid) { log('log', '[CLOUD]️ Yuklash UID:', uid); },
-        ui(name) { log('log', '[USER] UI yangilandi:', name); },
-        guest() { log('log', '[USER] Mehmon'); },
+        init() { log('log', '🎨 MRDEV Board ishga tushmoqda...'); },
+        ready(uid) { log('log', '✅ Board tayyor! UID:', uid); },
+        save(uid) { log('log', '💾 Saqlash UID:', uid); },
+        load(uid) { log('log', '☁️ Yuklash UID:', uid); },
+        ui(name) { log('log', '👤 UI yangilandi:', name); },
+        guest() { log('log', '👤 Mehmon'); },
         cloudSaveError(e) { log('error', 'Cloud save error:', e); },
         cloudLoadError(e) { log('error', 'Cloud load error:', e); },
         dropdownError(e) { log('warn', 'Dropdown init failed:', e); }
@@ -209,89 +205,58 @@ const logger = {
     
     // ==================== LOCAL AUTH ====================
     localAuth: {
-        check(found) { log('log', '[SEARCH] Local auth:', found ? 'topildi' : 'yo\'q'); },
-        found(email) { log('log', '[OK] Local auth topildi:', email); },
-        saved(uid) { log('log', '[SAVE] Local auth saqlandi:', uid); }
+        check(found) { log('log', '🔍 Local auth:', found ? 'topildi' : 'yo\'q'); },
+        found(email) { log('log', '✅ Local auth topildi:', email); },
+        saved(uid) { log('log', '💾 Local auth saqlandi:', uid); }
     },
     
     // ==================== NOTIF-PASS ====================
     notifPass: {
         loaded() {
-            log('log', '[OK] MRDEV Notif-Pass yuklandi');
-            log('log', '---');
+            log('log', '✅ MRDEV Notif-Pass yuklandi');
+            log('log', '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
         },
-        userSave(id) { log('log', '[FIX] MRDEV ID saqlash:', id); },
-        passwordUpdated() { log('log', '[KEY] Yangi xavfsiz parol yaratildi'); },
-        created(id) { log('log', '[NEW] Yangi MRDEV ID:', id); }
+        userSave(id) { log('log', '🔧 MRDEV ID saqlash:', id); },
+        passwordUpdated() { log('log', '🔑 Yangi xavfsiz parol yaratildi'); },
+        created(id) { log('log', '🆕 Yangi MRDEV ID:', id); }
     },
     
     // ==================== SIDEBAR & UI ====================
     ui: {
-        sidebarInit() { log('log', '[MOBILE] Sidebar initializing...'); },
-        userMenuInit() { log('log', '[USER] User menu initializing...'); },
-        dropdownInit(type) { log('log', '[LIST] Dropdown init:', type); },
-        themeChanged(theme) { log('log', '[THEME] Theme changed:', theme); },
-        languageChanged(lang) { log('log', '[LANG] Language changed:', lang); }
+        sidebarInit() { log('log', '📱 Sidebar initializing...'); },
+        userMenuInit() { log('log', '👤 User menu initializing...'); },
+        dropdownInit(type) { log('log', '📋 Dropdown init:', type); },
+        themeChanged(theme) { log('log', '🎨 Theme changed:', theme); },
+        languageChanged(lang) { log('log', '🌐 Language changed:', lang); }
     },
     
     // ==================== SETTINGS ====================
     settings: {
-        init() { log('log', '[SETTINGS]️ Settings initializing...'); },
-        cacheCleared(size) { log('log', '[CACHE]️ Cache cleared:', size, 'items'); },
-        themeSaved(theme) { log('log', '[SAVE] Theme saved:', theme); },
-        languageSaved(lang) { log('log', '[SAVE] Language saved:', lang); },
-        notificationsSaved(enabled) { log('log', '[NOTIF] Notifications:', enabled ? 'ON' : 'OFF'); }
+        init() { log('log', '⚙️ Settings initializing...'); },
+        cacheCleared(size) { log('log', '🗑️ Cache cleared:', size, 'items'); },
+        themeSaved(theme) { log('log', '💾 Theme saved:', theme); },
+        languageSaved(lang) { log('log', '💾 Language saved:', lang); },
+        notificationsSaved(enabled) { log('log', '🔔 Notifications:', enabled ? 'ON' : 'OFF'); }
     },
     
     // ==================== XATOLIKLAR ====================
     error: {
-        firebase(msg) { log('error', '[ERR] Firebase xatolik:', msg); },
+        firebase(msg) { log('error', '❌ Firebase xatolik:', msg); },
         cloud(msg) { log('error', 'Cloud error:', msg); },
         dropdown(msg) { log('warn', 'Dropdown init failed:', msg); },
-        verify(msg) { log('error', '[ERR] Verifikatsiya xatolik:', msg); },
-        notif(msg) { log('error', '[ERR] Notif xatolik:', msg); },
+        verify(msg) { log('error', '❌ Verifikatsiya xatolik:', msg); },
+        notif(msg) { log('error', '❌ Notif xatolik:', msg); },
         auth(msg) { log('warn', 'Auth xatolik:', msg); },
-        config(msg) { log('error', '[ERR] Config xatolik:', msg); },
-        network(msg) { log('error', '[LANG] Network error:', msg); }
+        config(msg) { log('error', '❌ Config xatolik:', msg); },
+        network(msg) { log('error', '🌐 Network error:', msg); }
     },
     
     // ==================== UMUMIY ====================
-    env(version) { log('log', '[OK] MRDEV ENV yuklandi | Versiya:', version); },
-    platformStart() { log('log', '[START] MRDEV ishga tushmoqda...'); },
-    platformReady() { log('log', '[OK] MRDEV Platform tayyor'); },
-    mrdevLoginLoaded() { log('log', '[OK] MRDEV ID Login yuklandi'); },
+    env(version) { log('log', '✅ MRDEV ENV yuklandi | Versiya:', version); },
+    platformStart() { log('log', '🚀 MRDEV ishga tushmoqda...'); },
+    platformReady() { log('log', '✅ MRDEV Platform tayyor'); },
+    mrdevLoginLoaded() { log('log', '✅ MRDEV ID Login yuklandi'); },
     
-    // ==================== MULTI ACCOUNT ====================
-    multiAccount: {
-        noUid() { log('warn', '[MultiAccount] addOrUpdateAccount: user.uid yo\'q'); },
-        saved(uid, mrdevId) { log('log', '[SAVE] [MultiAccount] Saqlandi:', uid, '| mrdevId:', mrdevId || '(yo\'q)'); },
-        cleared() { log('log', '[MultiAccount] Barcha akkauntlar tozalandi'); }
-    },
-
-    // ==================== FIREBASE HELPER ====================
-    firebaseHelper: {
-        persistenceError(msg) { log('warn', '[FirebaseHelper] Persistence error:', msg); },
-        initError(e) { log('error', '[FirebaseHelper] init error:', e); },
-        localNotLoggedIn() { log('warn', '[FirebaseHelper] local auth: isLoggedIn false'); },
-        localNoUid() { log('warn', '[FirebaseHelper] local auth: uid yo\'q'); },
-        localExpired() { log('warn', '[FirebaseHelper] local auth muddati tugagan'); },
-        localAuthError(msg) { log('warn', '[FirebaseHelper] getLocalAuthUser xatolik:', msg); },
-        getUserIdError(msg) { log('warn', '[FirebaseHelper] getUserId local parse xatolik:', msg); },
-        localSaveFailed(msg) { log('warn', '[FirebaseHelper] Local save failed:', msg); },
-        cloudSaveFailed(msg) { log('warn', '[FirebaseHelper] Cloud save failed:', msg); },
-        cloudLoadFailed(msg) { log('warn', '[FirebaseHelper] Cloud load failed:', msg); },
-        cloudListenerError(msg) { log('warn', '[FirebaseHelper] Cloud listener error:', msg); },
-        deleteError(msg) { log('warn', '[FirebaseHelper] Delete error:', msg); },
-        clearError(msg) { log('warn', '[FirebaseHelper] Clear error:', msg); }
-    },
-
-    // ==================== AUTH HELPER ====================
-    authHelper: {
-        parseError(msg) { log('warn', '[AuthHelper] getCurrentUser local parse xatolik:', msg); },
-        mrdevIdError(msg) { log('warn', '[AuthHelper] getMrdevId xatolik:', msg); },
-        deprecated(email, mrdevId) { log('log', '[AuthHelper] addMrdevIdToCenter chaqirildi (deprecated):', email, mrdevId); }
-    },
-
     // ==================== DEBUG ====================
     debug: {
         log(...args) { log('log', '[DEBUG]', ...args); },
@@ -304,4 +269,3 @@ const logger = {
 window.__LOG__ = logger;
 
 export default logger;
-

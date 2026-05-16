@@ -4,10 +4,6 @@
 //   2. getActiveAccount — mrdevId qaytaradi
 //   3. localStorage debug loglar
 
-import logger from './logger.js';
-import { auth } from './firebase-init.js';
-import { signOut } from 'firebase/auth';
-
 const STORAGE_KEY  = 'mrdev_accounts';
 const ACTIVE_KEY   = 'mrdev_active_account';
 const MAX_ACCOUNTS = 3;
@@ -61,7 +57,7 @@ function saveActiveAccount(account) {
  */
 export function addOrUpdateAccount(user, extra = {}) {
     if (!user || !user.uid) {
-        logger.multiAccount.noUid();
+        console.warn('[MultiAccount] addOrUpdateAccount: user.uid yo\'q');
         return null;
     }
 
@@ -103,7 +99,7 @@ export function addOrUpdateAccount(user, extra = {}) {
     saveAccounts(accounts);
     setActiveAccount(user.uid);
 
-    logger.multiAccount.saved(accountData.uid, accountData.mrdevId);
+    console.log('💾 [MultiAccount] Saqlandi:', accountData.uid, '| mrdevId:', accountData.mrdevId || '(yo\'q)');
     return accountData;
 }
 
@@ -119,16 +115,9 @@ export function setActiveAccount(uid) {
     return null;
 }
 
-export async function removeAccount(uid) {
-    const accounts      = getAllAccounts();
-    const filtered      = accounts.filter(a => a.uid !== uid);
-    const activeAccount = getActiveAccount();
-    const isActive      = activeAccount && activeAccount.uid === uid;
-
-    // O'chirilayotgan account active bo'lsa — Firebase session ham tugatilsin
-    if (isActive && auth) {
-        try { await signOut(auth); } catch (e) {}
-    }
+export function removeAccount(uid) {
+    const accounts = getAllAccounts();
+    const filtered = accounts.filter(a => a.uid !== uid);
 
     if (filtered.length === 0) {
         localStorage.removeItem(STORAGE_KEY);
@@ -138,7 +127,8 @@ export async function removeAccount(uid) {
 
     saveAccounts(filtered);
 
-    if (isActive) {
+    const activeAccount = getActiveAccount();
+    if (activeAccount && activeAccount.uid === uid) {
         const newActive = filtered[0];
         setActiveAccount(newActive.uid);
         return newActive;
@@ -161,5 +151,5 @@ export function getMaxAccounts() {
 export function clearAllAccounts() {
     localStorage.removeItem(STORAGE_KEY);
     localStorage.removeItem(ACTIVE_KEY);
-    logger.multiAccount.cleared();
+    console.log('[MultiAccount] Barcha akkauntlar tozalandi');
 }

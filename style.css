@@ -8,6 +8,10 @@
 
 /* 3. Header */
 @import url('./assets/css/header.css');
+
+/* 4. Sidebar */
+@import url('./assets/css/sidebar.css');
+
 /* 5. Main content */
 @import url('./assets/css/main.css');
 

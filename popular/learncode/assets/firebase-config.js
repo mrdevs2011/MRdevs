@@ -1,21 +1,21 @@
 // ==================== FIREBASE CONFIG — Learncode ====================
-// Kalitlar {} dan o'qiladi — to'g'ridan-to'g'ri yozilmaydi.
+// Kalitlar window.__ENV__ dan o'qiladi — to'g'ridan-to'g'ri yozilmaydi.
 
-import { initializeApp } from 'firebase/app';
-import { getFirestore }  from 'firebase/firestore';
-import { getDatabase }   from 'firebase/database';
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import { getFirestore }  from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import { getDatabase }   from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 
-const ENV = {}; // {} shimmed for browser
+const ENV = window.__ENV__ || {};
 
 const firebaseConfig = {
-    apiKey:            ENV.VITE_SECONDARY_API_KEY             || '',
-    authDomain:        ENV.VITE_SECONDARY_AUTH_DOMAIN         || '',
-    projectId:         ENV.VITE_SECONDARY_PROJECT_ID          || '',
-    storageBucket:     ENV.VITE_SECONDARY_STORAGE_BUCKET      || '',
-    messagingSenderId: ENV.VITE_SECONDARY_MESSAGING_SENDER_ID || '',
-    appId:             ENV.VITE_SECONDARY_APP_ID              || '',
-    measurementId:     ENV.VITE_SECONDARY_MEASUREMENT_ID      || '',
-    databaseURL:       ENV.VITE_SECONDARY_DATABASE_URL        || ''
+    apiKey:            ENV.SECONDARY_API_KEY             || '',
+    authDomain:        ENV.SECONDARY_AUTH_DOMAIN         || '',
+    projectId:         ENV.SECONDARY_PROJECT_ID          || '',
+    storageBucket:     ENV.SECONDARY_STORAGE_BUCKET      || '',
+    messagingSenderId: ENV.SECONDARY_MESSAGING_SENDER_ID || '',
+    appId:             ENV.SECONDARY_APP_ID              || '',
+    measurementId:     ENV.SECONDARY_MEASUREMENT_ID      || '',
+    databaseURL:       ENV.SECONDARY_DATABASE_URL        || ''
 };
 
 if (!firebaseConfig.apiKey) {

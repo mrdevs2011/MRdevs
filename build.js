@@ -1,16 +1,37 @@
-// ==================== MRDEV BUILD SCRIPT (DEPRECATED) ====================
-// BU FAYL ENDI ISHLATILMAYDI!
-//
-// Yangi yondashuv: Vite build + import.meta.env
-//   npm run dev     → vite dev server (localhost:3000, .env.local o'qiydi)
-//   npm run build   → dist/ papkasiga production build (env vars inline bo'ladi)
-//
-// Vercel deployment:
-//   Vercel Dashboard → Settings → Environment Variables → kalitlarni kiriting
-//   vercel.json: outputDirectory = "dist"
-//
-// XAVFSIZLIK: env.js faylini HECH QACHON yaratmang va commit qilmang!
-// Kalitlar FAQAT Vercel Dashboard da saqlanishi kerak.
+// build.js
+const fs = require('fs');
 
-console.log('⚠️  build.js deprecated. Use: npm run build (vite build)');
-console.log('📖 Kalitlarni Vercel Dashboard → Settings → Environment Variables ga kiriting.');
+const env = {
+    VITE_MAIN_API_KEY: process.env.VITE_MAIN_API_KEY || "",
+    VITE_MAIN_AUTH_DOMAIN: process.env.VITE_MAIN_AUTH_DOMAIN || "",
+    VITE_MAIN_DATABASE_URL: process.env.VITE_MAIN_DATABASE_URL || "",
+    VITE_MAIN_PROJECT_ID: process.env.VITE_MAIN_PROJECT_ID || "",
+    VITE_MAIN_STORAGE_BUCKET: process.env.VITE_MAIN_STORAGE_BUCKET || "",
+    VITE_MAIN_MESSAGING_SENDER_ID: process.env.VITE_MAIN_MESSAGING_SENDER_ID || "",
+    VITE_MAIN_APP_ID: process.env.VITE_MAIN_APP_ID || "",
+    VITE_MAIN_MEASUREMENT_ID: process.env.VITE_MAIN_MEASUREMENT_ID || "",
+    VITE_SECONDARY_API_KEY: process.env.VITE_SECONDARY_API_KEY || "",
+    VITE_SECONDARY_AUTH_DOMAIN: process.env.VITE_SECONDARY_AUTH_DOMAIN || "",
+    VITE_SECONDARY_DATABASE_URL: process.env.VITE_SECONDARY_DATABASE_URL || "",
+    VITE_SECONDARY_PROJECT_ID: process.env.VITE_SECONDARY_PROJECT_ID || "",
+    VITE_SECONDARY_STORAGE_BUCKET: process.env.VITE_SECONDARY_STORAGE_BUCKET || "",
+    VITE_SECONDARY_MESSAGING_SENDER_ID: process.env.VITE_SECONDARY_MESSAGING_SENDER_ID || "",
+    VITE_SECONDARY_APP_ID: process.env.VITE_SECONDARY_APP_ID || "",
+    VITE_SECONDARY_MEASUREMENT_ID: process.env.VITE_SECONDARY_MEASUREMENT_ID || "",
+    VITE_GROUPBOARD_API_KEY: process.env.VITE_GROUPBOARD_API_KEY || "",
+    VITE_GROUPBOARD_AUTH_DOMAIN: process.env.VITE_GROUPBOARD_AUTH_DOMAIN || "",
+    VITE_GROUPBOARD_DATABASE_URL: process.env.VITE_GROUPBOARD_DATABASE_URL || "",
+    VITE_GROUPBOARD_PROJECT_ID: process.env.VITE_GROUPBOARD_PROJECT_ID || "",
+    VITE_GROUPBOARD_STORAGE_BUCKET: process.env.VITE_GROUPBOARD_STORAGE_BUCKET || "",
+    VITE_GROUPBOARD_MESSAGING_SENDER_ID: process.env.VITE_GROUPBOARD_MESSAGING_SENDER_ID || "",
+    VITE_GROUPBOARD_APP_ID: process.env.VITE_GROUPBOARD_APP_ID || "",
+    VITE_GROUPBOARD_MEASUREMENT_ID: process.env.VITE_GROUPBOARD_MEASUREMENT_ID || "",
+    VITE_SUPABASE_URL: process.env.VITE_SUPABASE_URL || "",
+    VITE_SUPABASE_KEY: process.env.VITE_SUPABASE_KEY || "",
+    VITE_APP_NAME: process.env.VITE_APP_NAME || "MRDEV",
+    VITE_APP_VERSION: process.env.VITE_APP_VERSION || "7.0",
+    VITE_APP_DEFAULT_THEME: process.env.VITE_APP_DEFAULT_THEME || "dark"
+};
+
+fs.writeFileSync('env.js', `window.__ENV__ = ${JSON.stringify(env)};`);
+console.log('✅ env.js created');

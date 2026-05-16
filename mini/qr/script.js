@@ -1,5 +1,3 @@
-import { mt, initMiniI18n, onLangChange } from '../../assets/js/mini-i18n.js';
-import { getTheme, setTheme, toggleTheme } from '../../assets/js/core/global-settings.js';
 // ==================== MRDEV QR CODE v2.1 — Firebase + Local Sync ====================
 import { initAuth, smartSave, getCurrentUser, getUserId } from '../../assets/js/firebase-helper.js';
 import { initMiniDropdown } from '../../assets/js/dropdown.js';
@@ -11,7 +9,7 @@ function getDB() {
     return _db;
 }
 
-import { collection, addDoc, query, orderBy, onSnapshot, deleteDoc, doc, serverTimestamp, writeBatch, getDocs } from 'firebase/firestore';
+import { collection, addDoc, query, orderBy, onSnapshot, deleteDoc, doc, serverTimestamp, writeBatch, getDocs } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
 // ==================== DOM ====================
 var $ = function(id) { return document.getElementById(id); };
@@ -38,11 +36,24 @@ var currentScannedText = null;
 var currentImageScannedText = null;
 
 // ==================== THEME ====================
+function initTheme() {
+    var saved = localStorage.getItem('theme') || 'dark';
+    if (saved === 'dark') document.documentElement.classList.add('dark');
+    else document.documentElement.classList.remove('dark');
+    updateThemeIcon();
+    $('themeToggle').addEventListener('click', toggleTheme);
+}
+
+function toggleTheme() {
+    var isDark = document.documentElement.classList.toggle('dark');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    updateThemeIcon();
+}
 
 function updateThemeIcon() {
     var btn = $('themeToggle');
     if (!btn) return;
-    var isDark = document.body.classList.contains('dark');
+    var isDark = document.documentElement.classList.contains('dark');
     btn.innerHTML = isDark
         ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>'
         : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
@@ -88,7 +99,7 @@ function generateQR() {
         });
     } catch(e) {
         console.error('QR Error:', e);
-        showToast(mt('qr_error'), 'error');
+        showToast('QR yaratishda xatolik', 'error');
     }
 }
 
@@ -98,33 +109,33 @@ qrText.addEventListener('input', generateQR);
 // Download
 $('downloadBtn').addEventListener('click', function() {
     if (!qrCanvas.style.display || qrCanvas.style.display === 'none') {
-        showToast(mt('qr_first'), 'error'); return;
+        showToast('Avval QR kod yarating', 'error'); return;
     }
     var link = document.createElement('a');
     link.download = 'qrcode.png';
     link.href = qrCanvas.toDataURL();
     link.click();
-    showToast(mt('downloaded'), 'success');
+    showToast('Yuklab olindi', 'success');
 });
 
 // Share
 $('shareBtn').addEventListener('click', async function() {
     if (!qrCanvas.style.display || qrCanvas.style.display === 'none') {
-        showToast(mt('qr_first'), 'error'); return;
+        showToast('Avval QR kod yarating', 'error'); return;
     }
     var blob = await new Promise(function(resolve) { qrCanvas.toBlob(resolve); });
     var file = new File([blob], 'qrcode.png', { type: 'image/png' });
     if (navigator.share) {
         await navigator.share({ files: [file], title: 'QR Kod' });
     } else {
-        showToast(mt('no_share'));
+        showToast('Bu qurilma ulashishni qo\'llab quvvatlamaydi');
     }
 });
 
 // Fullscreen
 $('fullscreenBtn').addEventListener('click', function() {
     if (!qrCanvas.style.display || qrCanvas.style.display === 'none') {
-        showToast(mt('qr_first'), 'error'); return;
+        showToast('Avval QR kod yarating', 'error'); return;
     }
     var fc = $('fullscreenCanvas');
     fc.width = 350; fc.height = 350;
@@ -159,9 +170,9 @@ async function startCamera(facingMode) {
         currentStream = stream;
         await video.play();
         requestAnimationFrame(scanLoop);
-        showToast(mt('camera_on'));
+        showToast('Kamera ishga tushdi');
     } catch(e) {
-        showToast(mt('camera_perm'), 'error');
+        showToast('Kamera ruxsati kerak!', 'error');
         scanning = false;
     }
 }
@@ -224,10 +235,10 @@ $('imageUpload').addEventListener('change', function(e) {
                 currentImageScannedText = code.data;
                 imageScannedText.innerHTML = '<strong>Natija:</strong><br>' + escapeHtml(code.data);
                 imageResult.style.display = 'block';
-                showToast(mt('qr_found'), 'success');
-            } else { showToast(mt('qr_not_found'), 'error'); imageResult.style.display = 'none'; }
+                showToast('QR kod topildi!', 'success');
+            } else { showToast('QR kod topilmadi', 'error'); imageResult.style.display = 'none'; }
         };
-        img.onerror = function() { showToast(mt('img_load_err'), 'error'); };
+        img.onerror = function() { showToast('Rasm yuklanmadi', 'error'); };
         img.src = event.target.result;
     };
     reader.readAsDataURL(file);
@@ -235,10 +246,10 @@ $('imageUpload').addEventListener('change', function(e) {
 });
 
 // ==================== COPY / OPEN / SAVE ====================
-$('copyScanBtn').addEventListener('click', function() { if (currentScannedText) { navigator.clipboard.writeText(currentScannedText); showToast(mt('copied'), 'success'); } });
+$('copyScanBtn').addEventListener('click', function() { if (currentScannedText) { navigator.clipboard.writeText(currentScannedText); showToast('Nusxalandi', 'success'); } });
 $('openScanBtn').addEventListener('click', function() { if (currentScannedText) openUrl(currentScannedText); });
 $('saveScanBtn').addEventListener('click', function() { if (currentScannedText) saveToHistory(currentScannedText); });
-$('copyImageBtn').addEventListener('click', function() { if (currentImageScannedText) { navigator.clipboard.writeText(currentImageScannedText); showToast(mt('copied'), 'success'); } });
+$('copyImageBtn').addEventListener('click', function() { if (currentImageScannedText) { navigator.clipboard.writeText(currentImageScannedText); showToast('Nusxalandi', 'success'); } });
 $('openImageBtn').addEventListener('click', function() { if (currentImageScannedText) openUrl(currentImageScannedText); });
 $('saveImageBtn').addEventListener('click', function() { if (currentImageScannedText) saveToHistory(currentImageScannedText); });
 
@@ -314,7 +325,7 @@ function renderHistory() {
     document.querySelectorAll('.history-item').forEach(function(card) {
         card.addEventListener('click', function(e) { if (!e.target.closest('button')) { qrText.value = card.dataset.text; document.querySelector('.qr-tab[data-tab="generate"]').click(); generateQR(); } });
     });
-    document.querySelectorAll('.copy-item').forEach(function(btn) { btn.addEventListener('click', function(e) { e.stopPropagation(); navigator.clipboard.writeText(btn.closest('.history-item').dataset.text); showToast(mt('copied'), 'success'); }); });
+    document.querySelectorAll('.copy-item').forEach(function(btn) { btn.addEventListener('click', function(e) { e.stopPropagation(); navigator.clipboard.writeText(btn.closest('.history-item').dataset.text); showToast('Nusxalandi', 'success'); }); });
     document.querySelectorAll('.delete-item').forEach(function(btn) { btn.addEventListener('click', function(e) { e.stopPropagation(); var card = btn.closest('.history-item'); deleteHistoryItem(card.dataset.id, card.dataset.cloud === 'true'); }); });
 }
 
@@ -327,7 +338,7 @@ function generateWifiQR() {
 }
 
 $('generateWifiBtn').addEventListener('click', function() { if (!$('wifiSSID').value.trim()) { showToast('WiFi nomini kiriting', 'error'); return; } generateWifiQR(); showToast('WiFi QR yaratildi', 'success'); });
-$('downloadWifiBtn').addEventListener('click', function() { if (!wifiQrCanvas.style.display || wifiQrCanvas.style.display === 'none') { showToast('Avval WiFi QR yarating', 'error'); return; } var a = document.createElement('a'); a.download = 'wifi-qrcode.png'; a.href = wifiQrCanvas.toDataURL(); a.click(); showToast(mt('downloaded'), 'success'); });
+$('downloadWifiBtn').addEventListener('click', function() { if (!wifiQrCanvas.style.display || wifiQrCanvas.style.display === 'none') { showToast('Avval WiFi QR yarating', 'error'); return; } var a = document.createElement('a'); a.download = 'wifi-qrcode.png'; a.href = wifiQrCanvas.toDataURL(); a.click(); showToast('Yuklab olindi', 'success'); });
 $('wifiSSID').addEventListener('input', generateWifiQR);
 $('wifiPassword').addEventListener('input', generateWifiQR);
 $('wifiEncryption').addEventListener('change', generateWifiQR);
@@ -345,32 +356,16 @@ function updateUserUI(user) {
 
 // ==================== INIT ====================
 function init() {
-    initMiniI18n();
-    // QR Code v2.1 ishga tushmoqda...');
-    const _t = getTheme(); if (_t === 'dark') document.body.classList.add('dark'); else document.body.classList.remove('dark'); updateThemeIcon();
-    $('themeToggle').addEventListener('click', toggleTheme);
+    console.log('MRDEV QR Code v2.1 ishga tushmoqda...');
+    initTheme();
     generateQR();
 
     initAuth(function(user) {
-        currentUser = user;
-        window.currentUser = user; updateUserUI(user);
+        currentUser = user; updateUserUI(user);
         if (user) loadCloudHistory(); else loadLocalHistory();
         try { initMiniDropdown(user); } catch(e) { console.warn('Dropdown error:', e); }
     });
 }
 
-
-onLangChange(function() {
-    // QR tabs are button labels - update them
-    document.querySelectorAll('.qr-tab').forEach(function(btn) {
-        var tab = btn.getAttribute('data-tab');
-        if (tab === 'generate') btn.textContent = mt('generate');
-        if (tab === 'scan') btn.textContent = mt('scan');
-        if (tab === 'history') btn.textContent = mt('history');
-        if (tab === 'wifi') btn.textContent = mt('wifi_tab');
-    });
-    var clearBtn = document.getElementById('clearHistoryBtn');
-    if (clearBtn) clearBtn.textContent = mt('clear');
-});
 document.addEventListener('DOMContentLoaded', init);
 window.addEventListener('beforeunload', function() { stopCamera(); });

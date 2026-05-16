@@ -5,14 +5,14 @@
 //   3. initAuth — local auth user uchun callback to'g'ri chaqiriladi
 //   4. Debug loglar muhim operatsiyalarda
 
-import { initializeApp, getApps } from 'firebase/app';
+import { initializeApp, getApps } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import {
     getAuth,
     onAuthStateChanged,
     signOut,
     browserLocalPersistence,
     setPersistence
-} from 'firebase/auth';
+} from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 import {
     getFirestore,
     collection,
@@ -27,18 +27,17 @@ import {
     getDocs,
     setDoc,
     writeBatch
-} from 'firebase/firestore';
+} from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
 // ==================== FIREBASE CONFIG ====================
-import logger from './core/logger.js';
-
+const ENV = window.__ENV__ || {};
 const firebaseConfig = {
-    apiKey:            import.meta.env.VITE_MAIN_API_KEY,
-    authDomain:        import.meta.env.VITE_MAIN_AUTH_DOMAIN,
-    projectId:         import.meta.env.VITE_MAIN_PROJECT_ID,
-    storageBucket:     import.meta.env.VITE_MAIN_STORAGE_BUCKET,
-    messagingSenderId: import.meta.env.VITE_MAIN_MESSAGING_SENDER_ID,
-    appId:             import.meta.env.VITE_MAIN_APP_ID
+    apiKey:            ENV.MAIN_API_KEY            || '',
+    authDomain:        ENV.MAIN_AUTH_DOMAIN        || '',
+    projectId:         ENV.MAIN_PROJECT_ID         || '',
+    storageBucket:     ENV.MAIN_STORAGE_BUCKET     || '',
+    messagingSenderId: ENV.MAIN_MESSAGING_SENDER_ID || '',
+    appId:             ENV.MAIN_APP_ID             || ''
 };
 
 // ==================== SINGLETON ====================
@@ -54,10 +53,10 @@ function getFirebase() {
         _auth = getAuth(_app);
         _db   = getFirestore(_app);
         setPersistence(_auth, browserLocalPersistence).catch(err => {
-            logger.firebaseHelper.persistenceError(err.message);
+            console.warn('[FirebaseHelper] Persistence error:', err.message);
         });
     } catch (e) {
-        logger.firebaseHelper.initError(e);
+        console.error('[FirebaseHelper] init error:', e);
     }
     return { app: _app, auth: _auth, db: _db };
 }
@@ -76,19 +75,19 @@ function getLocalAuthUser() {
 
         // FIX: isLoggedIn tekshiruvi
         if (!local.isLoggedIn) {
-            logger.firebaseHelper.localNotLoggedIn();
+            console.warn('[FirebaseHelper] local auth: isLoggedIn false');
             return null;
         }
 
         if (!local.uid) {
-            logger.firebaseHelper.localNoUid();
+            console.warn('[FirebaseHelper] local auth: uid yo\'q');
             return null;
         }
 
         // Muddatni tekshirish (7 kun)
         const days = (Date.now() - (local.loginTime || 0)) / (1000 * 60 * 60 * 24);
         if (days > 7) {
-            logger.firebaseHelper.localExpired();
+            console.warn('[FirebaseHelper] local auth muddati tugagan');
             localStorage.removeItem('mrdev_local_auth');
             return null;
         }
@@ -103,7 +102,7 @@ function getLocalAuthUser() {
             authType:        local.authType        || 'mrdev'
         };
     } catch (e) {
-        logger.firebaseHelper.localAuthError(e.message);
+        console.warn('[FirebaseHelper] getLocalAuthUser xatolik:', e.message);
         return null;
     }
 }
@@ -142,7 +141,7 @@ function initAuth(callback) {
                 // Firebase user yo'q — local auth tekshirish
                 const localUser = getLocalAuthUser();
                 if (localUser) {
-                    
+                    console.log('[FirebaseHelper] Local auth user topildi:', localUser.uid);
 
                     // Cloud sync local auth uchun ham
                     const lastSync = localStorage.getItem('mrdev_last_sync');
@@ -204,7 +203,7 @@ function getUserId() {
             return local.uid;
         }
     } catch (e) {
-        logger.firebaseHelper.getUserIdError(e.message);
+        console.warn('[FirebaseHelper] getUserId local parse xatolik:', e.message);
     }
 
     return null;
@@ -216,12 +215,8 @@ async function logoutUser() {
         try { await signOut(auth); } catch (e) {}
     }
     localStorage.removeItem('mrdev_local_auth');
-    localStorage.removeItem('mrdev_auth_user');
     localStorage.removeItem('mrdev_user_id');
-    localStorage.removeItem('mrdev_accounts');
-    localStorage.removeItem('mrdev_active_account');
-    localStorage.removeItem('mrdev_last_sync');
-    localStorage.removeItem('mrdev_debug');
+    localStorage.removeItem('mrdev_auth_user');
 }
 
 // ==================== LOCAL CLEANUP ====================
@@ -299,7 +294,7 @@ async function smartSave(collectionName, localKey, data) {
         });
         localStorage.setItem(localKey, JSON.stringify(local.slice(0, 50)));
     } catch (e) {
-        logger.firebaseHelper.localSaveFailed(e.message);
+        console.warn('[FirebaseHelper] Local save failed:', e.message);
     }
 
     // 2. Cloud saqlash
@@ -313,7 +308,7 @@ async function smartSave(collectionName, localKey, data) {
                 });
             }
         } catch (e) {
-            logger.firebaseHelper.cloudSaveFailed(e.message);
+            console.warn('[FirebaseHelper] Cloud save failed:', e.message);
         }
     }
 }
@@ -340,7 +335,10 @@ function smartLoad(collectionName, localKey, callback) {
                 limit(50)
             );
 
+            let resolved = false;
             return onSnapshot(q, (snap) => {
+                if (resolved) return;
+                resolved = true;
                 const cloudItems = snap.docs.map(d => ({
                     id:      d.id,
                     ...d.data(),
@@ -350,14 +348,16 @@ function smartLoad(collectionName, localKey, callback) {
                 localStorage.setItem(localKey, JSON.stringify(cloudItems));
                 if (callback) callback(cloudItems);
             }, (error) => {
-                logger.firebaseHelper.cloudLoadFailed(error.message);
+                if (resolved) return;
+                resolved = true;
+                console.warn('[FirebaseHelper] Cloud load failed:', error.message);
                 try {
                     const localItems = JSON.parse(localStorage.getItem(localKey) || '[]');
                     if (callback) callback(localItems);
                 } catch (e) {}
             });
         } catch (e) {
-            logger.firebaseHelper.cloudListenerError(e.message);
+            console.warn('[FirebaseHelper] Cloud listener error:', e.message);
             try {
                 const localItems = JSON.parse(localStorage.getItem(localKey) || '[]');
                 if (callback) callback(localItems);
@@ -386,7 +386,7 @@ async function smartDelete(collectionName, localKey, itemId, isCloud) {
                 await deleteDoc(doc(db, 'users', uid, collectionName, itemId));
             }
         } catch (e) {
-            logger.firebaseHelper.deleteError(e.message);
+            console.warn('[FirebaseHelper] Delete error:', e.message);
         }
     }
 }
@@ -409,7 +409,7 @@ async function clearAll(collectionName, localKey) {
                 }
             }
         } catch (e) {
-            logger.firebaseHelper.clearError(e.message);
+            console.warn('[FirebaseHelper] Clear error:', e.message);
         }
     }
 }

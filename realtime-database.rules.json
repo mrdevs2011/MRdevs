@@ -323,13 +323,6 @@
       }
     },
 
-    "pass_notifications": {
-      "$uid": {
-        ".read": "$uid === auth.uid",
-        ".write": "auth != null"
-      }
-    },
-
     "admin_config": {
       ".read": true,
       ".write": "auth != null && auth.token.admin === true"

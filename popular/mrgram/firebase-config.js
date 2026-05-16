@@ -1,9 +1,9 @@
-import { initializeApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore';
-import { getDatabase } from 'firebase/database';
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getDatabase } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
 const firebaseConfig = {
-  apiKey: "",
+  apiKey: "window.__ENV__?.MAIN_API_KEY || """,
   authDomain: "code-vibe-df610.firebaseapp.com",
   projectId: "code-vibe-df610",
   storageBucket: "code-vibe-df610.firebasestorage.app",

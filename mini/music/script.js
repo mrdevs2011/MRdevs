@@ -1,10 +1,8 @@
-import { mt, initMiniI18n, onLangChange } from '../../assets/js/mini-i18n.js';
-import { getTheme, setTheme, toggleTheme } from '../../assets/js/core/global-settings.js';
 // ==================== MRDEV MUSIC v2.0 — Firebase + Supabase + Local Sync ====================
 import { initAuth, getCurrentUser, getUserId } from '../../assets/js/firebase-helper.js';
 import { initMiniDropdown } from '../../assets/js/dropdown.js';
 import { getFirebase } from '../../assets/js/firebase-helper.js';
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
 // Firebase
 var _db = null;
@@ -13,11 +11,11 @@ function getDB() {
     return _db;
 }
 
-import { collection, addDoc, query, orderBy, limit, startAfter, getDocs, deleteDoc, doc, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, query, orderBy, limit, startAfter, getDocs, deleteDoc, doc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
 // Supabase
-var SUPABASE_URL = '';
-var SUPABASE_KEY = '';
+var SUPABASE_URL = "window.__ENV__?.SUPABASE_URL || """;
+var SUPABASE_KEY = "window.__ENV__?.SUPABASE_KEY || """;
 var supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // ==================== DOM ====================
@@ -47,11 +45,24 @@ var formatTime = function(s) {
 };
 
 // ==================== THEME ====================
+function initTheme() {
+    var saved = localStorage.getItem('theme') || 'dark';
+    if (saved === 'dark') document.documentElement.classList.add('dark');
+    else document.documentElement.classList.remove('dark');
+    updateThemeIcon();
+    $('themeToggle').addEventListener('click', toggleTheme);
+}
+
+function toggleTheme() {
+    var isDark = document.documentElement.classList.toggle('dark');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    updateThemeIcon();
+}
 
 function updateThemeIcon() {
     var btn = $('themeToggle');
     if (!btn) return;
-    var isDark = document.body.classList.contains('dark');
+    var isDark = document.documentElement.classList.contains('dark');
     btn.innerHTML = isDark
         ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>'
         : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
@@ -171,10 +182,10 @@ async function deleteAudio(id, data) {
         var card = $('card-' + id);
         if (card) card.remove();
         allAudioIds = allAudioIds.filter(function(a) { return a !== id; });
-        showToast(mt('deleted'), 'success');
+        showToast('O\'chirildi', 'success');
     } catch(e) {
         console.error('Delete error:', e);
-        showToast(mt('delete_error'), 'error');
+        showToast('O\'chirishda xatolik', 'error');
     }
 }
 
@@ -250,7 +261,7 @@ async function playAudio(id, btn, cardData) {
         console.error('Play error:', err);
         spinner.remove();
         icon.style.display = 'block';
-        showToast(mt('load_error'), 'error');
+        showToast('Yuklashda xatolik', 'error');
     }
 }
 
@@ -376,7 +387,7 @@ $('rec-trigger').addEventListener('click', async function() {
             drawStudio();
             btn.innerHTML = '<svg class="svg-icon" style="fill:var(--red);color:var(--red);" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>';
         } catch(e) {
-            showToast(mt('mic_perm'), 'error');
+            showToast('Mikrofon ruxsati kerak!', 'error');
         }
     } else {
         mediaRecorder.stop();
@@ -396,8 +407,8 @@ document.getElementById('file-in').addEventListener('change', function() {
 
 // ==================== SAVE TO SUPABASE ====================
 $('save-cloud').addEventListener('click', async function() {
-    if (!currentUser) { showToast(mt('login_music'), 'error'); return; }
-    if (!activeBlob) { showToast(mt('rec_first'), 'error'); return; }
+    if (!currentUser) { showToast('Avval hisobga kiring', 'error'); return; }
+    if (!activeBlob) { showToast('Avval audio yozing yoki yuklang', 'error'); return; }
 
     var name = $('rec-name').value || 'Audio';
     var upTxt = $('up-txt');
@@ -435,7 +446,7 @@ $('save-cloud').addEventListener('click', async function() {
         }
 
         upBar.style.width = '100%';
-        showToast(mt('music_saved'), 'success');
+        showToast('Musiqa saqlandi!', 'success');
         setTimeout(function() { location.reload(); }, 500);
     } catch(e) {
         console.error('Upload error:', e);
@@ -477,21 +488,18 @@ function updateUserUI(user) {
             }
         }
     } else {
-        if (triggerName) triggerName.textContent = mt('guest');
+        if (triggerName) triggerName.textContent = 'Mehmon';
         if (triggerAvatar) triggerAvatar.textContent = '?';
     }
 }
 
 // ==================== INIT ====================
 async function init() {
-    initMiniI18n();
-    // Music v2.0 ishga tushmoqda...');
-    const _t = getTheme(); if (_t === 'dark') document.body.classList.add('dark'); else document.body.classList.remove('dark'); updateThemeIcon();
-    $('themeToggle').addEventListener('click', toggleTheme);
+    console.log('MRDEV Music v2.0 ishga tushmoqda...');
+    initTheme();
 
     initAuth(async function(user) {
         currentUser = user;
-        window.currentUser = user;
         updateUserUI(user);
         if (user) {
             await loadAllAudioIds();
@@ -509,8 +517,4 @@ async function init() {
     console.log('Music tayyor!');
 }
 
-
-onLangChange(function() {
-    // Music list re-renders on load; no static labels to update
-});
 document.addEventListener('DOMContentLoaded', init);

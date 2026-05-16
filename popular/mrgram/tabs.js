@@ -1,5 +1,5 @@
 import { db } from "./firebase-config.js";
-import { collection, onSnapshot, doc, getDoc, setDoc, updateDoc, arrayUnion, deleteDoc, query, where, getDocs } from 'firebase/firestore';
+import { collection, onSnapshot, doc, getDoc, setDoc, updateDoc, arrayUnion, deleteDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { showToast } from "./ui-helpers.js";
 
 let me = null;

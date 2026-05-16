@@ -1,11 +1,12 @@
-// ==================== MRDEV AUTH STATE MANAGER v6.1 ====================
+// ==================== MRDEV AUTH STATE MANAGER v6.0 ====================
 import logger from './logger.js';
 import { auth, db } from './firebase-init.js';
-import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+import { doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { showToast } from './toast.js';
 import { initDropdown } from '../dropdown.js';
 import { saveUserMrdevId } from '../notif-pass.js';
-import { logoutUser as globalLogout } from './global-settings.js';
+import { logoutUser as globalLogout, clearCache } from './global-settings.js';
 import { t } from './i18n.js';
 import {
     addOrUpdateAccount,
@@ -39,54 +40,12 @@ function getLocalAuth() {
         const data = JSON.parse(localStorage.getItem('mrdev_local_auth'));
         if (!data || !data.loginTime) return null;
         const hours = (Date.now() - data.loginTime) / (1000 * 60 * 60);
-        if (hours > 168) { localStorage.removeItem('mrdev_local_auth'); return null; }
+        if (hours > 24) { localStorage.removeItem('mrdev_local_auth'); return null; }
         return data;
     } catch (e) { return null; }
 }
 
-// ==================== SMOOTH UI HELPERS ====================
-function fadeShow(el, displayType = 'flex', delay = 0) {
-    if (!el) return;
-    el.style.display = displayType;
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(6px)';
-    el.style.transition = 'none';
-    const run = () => {
-        requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-                el.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-                el.style.opacity = '1';
-                el.style.transform = 'translateY(0)';
-            });
-        });
-        setTimeout(() => {
-            el.style.transition = '';
-            el.style.opacity = '';
-            el.style.transform = '';
-        }, 360);
-    };
-    if (delay > 0) { setTimeout(run, delay); } else { run(); }
-}
-
-function fadeHide(el, instant = false) {
-    if (!el) return;
-    if (instant || el.style.display === 'none' || !el.offsetParent) {
-        el.style.display = 'none';
-        el.style.opacity = '';
-        el.style.transform = '';
-        el.style.transition = '';
-        return;
-    }
-    el.style.transition = 'opacity 0.18s ease, transform 0.18s ease';
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(-4px)';
-    setTimeout(() => {
-        el.style.display = 'none';
-        el.style.opacity = '';
-        el.style.transform = '';
-        el.style.transition = '';
-    }, 200);
-}
+export function getCurrentUser() { return currentUser; }
 
 function setText(id, text) {
     const el = document.getElementById(id);
@@ -103,52 +62,41 @@ function setAvatar(id, photoURL, fallback) {
     }
 }
 
-// ==================== LOADING STATE ====================
-function setUserLoading(loading) {
-    const triggers = [
-        document.getElementById('mrdevUserTrigger'),
-        document.getElementById('mrdevUserTriggerMini'),
-        document.getElementById('headerUserTrigger'),
-    ];
-    triggers.forEach(el => {
-        if (!el) return;
-        el.classList.toggle('user-loading', loading);
-        if (!loading) el.style.transition = '';
-    });
-}
-
-// ==================== UI UPDATE ====================
 export function updateUIForUser(user) {
-    const userMenuHeader = document.getElementById('userMenuHeader');
-    const userMenuLogin  = document.getElementById('userMenuLogin');
-    const userMenuLogout = document.getElementById('userMenuLogout');
-    const notifMenuLink  = document.getElementById('notifMenuLink');
-
     if (!user) {
-        fadeHide(userMenuHeader);
-        fadeHide(userMenuLogout);
-        fadeHide(notifMenuLink);
-        fadeShow(userMenuLogin, 'flex', 80);
-
-        const av = document.getElementById('headerUserAvatar');
-        if (av) av.textContent = '?';
-        const nm = document.getElementById('headerUserName');
-        if (nm) nm.textContent = t('guest');
+        ['sidebarUser','sidebarLogout'].forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; });
+        const sl = document.getElementById('sidebarLogin'); if (sl) sl.style.display = 'block';
+        const nn = document.getElementById('notifNav'); if (nn) nn.style.display = 'none';
+        
+        const mh = document.getElementById('userMenuHeader'); if (mh) mh.style.display = 'none';
+        const ml = document.getElementById('userMenuLogin'); if (ml) ml.style.display = 'block';
+        const mo = document.getElementById('userMenuLogout'); if (mo) mo.style.display = 'none';
+        const nm = document.getElementById('notifMenuLink'); if (nm) nm.style.display = 'none';
+        
+        const av = document.getElementById('headerUserAvatar'); if (av) av.textContent = '?';
+        const nm2 = document.getElementById('headerUserName'); if (nm2) nm2.textContent = t('guest');
         return;
     }
 
-    const dn      = user.displayName || user.email?.split('@')[0] || 'User';
-    const email   = user.email || '';
-    const avatar  = dn.charAt(0).toUpperCase();
+    const dn = user.displayName || user.email?.split('@')[0] || 'User';
+    const email = user.email || '';
+    const avatar = dn.charAt(0).toUpperCase();
     const mrdevId = user.mrdevId || localStorage.getItem('mrdev_user_id') || '';
 
     logger.auth.currentUser(dn, mrdevId || '(yo\'q)');
 
-    fadeHide(userMenuLogin);
-    fadeShow(userMenuHeader, 'flex', 0);
-    fadeShow(userMenuLogout, 'flex', 40);
-    fadeShow(notifMenuLink,  'flex', 80);
+    setText('sidebarName', dn);
+    setText('sidebarEmail', email);
+    setText('sidebarMrdevId', mrdevId);
+    setAvatar('sidebarAvatar', user.photoURL, avatar);
+    ['sidebarUser','sidebarLogout'].forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'flex'; });
+    const sl = document.getElementById('sidebarLogin'); if (sl) sl.style.display = 'none';
+    const nn = document.getElementById('notifNav'); if (nn) nn.style.display = 'flex';
 
+    const mh = document.getElementById('userMenuHeader'); if (mh) mh.style.display = 'flex';
+    const ml = document.getElementById('userMenuLogin'); if (ml) ml.style.display = 'none';
+    const mo = document.getElementById('userMenuLogout'); if (mo) mo.style.display = 'flex';
+    const nm = document.getElementById('notifMenuLink'); if (nm) nm.style.display = 'flex';
     setText('menuName', dn);
     setText('menuEmail', email);
     setText('menuMrdevId', mrdevId);
@@ -156,12 +104,11 @@ export function updateUIForUser(user) {
 
     const av = document.getElementById('headerUserAvatar');
     if (av) {
-        av.innerHTML = user.photoURL
-            ? `<img src="${user.photoURL}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`
+        av.innerHTML = user.photoURL 
+            ? `<img src="${user.photoURL}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">` 
             : avatar;
     }
-    const nm = document.getElementById('headerUserName');
-    if (nm) nm.textContent = dn;
+    const nm2 = document.getElementById('headerUserName'); if (nm2) nm2.textContent = dn;
 
     const ta = document.querySelector('#mrdevUserTrigger .trigger-avatar');
     const tn = document.querySelector('#mrdevUserTrigger .trigger-name');
@@ -187,18 +134,19 @@ export async function logout() {
 }
 
 export function initAuth() {
-    logger.auth.start('v6.1');
-
-    const hasLocalSession = !!getLocalAuth();
-    if (hasLocalSession) setUserLoading(true);
+    logger.auth.start('v6.0');
 
     onAuthStateChanged(auth, async (firebaseUser) => {
         if (firebaseUser && firebaseUser.uid) {
             logger.auth.firebaseUser(firebaseUser.email, firebaseUser.uid);
+
             localStorage.removeItem('mrdev_user_id');
+
             let mrdevId = '';
+
             try {
                 mrdevId = await saveUserMrdevId(firebaseUser);
+                
                 if (mrdevId) {
                     logger.auth.mrdevId(mrdevId);
                     localStorage.setItem('mrdev_user_id', mrdevId);
@@ -214,7 +162,7 @@ export function initAuth() {
                 email: firebaseUser.email,
                 displayName: firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'User',
                 photoURL: firebaseUser.photoURL || null,
-                mrdevId,
+                mrdevId: mrdevId,
                 providerData: firebaseUser.providerData || [],
                 isAuthenticated: true
             };
@@ -224,20 +172,17 @@ export function initAuth() {
                 email: firebaseUser.email,
                 displayName: currentUser.displayName,
                 photoURL: firebaseUser.photoURL,
-                mrdevId,
+                mrdevId: mrdevId,
                 provider: firebaseUser.providerData?.[0]?.providerId === 'google.com' ? 'google' : 'email',
-                authType:  firebaseUser.providerData?.[0]?.providerId === 'google.com' ? 'google' : 'email'
+                authType: firebaseUser.providerData?.[0]?.providerId === 'google.com' ? 'google' : 'email'
             });
 
             addOrUpdateAccount(currentUser, { mrdevId, provider: firebaseUser.providerData?.[0]?.providerId || 'email' });
 
-            document.dispatchEvent(new CustomEvent('mrdev:new_account', {
-                detail: { uid: currentUser.uid, displayName: currentUser.displayName, email: currentUser.email }
-            }));
-
-            setUserLoading(false);
             updateUIForUser(currentUser);
-            try { initDropdown(currentUser); } catch (e) { logger.error.dropdown(e.message); }
+            try { initDropdown(currentUser); } catch (e) {
+                logger.error.dropdown(e.message);
+            }
 
         } else {
             const localAuth = getLocalAuth();
@@ -252,11 +197,11 @@ export function initAuth() {
                     providerData: [{ providerId: localAuth.provider || 'mrdev' }],
                     isAuthenticated: true
                 };
-                setUserLoading(false);
                 updateUIForUser(currentUser);
-                try { initDropdown(currentUser); } catch (e) { logger.error.dropdown(e.message); }
+                try { initDropdown(currentUser); } catch (e) {
+                    logger.error.dropdown(e.message);
+                }
             } else {
-                setUserLoading(false);
                 currentUser = null;
                 updateUIForUser(null);
             }

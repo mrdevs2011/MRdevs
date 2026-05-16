@@ -19,7 +19,7 @@ import {
     setDoc, 
     updateDoc, 
     arrayUnion 
-} from 'firebase/firestore';
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 let me = null;
 let pendingAvatarFile = null;

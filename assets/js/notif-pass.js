@@ -6,10 +6,10 @@ import { db, rtdb } from './core/firebase-init.js';
 import {
     collection, doc, setDoc, getDoc, getDocs, updateDoc,
     query, where, orderBy, limit, serverTimestamp
-} from 'firebase/firestore';
+} from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import {
     ref, push, get, set, update, remove, onValue
-} from 'firebase/database';
+} from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 
 export function generateUserId() {
     const arr = new Uint32Array(1);
@@ -35,7 +35,7 @@ export function generateSecurePassword() {
 
 export async function saveUserMrdevId(user, extraData = {}) {
     if (!user || !user.uid) {
-        logger.core.noUser();
+        console.warn('[MRDev] saveUserMrdevId: user.uid mavjud emas');
         return null;
     }
 
@@ -45,7 +45,7 @@ export async function saveUserMrdevId(user, extraData = {}) {
     const photoURL = user.photoURL || null;
     const linkedTo = extraData.linkedTo || null;
 
-    logger.core.saveStart(uid, email, linkedTo);
+    console.log('🔍 [MRDev] saveUserMrdevId:', { uid, email, linkedTo });
 
     try {
         const userRef = doc(db, 'users', uid);
@@ -55,7 +55,7 @@ export async function saveUserMrdevId(user, extraData = {}) {
             const data = userSnap.data();
 
             if (data.mrdevId && data.mrdevId !== '') {
-                logger.core.existing(data.mrdevId);
+                console.log('✅ [MRDev] Mavjud MRDEV ID:', data.mrdevId);
                 try {
                     const updateData = {
                         displayName: displayName,
@@ -69,7 +69,7 @@ export async function saveUserMrdevId(user, extraData = {}) {
                     }
                     await updateDoc(userRef, updateData);
                 } catch (e) {
-                    logger.core.updateError(e.message);
+                    console.warn('[MRDev] updateDoc xatolik:', e.message);
                 }
                 return data.mrdevId;
             }
@@ -85,7 +85,7 @@ export async function saveUserMrdevId(user, extraData = {}) {
                 updatedAt: serverTimestamp()
             });
 
-            logger.core.newUpdate(mrdevId);
+            console.log('🆕 [MRDev] Yangi MRDEV ID (update):', mrdevId);
             return mrdevId;
         }
 
@@ -107,17 +107,17 @@ export async function saveUserMrdevId(user, extraData = {}) {
             isActive: true
         });
 
-        logger.core.newCreate(mrdevId);
+        console.log('🆕 [MRDev] Yangi MRDEV ID (create):', mrdevId);
         return mrdevId;
 
     } catch (error) {
-        logger.core.error(error.message);
+        console.error('❌ [MRDev] saveUserMrdevId xatolik:', error.message);
         return null;
     }
 }
 
 export async function loginWithMrdevId(mrdevId) {
-    logger.core.loginStart(mrdevId);
+    console.log('🔍 [MRDev] loginWithMrdevId:', mrdevId);
 
     try {
         const snap = await getDocs(
@@ -131,7 +131,7 @@ export async function loginWithMrdevId(mrdevId) {
 
         if (!userData.email) throw new Error('Bu hisob bilan email bog\'lanmagan');
 
-        logger.core.loginFound(userData.email, userData.linkedTo);
+        console.log('✅ [MRDev] Foydalanuvchi topildi:', userData.email, '| linkedTo:', userData.linkedTo || 'yo\'q');
 
         return {
             uid: userUid,
@@ -144,14 +144,14 @@ export async function loginWithMrdevId(mrdevId) {
             linkedTo: userData.linkedTo || null
         };
     } catch (error) {
-        logger.core.loginError(error.message);
+        console.error('❌ [MRDev] loginWithMrdevId xatolik:', error.message);
         throw error;
     }
 }
 
 export async function getLinkedAccount(mrdevId) {
     if (!mrdevId) return null;
-    logger.core.linkStart(mrdevId);
+    console.log('🔗 [MRDev] getLinkedAccount:', mrdevId);
 
     try {
         const snap = await getDocs(
@@ -171,13 +171,13 @@ export async function getLinkedAccount(mrdevId) {
             mrdevId: userData.mrdevId
         };
     } catch (e) {
-        logger.core.linkError(e.message);
+        console.warn('[MRDev] getLinkedAccount xatolik:', e.message);
         return null;
     }
 }
 
 export async function linkAccount(uid, targetMrdevId) {
-    logger.core.linkAccount(uid, targetMrdevId);
+    console.log('🔗 [MRDev] linkAccount:', uid, '→', targetMrdevId);
 
     try {
         const targetSnap = await getDocs(
@@ -193,16 +193,16 @@ export async function linkAccount(uid, targetMrdevId) {
             updatedAt: serverTimestamp()
         });
 
-        logger.core.linkSuccess(uid, targetMrdevId);
+        console.log('✅ [MRDev] Hisob ulandi:', uid, '→', targetMrdevId);
         return { success: true, linkedTo: targetMrdevId };
     } catch (error) {
-        logger.core.linkError(error.message);
+        console.error('❌ [MRDev] linkAccount xatolik:', error.message);
         throw error;
     }
 }
 
 export async function unlinkAccount(uid) {
-    logger.core.unlink(uid);
+    console.log('🔓 [MRDev] unlinkAccount:', uid);
 
     try {
         await updateDoc(doc(db, 'users', uid), {
@@ -210,16 +210,16 @@ export async function unlinkAccount(uid) {
             updatedAt: serverTimestamp()
         });
 
-        logger.core.unlinkSuccess();
+        console.log('✅ [MRDev] Ulanish o\'chirildi');
         return { success: true };
     } catch (error) {
-        logger.core.unlinkError(error.message);
+        console.error('❌ [MRDev] unlinkAccount xatolik:', error.message);
         throw error;
     }
 }
 
 export async function sendPassCode(mrdevId) {
-    logger.core.sendCode(mrdevId);
+    console.log('📤 [MRDev] sendPassCode:', mrdevId);
 
     try {
         const snap = await getDocs(
@@ -245,18 +245,20 @@ export async function sendPassCode(mrdevId) {
             createdAt: Date.now()
         });
 
-        logger.mrdev.otpSentDev(passCode);
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+            console.log('🔑 [DEV] Pass Code:', passCode);
+        }
 
-        logger.core.sendCodeSuccess();
+        console.log('✅ [MRDev] Pass code yuborildi');
         return { success: true, email: userData.email, expiresAt: expiresAt, userId: userUid };
     } catch (error) {
-        logger.core.sendCodeError(error.message);
+        console.error('❌ [MRDev] sendPassCode xatolik:', error.message);
         throw error;
     }
 }
 
 export async function verifyPassCode(mrdevId, passCode) {
-    logger.core.verifyCode(mrdevId);
+    console.log('🔐 [MRDev] verifyPassCode:', mrdevId);
 
     try {
         const snapshot = await get(ref(rtdb, 'pass_notifications'));
@@ -274,10 +276,10 @@ export async function verifyPassCode(mrdevId, passCode) {
 
         await update(ref(rtdb, `pass_notifications/${foundKey}`), { used: true, verifiedAt: Date.now() });
 
-        logger.core.verifySuccess();
+        console.log('✅ [MRDev] Pass code tasdiqlandi');
         return { success: true, uid: foundData.uid, email: foundData.email, mrdevId: foundData.mrdevId };
     } catch (error) {
-        logger.core.verifyError(error.message);
+        console.error('❌ [MRDev] verifyPassCode xatolik:', error.message);
         throw error;
     }
 }

@@ -1,7 +1,7 @@
 // chat.js – MR GRAM uchun chat funksiyalari (TO'G'RILANGAN)
 
 import { db } from "./firebase-config.js";
-import { collection, onSnapshot, query, orderBy, doc, deleteDoc, addDoc, getDocs } from 'firebase/firestore';
+import { collection, onSnapshot, query, orderBy, doc, deleteDoc, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { sendMessage, setCurrentChat, clearEditing, getPendingImage, getPendingVideo, getPendingVoice } from "./messages.js";
 import { stopAllVoice } from "./voice.js";
 import { escapeHtml, viewFullImage } from "./ui-helpers.js";

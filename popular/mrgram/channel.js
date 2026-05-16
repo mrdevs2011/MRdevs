@@ -1,5 +1,5 @@
 import { db } from "./firebase-config.js";
-import { collection, addDoc, getDocs, query, where, doc, updateDoc, arrayUnion, arrayRemove, deleteDoc } from 'firebase/firestore';
+import { collection, addDoc, getDocs, query, where, doc, updateDoc, arrayUnion, arrayRemove, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { showToast } from "./ui-helpers.js";
 
 // ========== KANAL YARATISH ==========
@@ -33,7 +33,7 @@ export async function createChannel(ownerId, channelName, description = "") {
 // ========== KANAL MA'LUMOTLARINI OLISH ==========
 export async function getChannel(channelId) {
     try {
-        const { doc, getDoc } = await import("firebase/firestore");
+        const { doc, getDoc } = await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js");
         const channelDoc = await getDoc(doc(db, "channels", channelId));
         if (channelDoc.exists()) {
             return { id: channelDoc.id, ...channelDoc.data() };
@@ -92,7 +92,7 @@ export async function deleteChannel(channelId, userId) {
         }
         
         // Kanaldagi barcha xabarlarni o'chirish
-        const { collection, getDocs, deleteDoc } = await import("firebase/firestore");
+        const { collection, getDocs, deleteDoc } = await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js");
         const messagesRef = collection(db, "chats", channelId, "messages");
         const messagesSnap = await getDocs(messagesRef);
         
@@ -169,7 +169,7 @@ export async function loadUserChannels(userId, onChannelClick = null) {
 // ========== KANALGA XABAR YUBORISH ==========
 export async function sendChannelMessage(channelId, userId, message, type = 'text') {
     try {
-        const { addDoc, collection, serverTimestamp } = await import("firebase/firestore");
+        const { addDoc, collection, serverTimestamp } = await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js");
         
         const messageData = {
             from: userId,

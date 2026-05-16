@@ -374,20 +374,7 @@
     </div>
 </div>
 
-    <script type="importmap">
-    {
-      "imports": {
-        "firebase/app": "https://esm.sh/firebase/app",
-        "firebase/auth": "https://esm.sh/firebase/auth",
-        "firebase/firestore": "https://esm.sh/firebase/firestore",
-        "firebase/database": "https://esm.sh/firebase/database",
-        "firebase/storage": "https://esm.sh/firebase/storage",
-        "firebase/analytics": "https://esm.sh/firebase/analytics",
-        "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js"
-      }
-    }
-    </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/codemirror.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/mode/xml/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/mode/javascript/javascript.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/mode/css/css.min.js"></script>
@@ -397,13 +384,13 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/addon/search/search.min.js"></script>
 
 <script type="module">
-    import { initializeApp } from "firebase/app";
-    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth";
-    import { getFirestore, collection, addDoc, query, where, onSnapshot, Timestamp, deleteDoc, doc } from "firebase/firestore";
-    import { getDatabase, ref, set, onValue } from "firebase/database";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getFirestore, collection, addDoc, query, where, onSnapshot, Timestamp, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
     const firebaseConfig = {
-        apiKey: import.meta.env.VITE_MAIN_API_KEY || "",
+        apiKey: "window.__ENV__?.MAIN_API_KEY || """,
         authDomain: "education-15cd7.firebaseapp.com",
         projectId: "education-15cd7",
         storageBucket: "education-15cd7.firebasestorage.app",

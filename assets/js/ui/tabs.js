@@ -7,31 +7,31 @@ import { t } from '../core/i18n.js';
 let currentTab = 'all';
 
 export const popularApps = [
-    { name: "AI", icon: "ai.svg", path: "./popular/ai/index.html" },
-    { name: "Jamoaviy-Doska", icon: "groupboard.svg", path: "./popular/groupboard/index.html" },
-    { name: "LearnCode", icon: "learncode.svg", path: "./popular/learncode/index.html" },
-    { name: "MrGram", icon: "mrgram.svg", path: "./popular/mrgram/index.html" },
-    { name: "Xabarlar-Markazi", icon: "notifyhub.svg", path: "./popular/notifyhub/index.html" },
-    { name: "Typing", icon: "typing.svg", path: "./popular/typing/index.html" },
-    { name: "Xavfsizlik", icon: "security.svg", path: "./popular/security/index.html" },
-    { name: "CodeStudio", icon: "codestudio.svg", path: "./popular/codestudio/index.html" },
-    { name: "Videolarim", icon: "videohub.svg", path: "./popular/videohub/index.html" },
-    { name: "ObHavo", icon: "weather.svg", path: "./popular/weather/index.html" },
-    { name: "Eslatmalar", icon: "notes.svg", path: "./popular/notes/index.html" },
-    { name: "Kun-Tartibi", icon: "todo.svg", path: "./popular/todo/index.html" }
+    { name: "AI", icon: "ai.svg", path: "./popular/ai/" },
+    { name: "Jamoaviy-Doska", icon: "groupboard.svg", path: "./popular/groupboard/" },
+    { name: "LearnCode", icon: "learncode.svg", path: "./popular/learncode/" },
+    { name: "MrGram", icon: "mrgram.svg", path: "./popular/mrgram/" },
+    { name: "Xabarlar-Markazi", icon: "notifyhub.svg", path: "./popular/notifyhub/" },
+    { name: "Typing", icon: "typing.svg", path: "./popular/typing/" },
+    { name: "Xavfsizlik", icon: "security.svg", path: "./popular/security/" },
+    { name: "CodeStudio", icon: "codestudio.svg", path: "./popular/codestudio/" },
+    { name: "Videolarim", icon: "videohub.svg", path: "./popular/videohub/" },
+    { name: "ObHavo", icon: "weather.svg", path: "./popular/weather/" },
+    { name: "Eslatmalar", icon: "notes.svg", path: "./popular/notes/" },
+    { name: "Kun-Tartibi", icon: "todo.svg", path: "./popular/todo/" }
 ];
 
 export const miniApps = [
-    { name: "Kalkulyator", icon: "calculator.svg", path: "./mini/calculator/index.html" },
-    { name: "Bingo", icon: "bingo.svg", path: "./mini/bingo/index.html" },
-    { name: "Doska", icon: "board.svg", path: "./mini/board/index.html" },
-    { name: "Musiqalarim", icon: "music.svg", path: "./mini/music/index.html" },
-    { name: "KopOyna", icon: "splitview.svg", path: "./mini/splitview/index.html" },
-    { name: "Examer", icon: "examer.svg", path: "./mini/examer/index.html" },
-    { name: "Soat", icon: "clock.svg", path: "./mini/clock/index.html" },
-    { name: "Sekundnomer", icon: "stopwatch.svg", path: "./mini/stopwatch/index.html" },
-    { name: "Taymer", icon: "timer.svg", path: "./mini/timer/index.html" },
-    { name: "QR kod", icon: "qr.svg", path: "./mini/qr/index.html" }
+    { name: "Kalkulyator", icon: "calculator.svg", path: "./mini/calculator/" },
+    { name: "Bingo", icon: "bingo.svg", path: "./mini/bingo/" },
+    { name: "Doska", icon: "board.svg", path: "./mini/board/" },
+    { name: "Musiqalarim", icon: "music.svg", path: "./mini/music/" },
+    { name: "KopOyna", icon: "splitview.svg", path: "./mini/splitview/" },
+    { name: "Examer", icon: "examer.svg", path: "./mini/examer/" },
+    { name: "Soat", icon: "clock.svg", path: "./mini/clock/" },
+    { name: "Sekundnomer", icon: "stopwatch.svg", path: "./mini/stopwatch/" },
+    { name: "Taymer", icon: "timer.svg", path: "./mini/timer/" },
+    { name: "QR kod", icon: "qr.svg", path: "./mini/qr/" }
 ];
 
 // Tab subtitle'larini i18n kalitlari orqali olish
@@ -41,33 +41,12 @@ const tabSubtitleKeys = {
     'mini':    'mini_apps'
 };
 
-// ==================== SMOOTH GRID ANIMATION ====================
-function animateGridIn(grid) {
-    if (!grid) return;
-    grid.style.display = 'block';
-    grid.style.opacity = '0';
-    grid.style.transform = 'translateY(10px)';
-    grid.style.transition = 'none';
-    requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-            grid.style.transition = 'opacity 0.24s ease, transform 0.24s ease';
-            grid.style.opacity = '1';
-            grid.style.transform = 'translateY(0)';
-        });
-    });
-    setTimeout(() => {
-        grid.style.transition = '';
-        grid.style.opacity = '';
-        grid.style.transform = '';
-    }, 300);
-}
-
 export function switchTab(tabId) {
     currentTab = tabId;
 
     // Tab button'larini yangilash
-    document.querySelectorAll('.tab').forEach(tab => {
-        tab.classList.toggle('active', tab.dataset.tab === tabId);
+    document.querySelectorAll('.tab').forEach(t => {
+        t.classList.toggle('active', t.dataset.tab === tabId);
     });
 
     // Sidebar nav'ni yangilash
@@ -83,24 +62,18 @@ export function switchTab(tabId) {
     const activeNav = document.getElementById(activeMap[tabId]);
     if (activeNav) activeNav.classList.add('active');
 
-    // Grid'larni ko'rsatish/yashirish — smooth animation bilan
+    // Grid'larni ko'rsatish/yashirish
     const allGrid         = document.getElementById('allGrid');
     const popularOnlyGrid = document.getElementById('popularOnlyGrid');
     const miniOnlyGrid    = document.getElementById('miniOnlyGrid');
 
-    // Avval barchasini yashir (animatsiyasiz)
     [allGrid, popularOnlyGrid, miniOnlyGrid].forEach(grid => {
-        if (grid) {
-            grid.style.transition = 'none';
-            grid.style.display = 'none';
-            grid.style.opacity = '';
-            grid.style.transform = '';
-        }
+        if (grid) grid.style.display = 'none';
     });
 
-    // Keraklisini smooth animate qilib ko'rsat
-    const targets = { all: allGrid, popular: popularOnlyGrid, mini: miniOnlyGrid };
-    animateGridIn(targets[tabId]);
+    if (tabId === 'all'     && allGrid)         allGrid.style.display         = 'block';
+    if (tabId === 'popular' && popularOnlyGrid) popularOnlyGrid.style.display = 'block';
+    if (tabId === 'mini'    && miniOnlyGrid)    miniOnlyGrid.style.display    = 'block';
 
     // Sarlavhani i18n orqali yangilash
     updateSubtitle();

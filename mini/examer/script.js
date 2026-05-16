@@ -1,5 +1,3 @@
-import { mt, initMiniI18n, onLangChange } from '../../assets/js/mini-i18n.js';
-import { getTheme, setTheme, toggleTheme } from '../../assets/js/core/global-settings.js';
 // ==================== MRDEV EXAMER v2.0 — Firebase + Local Sync ====================
 import { initAuth, getCurrentUser, getUserId } from '../../assets/js/firebase-helper.js';
 import { initMiniDropdown } from '../../assets/js/dropdown.js';
@@ -11,7 +9,7 @@ function getDB() {
     return _db;
 }
 
-import { collection, addDoc, query, orderBy, getDocs, deleteDoc, doc, serverTimestamp, where, limit, getDoc } from 'firebase/firestore';
+import { collection, addDoc, query, orderBy, getDocs, deleteDoc, doc, serverTimestamp, where, limit, getDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
 // ==================== DOM ====================
 var $ = function(id) { return document.getElementById(id); };
@@ -30,11 +28,24 @@ var examIndex = 0;
 var activeTab = 'my';
 
 // ==================== THEME ====================
+function initTheme() {
+    var saved = localStorage.getItem('theme') || 'dark';
+    if (saved === 'dark') document.documentElement.classList.add('dark');
+    else document.documentElement.classList.remove('dark');
+    updateThemeIcon();
+    $('themeToggle').addEventListener('click', toggleTheme);
+}
+
+function toggleTheme() {
+    var isDark = document.documentElement.classList.toggle('dark');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    updateThemeIcon();
+}
 
 function updateThemeIcon() {
     var btn = $('themeToggle');
     if (!btn) return;
-    var isDark = document.body.classList.contains('dark');
+    var isDark = document.documentElement.classList.contains('dark');
     btn.innerHTML = isDark
         ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>'
         : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
@@ -69,7 +80,7 @@ $('addQuestionBtn').addEventListener('click', function() {
     var correct = parseInt($('correctAnswer').value);
 
     if (!qText || !a || !b || !c || !d) {
-        showToast(mt('fill_fields'), 'error');
+        showToast('Barcha maydonlarni to\'ldiring', 'error');
         return;
     }
 
@@ -115,13 +126,13 @@ function renderSavedQuestions() {
 // ==================== SAVE EXAM ====================
 $('saveExamBtn').addEventListener('click', async function() {
     var name = $('examName').value.trim();
-    if (!name) { showToast(mt('enter_name'), 'error'); return; }
-    if (!questions.length) { showToast(mt('add_question'), 'error'); return; }
-    if (!currentUser) { showToast(mt('login_req'), 'error'); return; }
+    if (!name) { showToast('Exam nomini kiriting', 'error'); return; }
+    if (!questions.length) { showToast('Kamida 1 ta savol qo\'shing', 'error'); return; }
+    if (!currentUser) { showToast('Hisobga kiring', 'error'); return; }
 
     var btn = $('saveExamBtn');
     btn.disabled = true;
-    btn.textContent = mt('saving');
+    btn.textContent = 'Saqlanmoqda...';
 
     try {
         var examId = generateExamId();
@@ -136,20 +147,20 @@ $('saveExamBtn').addEventListener('click', async function() {
             createdAt: serverTimestamp()
         });
 
-        showToast(mt('exam_saved') + examId, 'success');
+        showToast('Exam saqlandi! ID: ' + examId, 'success');
         startExam(name, questions, docRef.id);
 
         questions = [];
         $('examName').value = '';
         renderSavedQuestions();
-        btn.textContent = mt('save');
+        btn.textContent = 'Examni saqlash';
         btn.disabled = true;
         loadExams();
 
     } catch(e) {
         console.error('Save error:', e);
-        showToast(mt('error'), 'error');
-        btn.textContent = mt('save');
+        showToast('Xatolik', 'error');
+        btn.textContent = 'Examni saqlash';
         btn.disabled = false;
     }
 });
@@ -171,7 +182,7 @@ async function loadExams() {
 
         container.innerHTML = snap.docs.map(function(d) {
             var data = d.data();
-            var date = data.createdAt && data.createdAt.toDate ? data.createdAt.toDate().toLocaleString('uz-UZ') : mt('new');
+            var date = data.createdAt && data.createdAt.toDate ? data.createdAt.toDate().toLocaleString('uz-UZ') : 'Yangi';
             return '<div class="exam-item">' +
                 '<div class="exam-info" data-id="' + d.id + '">' +
                     '<div class="exam-name">' + data.name + '</div>' +
@@ -198,9 +209,9 @@ async function loadExams() {
         container.querySelectorAll('.delete-exam').forEach(function(btn) {
             btn.addEventListener('click', async function(e) {
                 e.stopPropagation();
-                if (!confirm(mt('delete_exam'))) return;
+                if (!confirm('Exam\'ni o\'chirish?')) return;
                 await deleteDoc(doc(db, 'users', currentUser.uid, 'exams', btn.dataset.id));
-                showToast(mt('deleted'));
+                showToast('O\'chirildi');
                 loadExams();
             });
         });
@@ -215,7 +226,7 @@ async function loadExams() {
 $('searchBtn').addEventListener('click', async function() {
     var searchId = $('searchExamId').value.trim();
     if (!searchId) { showToast('ID kiriting', 'error'); return; }
-    if (!currentUser) { showToast(mt('login_req'), 'error'); return; }
+    if (!currentUser) { showToast('Hisobga kiring', 'error'); return; }
 
     try {
         var db = getDB();
@@ -341,22 +352,19 @@ function updateUserUI(user) {
             }
         }
     } else {
-        if (triggerName) triggerName.textContent = mt('guest');
+        if (triggerName) triggerName.textContent = 'Mehmon';
         if (triggerAvatar) triggerAvatar.textContent = '?';
     }
 }
 
 // ==================== INIT ====================
 function init() {
-    initMiniI18n();
-    // Examer v2.0 ishga tushmoqda...');
-    const _t = getTheme(); if (_t === 'dark') document.body.classList.add('dark'); else document.body.classList.remove('dark'); updateThemeIcon();
-    $('themeToggle').addEventListener('click', toggleTheme);
+    console.log('MRDEV Examer v2.0 ishga tushmoqda...');
+    initTheme();
     renderSavedQuestions();
 
     initAuth(function(user) {
         currentUser = user;
-        window.currentUser = user;
         updateUserUI(user);
         if (user) {
             loadExams();
@@ -373,14 +381,4 @@ function init() {
     console.log('Examer tayyor!');
 }
 
-
-onLangChange(function() {
-    var qCount = document.getElementById('questionCount');
-    if (qCount) {
-        var num = qCount.textContent.replace(/[^0-9]/g, '');
-        qCount.textContent = num + mt('q_count');
-    }
-    var saveBtn = document.getElementById('saveExamBtn');
-    if (saveBtn && !saveBtn.disabled) saveBtn.textContent = mt('save');
-});
 document.addEventListener('DOMContentLoaded', init);

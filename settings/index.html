@@ -4,19 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title data-i18n="settings_title">Sozlamalar | MRDEV</title>
-        <script type="importmap">
-    {
-      "imports": {
-        "firebase/app": "https://esm.sh/firebase/app",
-        "firebase/auth": "https://esm.sh/firebase/auth",
-        "firebase/firestore": "https://esm.sh/firebase/firestore",
-        "firebase/database": "https://esm.sh/firebase/database",
-        "firebase/storage": "https://esm.sh/firebase/storage",
-        "firebase/analytics": "https://esm.sh/firebase/analytics",
-        "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js"
-      }
-    }
-    </script>
     <script src="../assets/js/core/theme-flash-fix.js"></script>
     <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet" href="./style.css">
@@ -34,13 +21,10 @@
             <span data-i18n="back">Bosh sahifa</span>
         </a>
         <h1 data-i18n="settings_title">Sozlamalar</h1>
-        <button class="settings-user-trigger" id="settingsUserTrigger" title="Hisob ma'lumotlari">
-            <div class="settings-user-avatar" id="settingsUserAvatar">?</div>
-            <span class="settings-user-name" id="settingsUserName" data-i18n="guest">Mehmon</span>
-            <svg class="settings-user-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <polyline points="6 9 12 15 18 9"/>
-            </svg>
-        </button>
+        <div class="settings-user" id="settingsUser">
+            <span id="userName" data-i18n="guest">Mehmon</span>
+            <div class="user-avatar" id="userAvatar">?</div>
+        </div>
     </div>
 
     <div class="settings-list">
@@ -149,8 +133,10 @@
 
 <!-- ==================== SCRIPTS ====================
      TARTIB MUHIM:
+     1. /env.js     — window.__ENV__ ni o'rnatadi (Firebase kalitlari)
      2. script.js   — type="module", barcha import'lar shu orqali
 -->
+<script src="/env.js"></script>
 <script type="module" src="./script.js"></script>
 </body>
 </html>

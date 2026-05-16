@@ -1,5 +1,3 @@
-import { mt, initMiniI18n, onLangChange } from '../../assets/js/mini-i18n.js';
-import { getTheme, setTheme, toggleTheme } from '../../assets/js/core/global-settings.js';
 // ==================== MRDEV TIMER v2.0 — Firebase + Local Sync ====================
 import { initAuth, smartSave, getCurrentUser, getUserId } from '../../assets/js/firebase-helper.js';
 import { initMiniDropdown } from '../../assets/js/dropdown.js';
@@ -11,7 +9,7 @@ function getDB() {
     return _db;
 }
 
-import { collection, addDoc, query, orderBy, onSnapshot, deleteDoc, doc, serverTimestamp, writeBatch, getDocs } from 'firebase/firestore';
+import { collection, addDoc, query, orderBy, onSnapshot, deleteDoc, doc, serverTimestamp, writeBatch, getDocs } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
 // ==================== DOM ====================
 var $ = function(id) { return document.getElementById(id); };
@@ -39,11 +37,24 @@ var timerInterval = null;
 var history = [];
 
 // ==================== THEME ====================
+function initTheme() {
+    var saved = localStorage.getItem('theme') || 'dark';
+    if (saved === 'dark') document.documentElement.classList.add('dark');
+    else document.documentElement.classList.remove('dark');
+    updateThemeIcon();
+    $('themeToggle').addEventListener('click', toggleTheme);
+}
+
+function toggleTheme() {
+    var isDark = document.documentElement.classList.toggle('dark');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    updateThemeIcon();
+}
 
 function updateThemeIcon() {
     var btn = $('themeToggle');
     if (!btn) return;
-    var isDark = document.body.classList.contains('dark');
+    var isDark = document.documentElement.classList.contains('dark');
     btn.innerHTML = isDark
         ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>'
         : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
@@ -126,7 +137,7 @@ document.querySelectorAll('.preset-btn').forEach(function(btn) {
         totalSeconds = secs;
         setInputsFromRemaining();
         updateDisplay();
-        updateStatus(mt('ready'));
+        updateStatus('Tayyor');
         document.querySelectorAll('.preset-btn').forEach(function(b) { b.classList.remove('active'); });
         btn.classList.add('active');
     });
@@ -139,7 +150,7 @@ startBtn.addEventListener('click', function() {
     if (remainingSeconds <= 0 || (isPaused === false && totalSeconds === 0)) {
         remainingSeconds = getTotalFromInputs();
         totalSeconds = remainingSeconds;
-        if (remainingSeconds <= 0) { showToast(mt('enter_time'), 'error'); return; }
+        if (remainingSeconds <= 0) { showToast('Vaqt kiriting', 'error'); return; }
     }
 
     isRunning = true;
@@ -147,7 +158,7 @@ startBtn.addEventListener('click', function() {
     enableInputs(true);
     startBtn.disabled = true;
     pauseBtn.disabled = false;
-    updateStatus(mt('running'), 'running');
+    updateStatus('Ishlamoqda', 'running');
     saveState();
 
     timerInterval = setInterval(function() {
@@ -169,7 +180,7 @@ pauseBtn.addEventListener('click', function() {
     enableInputs(false);
     startBtn.disabled = false;
     pauseBtn.disabled = true;
-    updateStatus(mt('paused_s'), 'paused');
+    updateStatus('Pauzada', 'paused');
     saveState();
 });
 
@@ -183,7 +194,7 @@ resetBtn.addEventListener('click', function() {
     startBtn.disabled = false;
     pauseBtn.disabled = true;
     updateDisplay();
-    updateStatus(mt('ready'));
+    updateStatus('Tayyor');
     clearState();
 });
 
@@ -197,7 +208,7 @@ function completeTimer() {
     startBtn.disabled = false;
     pauseBtn.disabled = true;
     updateDisplay();
-    updateStatus(mt('finished'), 'done');
+    updateStatus('Tugadi!', 'done');
     clearState();
     saveToHistory(totalSeconds);
     playAlert();
@@ -207,14 +218,14 @@ function completeTimer() {
             remainingSeconds = totalSeconds;
             setInputsFromRemaining();
             updateDisplay();
-            updateStatus(mt('ready'));
+            updateStatus('Tayyor');
         }
     }, 5000);
 }
 
 function playAlert() {
     try {
-        var utterance = new SpeechSynthesisUtterance(mt('time_up'));
+        var utterance = new SpeechSynthesisUtterance('Vaqt tugadi');
         utterance.lang = 'uz';
         utterance.rate = 0.9;
         speechSynthesis.cancel();
@@ -247,7 +258,7 @@ function loadState() {
             remainingSeconds = state.remaining;
             updateDisplay();
             setInputsFromRemaining();
-            if (state.remaining === 0 && state.total > 0) updateStatus(mt('finished'), 'done');
+            if (state.remaining === 0 && state.total > 0) updateStatus('Tugadi!', 'done');
         }
     } catch(e) {}
 }
@@ -295,7 +306,7 @@ function renderHistory() {
 }
 
 $('clearHistoryBtn').addEventListener('click', async function() {
-    if (!confirm(mt('clear_history'))) return;
+    if (!confirm('Tarixni tozalash?')) return;
     var uid = getUserId();
     var db = getDB();
     if (uid && db) {
@@ -307,7 +318,7 @@ $('clearHistoryBtn').addEventListener('click', async function() {
     localStorage.removeItem('mr_timer_history');
     history = [];
     renderHistory();
-    showToast(mt('cleared'));
+    showToast('Tozalandi');
 });
 
 // ==================== INPUT CHANGE ====================
@@ -317,7 +328,7 @@ $('clearHistoryBtn').addEventListener('click', async function() {
             remainingSeconds = getTotalFromInputs();
             totalSeconds = remainingSeconds;
             updateDisplay();
-            updateStatus(mt('ready'));
+            updateStatus('Tayyor');
         }
     });
 });
@@ -340,23 +351,20 @@ function updateUserUI(user) {
             else triggerAvatar.textContent = dn.charAt(0).toUpperCase();
         }
     } else {
-        if (triggerName) triggerName.textContent = mt('guest');
+        if (triggerName) triggerName.textContent = 'Mehmon';
         if (triggerAvatar) triggerAvatar.textContent = '?';
     }
 }
 
 // ==================== INIT ====================
 function init() {
-    initMiniI18n();
-    // v2.0 ishga tushmoqda...');
-    const _t = getTheme(); if (_t === 'dark') document.body.classList.add('dark'); else document.body.classList.remove('dark'); updateThemeIcon();
-    $('themeToggle').addEventListener('click', toggleTheme);
+    console.log('MRDEV Timer v2.0 ishga tushmoqda...');
+    initTheme();
     progressCircle.style.strokeDasharray = CIRCUMFERENCE;
     loadState();
 
     initAuth(function(user) {
         currentUser = user;
-        window.currentUser = user;
         updateUserUI(user);
         if (user) loadCloudHistory(); else loadLocalHistory();
         try { initMiniDropdown(user); } catch(e) { console.warn('Dropdown init failed:', e.message); }
@@ -365,20 +373,5 @@ function init() {
     console.log('Timer tayyor!');
 }
 
-
-onLangChange(function() {
-    var emptyH = historyList ? historyList.querySelector('.empty-history') : null;
-    if (emptyH) emptyH.textContent = mt('history_empty');
-    var clearH = document.getElementById('clearHistoryBtn');
-    if (clearH) clearH.textContent = mt('clear');
-    var startB = document.getElementById('startBtn');
-    if (startB && startB.disabled === false) {
-        startB.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 3 20 12 6 21 6 3"/></svg> ' + mt('start');
-    }
-    var pauseB = document.getElementById('pauseBtn');
-    if (pauseB) pauseB.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> ' + mt('pause');
-    var resetB = document.getElementById('resetBtn');
-    if (resetB) resetB.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg> ' + mt('restore');
-});
 document.addEventListener('DOMContentLoaded', init);
 window.addEventListener('beforeunload', function() { if (isRunning) saveState(); });

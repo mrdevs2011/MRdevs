@@ -1,5 +1,5 @@
 import { db } from "./firebase-config.js";
-import { collection, doc, addDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, doc, addDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { showToast, escapeHtml } from "./ui-helpers.js";
 
 let currentEditingMsgId = null;

@@ -1,28 +1,25 @@
 // ==================== MRDEV NOTES ====================
-import { initializeApp, getApps } from 'firebase/app';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, deleteDoc, doc, updateDoc, serverTimestamp } from 'firebase/firestore';
-import { initDropdown } from '../../assets/js/dropdown.js';
-import { getTheme, setTheme, toggleTheme } from '../../assets/js/core/global-settings.js';
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, deleteDoc, doc, updateDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import { initDropdown } from '../../assets/dropdown.js';
 
 // ==================== FIREBASE (ENV dan) ====================
-// FIX v2: VITE_ prefiksi + singleton 'mrdev_main' instance
+const ENV = window.__ENV__ || {};
 const firebaseConfig = {
-    apiKey:            import.meta.env.VITE_MAIN_API_KEY,
-    authDomain:        import.meta.env.VITE_MAIN_AUTH_DOMAIN,
-    projectId:         import.meta.env.VITE_MAIN_PROJECT_ID,
-    storageBucket:     import.meta.env.VITE_MAIN_STORAGE_BUCKET,
-    messagingSenderId: import.meta.env.VITE_MAIN_MESSAGING_SENDER_ID,
-    appId:             import.meta.env.VITE_MAIN_APP_ID
+    apiKey:            ENV.MAIN_API_KEY             || '',
+    authDomain:        ENV.MAIN_AUTH_DOMAIN         || '',
+    projectId:         ENV.MAIN_PROJECT_ID          || '',
+    storageBucket:     ENV.MAIN_STORAGE_BUCKET      || '',
+    messagingSenderId: ENV.MAIN_MESSAGING_SENDER_ID || '',
+    appId:             ENV.MAIN_APP_ID              || ''
 };
 
 if (!firebaseConfig.apiKey) {
-    console.error('❌ notes/script: ENV kalitlar topilmadi! (VITE_MAIN_API_KEY)');
+    console.error('❌ notes/script: ENV kalitlar topilmadi!');
 }
 
-// Singleton: 'mrdev_main' app boshqa joyda yaratilgan bo'lsa qayta yaratmaymiz
-const existingApp = getApps().find(a => a.name === 'mrdev_main');
-const app  = existingApp || initializeApp(firebaseConfig, 'mrdev_main');
+const app  = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db   = getFirestore(app);
 
@@ -49,9 +46,13 @@ const toast       = document.getElementById('toast');
 const syncBtn     = document.getElementById('syncBtn');
 
 // ==================== THEME ====================
-const _t = getTheme(); if (_t === 'dark') document.body.classList.add('dark'); else document.body.classList.remove('dark');
+const saved = localStorage.getItem('mrdev_theme') || 'dark';
+if (saved === 'dark') document.documentElement.classList.add('dark');
 
-document.getElementById('themeToggle').addEventListener('click', () => { toggleTheme(); });
+document.getElementById('themeToggle').addEventListener('click', () => {
+    document.documentElement.classList.toggle('dark');
+    localStorage.setItem('mrdev_theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+});
 
 // ==================== COLOR PICKER ====================
 document.querySelectorAll('.color-dot').forEach(dot => {

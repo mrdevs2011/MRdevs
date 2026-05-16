@@ -529,43 +529,27 @@
     <!-- Toast -->
     <div class="toast" id="toast"></div>
 
-        <script type="importmap">
-    {
-      "imports": {
-        "firebase/app": "https://esm.sh/firebase/app",
-        "firebase/auth": "https://esm.sh/firebase/auth",
-        "firebase/firestore": "https://esm.sh/firebase/firestore",
-        "firebase/database": "https://esm.sh/firebase/database",
-        "firebase/storage": "https://esm.sh/firebase/storage",
-        "firebase/analytics": "https://esm.sh/firebase/analytics",
-        "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js"
-      }
-    }
-    </script>
     <script type="module">
-        import { initializeApp, getApps } from 'firebase/app';
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile } from 'firebase/auth';
-        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, deleteDoc, doc, serverTimestamp } from 'firebase/firestore';
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, deleteDoc, doc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
         import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
         // Config
-        const ENV = window.__ENV__ || {};
         const firebaseConfig = {
-            apiKey:            ENV.VITE_MAIN_API_KEY             || '',
-            authDomain:        ENV.VITE_MAIN_AUTH_DOMAIN         || '',
-            projectId:         ENV.VITE_MAIN_PROJECT_ID          || '',
-            storageBucket:     ENV.VITE_MAIN_STORAGE_BUCKET      || '',
-            messagingSenderId: ENV.VITE_MAIN_MESSAGING_SENDER_ID || '',
-            appId:             ENV.VITE_MAIN_APP_ID              || ''
+            apiKey: "window.__ENV__?.MAIN_API_KEY || """,
+            authDomain: "code-vibe-df610.firebaseapp.com",
+            projectId: "code-vibe-df610",
+            storageBucket: "code-vibe-df610.firebasestorage.app",
+            messagingSenderId: "747762490655",
+            appId: "1:747762490655:web:125516814620784cf3a42a"
         };
-        // FIX v2: MRDEV main singleton app - alohida proyekt o'chirildi
-        const _existingVault = getApps().find(a => a.name === 'mrdev_main');
-        const app = _existingVault || initializeApp(firebaseConfig, 'mrdev_main');
+        const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
         
-        const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || "";
-        const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_KEY || "";
+        const SUPABASE_URL = "window.__ENV__?.SUPABASE_URL || """;
+        const SUPABASE_KEY = "window.__ENV__?.SUPABASE_KEY || """;
         const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
         // State
@@ -647,56 +631,25 @@
             finally { loginSpinner.style.display = 'none'; btnText.style.opacity = '1'; }
         });
 
-        // FIX v2: MRDEV local auth fallback — alohida login ekrani yo'q
-        function getMrdevLocalUser() {
-            try {
-                const local = JSON.parse(localStorage.getItem('mrdev_local_auth') || 'null');
-                if (!local || !local.isLoggedIn || !local.uid) return null;
-                const days = (Date.now() - (local.loginTime || 0)) / (1000 * 60 * 60 * 24);
-                if (days > 7) { localStorage.removeItem('mrdev_local_auth'); return null; }
-                return local;
-            } catch(e) { return null; }
-        }
-
         onAuthStateChanged(auth, (user) => {
-            // Firebase auth yo'q — MRDEV local auth tekshiramiz
-            if (!user) {
-                const mrdevUser = getMrdevLocalUser();
-                if (mrdevUser) {
-                    user = {
-                        uid:         mrdevUser.uid,
-                        email:       mrdevUser.email || '',
-                        displayName: mrdevUser.displayName || (mrdevUser.email || 'User').split('@')[0],
-                        photoURL:    mrdevUser.photoURL || null
-                    };
-                }
-            }
-
             const loginContainer = document.querySelector('.login-container'), appElement = document.querySelector('.app');
-            if (user) {
-                currentUser = user;
+            if (user) { 
+                currentUser = user; 
                 if (loginContainer) loginContainer.style.display = 'none';
                 if (appElement) appElement.style.display = 'block';
-                body.classList.remove('login-mode'); body.classList.add('app-mode');
-                displayUserName.textContent = user.displayName || user.email?.split('@')[0] || 'User';
-                loadPosts();
+                body.classList.remove('login-mode'); body.classList.add('app-mode'); 
+                displayUserName.textContent = user.displayName || user.email?.split('@')[0] || 'User'; 
+                loadPosts(); 
                 playSound('notification');
-            } else {
-                currentUser = null;
+            } else { 
+                currentUser = null; 
                 if (loginContainer) loginContainer.style.display = 'block';
                 if (appElement) appElement.style.display = 'none';
-                body.classList.add('login-mode'); body.classList.remove('app-mode');
-            }
+                body.classList.add('login-mode'); body.classList.remove('app-mode'); 
+            } 
         });
         
-        logoutBtn.addEventListener('click', () => {
-            playSound('click');
-            signOut(auth).catch(()=>{});
-            localStorage.removeItem('mrdev_local_auth');
-            localStorage.removeItem('mrdev_auth_user');
-            localStorage.removeItem('mrdev_user_id');
-            setTimeout(() => { location.href = '../../'; }, 300);
-        });
+        logoutBtn.addEventListener('click', () => { playSound('click'); signOut(auth); });
 
         // ========== FAB ==========
         let isDragging = false, startX, startY, startLeft, startBottom;
@@ -809,7 +762,7 @@
                 const isPublic = document.querySelector('input[name="visibility"]:checked').value === 'public';
                 let hashedPassword = null;
                 if (passwordCheck.checked && postPassword.value) hashedPassword = await hashPassword(postPassword.value);
-                await addDoc(collection(db, 'vault_posts'), { 
+                await addDoc(collection(db, 'posts'), { 
                     text: captionInput.value.trim() || null, mediaUrl: publicUrl, mediaType: selectedFile.type, 
                     fileName: selectedFile.name, fileSize: selectedFile.size, category: selectedCategory, isPublic, 
                     isBlurred: blurCheck.checked, hasPassword: passwordCheck.checked && !!postPassword.value, password: hashedPassword, 
@@ -827,7 +780,7 @@
         document.querySelectorAll('.category-tab').forEach(tab => tab.addEventListener('click', function() { document.querySelectorAll('.category-tab').forEach(ct => ct.classList.remove('active')); this.classList.add('active'); activeCategory = this.dataset.cat; filterPosts(); }));
 
         function loadPosts() { 
-            const q = query(collection(db, 'vault_posts'), orderBy('createdAt', 'desc')); 
+            const q = query(collection(db, 'posts'), orderBy('createdAt', 'desc')); 
             onSnapshot(q, (snap) => { allPosts = snap.docs.map(d => ({ id: d.id, ...d.data() })); filterPosts(); }, (error) => { postsFeed.innerHTML = `<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><p>${error.message}</p></div>`; }); 
         }
 

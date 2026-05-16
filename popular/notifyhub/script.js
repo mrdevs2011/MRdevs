@@ -1,34 +1,24 @@
-import { getTheme, setTheme, toggleTheme } from '../../assets/js/core/global-settings.js';
 /**
  * NOTIFY HUB - Main Application
- * Version: 2.1.0 (MRDEV Integration Fix)
+ * Version: 2.0.0
  * Author: MRDEV Team
  */
 
 // ========================================
 // FIREBASE CONFIGURATION
-// FIX v2.1: Hardcoded placeholder o'rniga ENV dan o'qish
 // ========================================
 const firebaseConfig = {
-    apiKey:            ENV.VITE_SECONDARY_API_KEY             || '',
-    authDomain:        ENV.VITE_SECONDARY_AUTH_DOMAIN         || '',
-    databaseURL:       ENV.VITE_SECONDARY_DATABASE_URL        || '',
-    projectId:         ENV.VITE_SECONDARY_PROJECT_ID          || '',
-    storageBucket:     ENV.VITE_SECONDARY_STORAGE_BUCKET      || '',
-    messagingSenderId: ENV.VITE_SECONDARY_MESSAGING_SENDER_ID || '',
-    appId:             ENV.VITE_SECONDARY_APP_ID              || ''
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_AUTH_DOMAIN",
+    databaseURL: "YOUR_DATABASE_URL",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_STORAGE_BUCKET",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
 };
 
-if (!firebaseConfig.apiKey) {
-    console.error('❌ notifyhub/script: ENV kalitlar topilmadi! (VITE_SECONDARY_API_KEY)');
-}
-
-// Initialize Firebase (CDN compat mode)
-if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-} else {
-    firebase.app(); // mavjud instance ishlatiladi
-}
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 
 // ========================================
@@ -41,6 +31,21 @@ let initialDistance = 0;
 // ========================================
 // THEME MANAGEMENT
 // ========================================
+function initTheme() {
+    const savedTheme = localStorage.getItem('notifyhub_theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    if (savedTheme === 'light' || (!savedTheme && !prefersDark)) {
+        document.body.classList.add('light');
+    } else {
+        document.body.classList.remove('light');
+    }
+}
+
+function toggleTheme() {
+    document.body.classList.toggle('light');
+    localStorage.setItem('notifyhub_theme', document.body.classList.contains('light') ? 'light' : 'dark');
+}
 
 // ========================================
 // MODE SWITCHING
@@ -528,7 +533,7 @@ function initZoom() {
 // INITIALIZATION
 // ========================================
 document.addEventListener('DOMContentLoaded', () => {
-    const _t = getTheme(); if (_t === 'dark') document.body.classList.add('dark'); else document.body.classList.remove('dark');
+    initTheme();
     initTabs();
     initZoom();
     

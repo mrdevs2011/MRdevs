@@ -103,11 +103,6 @@ export async function logoutUser(auth, signOutFn) {
         }
         localStorage.removeItem('mrdev_local_auth');
         localStorage.removeItem('mrdev_auth_user');
-        localStorage.removeItem('mrdev_user_id');
-        localStorage.removeItem('mrdev_accounts');
-        localStorage.removeItem('mrdev_active_account');
-        localStorage.removeItem('mrdev_last_sync');
-        localStorage.removeItem('mrdev_debug');
         document.dispatchEvent(new CustomEvent('userLoggedOut'));
         showToast(t('logout_success'), 'info');
         setTimeout(() => {

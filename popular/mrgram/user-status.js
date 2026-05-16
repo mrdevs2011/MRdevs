@@ -1,6 +1,6 @@
 // user-status.js – foydalanuvchi online/offline holatini boshqarish
 import { rtdb } from "./firebase-config.js";
-import { ref, set, onDisconnect, onValue, serverTimestamp } from 'firebase/database';
+import { ref, set, onDisconnect, onValue, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
 let currentUserId = null;
 let statusListener = null;

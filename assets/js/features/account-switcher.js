@@ -21,7 +21,7 @@ export function createAccountSwitcherHTML() {
             <div class="modal-content account-switcher-modal">
                 <div class="modal-header">
                     <h3>${t('accounts') || 'Hisoblar'}</h3>
-                    <button class="modal-close" onclick="closeAccountSwitcher()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+                    <button class="modal-close" onclick="closeAccountSwitcher()">✕</button>
                 </div>
                 <div class="modal-body account-list-body">
                     <div id="accountList" class="account-list"></div>

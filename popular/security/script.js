@@ -1,29 +1,35 @@
 /* ============================================================
    SECUREMR - script.js
    MRDEV ekotizimiga to'liq integratsiya
-   FIX v2: VITE_ prefiksi bilan ENV dan o'qish
+   ============================================================ */
+
+/* ============================================================
+   SECUREMR - script.js
+   MRDEV ekotizimiga to'liq integratsiya
    ============================================================ */
 
 // FIREBASE CONFIGURATION (ENV dan)
+const ENV = window.__ENV__ || {};
 const FIREBASE_CONFIG = {
-    apiKey:            ENV.VITE_SECONDARY_API_KEY             || '',
-    authDomain:        ENV.VITE_SECONDARY_AUTH_DOMAIN         || '',
-    projectId:         ENV.VITE_SECONDARY_PROJECT_ID          || '',
-    databaseURL:       ENV.VITE_SECONDARY_DATABASE_URL        || '',
-    storageBucket:     ENV.VITE_SECONDARY_STORAGE_BUCKET      || '',
-    messagingSenderId: ENV.VITE_SECONDARY_MESSAGING_SENDER_ID || '',
-    appId:             ENV.VITE_SECONDARY_APP_ID              || ''
+    apiKey:            ENV.SECONDARY_API_KEY             || '',
+    authDomain:        ENV.SECONDARY_AUTH_DOMAIN         || '',
+    projectId:         ENV.SECONDARY_PROJECT_ID          || '',
+    databaseURL:       ENV.SECONDARY_DATABASE_URL        || '',
+    storageBucket:     ENV.SECONDARY_STORAGE_BUCKET      || '',
+    messagingSenderId: ENV.SECONDARY_MESSAGING_SENDER_ID || '',
+    appId:             ENV.SECONDARY_APP_ID              || ''
 };
 
 if (!FIREBASE_CONFIG.apiKey) {
-    console.error('❌ security/script: ENV kalitlar topilmadi! (VITE_SECONDARY_API_KEY)');
+    console.error('❌ security/script: ENV kalitlar topilmadi!');
 }
 
-if (!firebase.apps.length) {
-    firebase.initializeApp(FIREBASE_CONFIG);
-} else {
-    firebase.app();
-}
+firebase.initializeApp(FIREBASE_CONFIG);
+const db = firebase.database();
+
+// Qolgan kod o'zgarmaydi — pastda avvalgi script.js davom etadi...
+
+firebase.initializeApp(FIREBASE_CONFIG);
 const db = firebase.database();
 
 // DEFAULT ADMIN PASSWORD

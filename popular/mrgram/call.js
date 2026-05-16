@@ -2,8 +2,8 @@
 
 import { db } from "./firebase-config.js";
 import { rtdb } from "./firebase-config.js";
-import { doc, setDoc, updateDoc, deleteDoc, onSnapshot, collection, query, where, arrayUnion, getDoc, getDocs } from 'firebase/firestore';
-import { ref, onValue } from 'firebase/database';
+import { doc, setDoc, updateDoc, deleteDoc, onSnapshot, collection, query, where, arrayUnion, getDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
 let localStream = null;
 let peerConnection = null;

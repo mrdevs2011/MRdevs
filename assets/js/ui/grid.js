@@ -20,9 +20,7 @@ export function renderAppGrid(apps, containerId) {
         return;
     }
 
-    // BUG FIX: AI va boshqa ilovalar target="_blank" da ochilmasligi kerak
-    // Ular MRDEV auth session dan foydalanadi — yangi tab da localStorage o'qilmaydi
-    const blankApps = ['Jamoaviy-Doska', 'LearnCode', 'MrGram', 'CodeStudio'];
+    const blankApps = ['AI', 'Jamoaviy-Doska', 'LearnCode', 'MrGram', 'CodeStudio'];
 
     container.innerHTML = apps.map(app => {
         const isBlank = blankApps.includes(app.name);

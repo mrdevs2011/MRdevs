@@ -6,28 +6,11 @@
     <title>QR Code | MRDEV</title>
 
     <!-- ==================== FLASH FIX: ENG BIRINCHI ==================== -->
-        <script type="importmap">
-    {
-      "imports": {
-        "firebase/app": "https://esm.sh/firebase/app",
-        "firebase/auth": "https://esm.sh/firebase/auth",
-        "firebase/firestore": "https://esm.sh/firebase/firestore",
-        "firebase/database": "https://esm.sh/firebase/database",
-        "firebase/storage": "https://esm.sh/firebase/storage",
-        "firebase/analytics": "https://esm.sh/firebase/analytics",
-        "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js"
-      }
-    }
-    </script>
     <script src="../../assets/js/core/theme-flash-fix.js"></script>
 
     <link rel="icon" type="image/svg+xml" href="../../assets/favicons/qr.svg">
-    <link rel="stylesheet" href="../../assets/css/variables.css">
-    <link rel="stylesheet" href="../../assets/css/reset.css">
-    <link rel="stylesheet" href="../../assets/css/header.css">
-    <link rel="stylesheet" href="../../assets/css/dropdown.css">
-    <link rel="stylesheet" href="../../assets/css/toast.css">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../../assets/css/dropdown.css">
 
     <!-- QR Code Libraries (Must load before script.js) -->
     <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
@@ -58,13 +41,12 @@
                     <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
                 </svg>
             </button>
-                        <button class="header-user-trigger" id="mrdevUserTriggerMini" aria-label="Foydalanuvchi menyusi">
-                <div class="header-user-avatar trigger-avatar" id="triggerAvatarMini">?</div>
-                <div class="header-user-info">
-                    <span class="header-user-name trigger-name" id="triggerNameMini">Mehmon</span>
-                    <span class="header-user-role" data-i18n-mini="user_role">Foydalanuvchi</span>
-                </div>
-                <svg class="header-user-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            <button class="mrdev-user-trigger-mini" id="mrdevUserTriggerMini" aria-label="Foydalanuvchi menyusi">
+                <div class="trigger-avatar" id="triggerAvatarMini">?</div>
+                <span class="trigger-name" id="triggerNameMini">Mehmon</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="6 9 12 15 18 9"/>
+                </svg>
             </button>
         </div>
     </header>

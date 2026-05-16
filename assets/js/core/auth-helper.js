@@ -4,15 +4,16 @@
 //      Sabab: Firestore rule — request.auth.uid == userId
 //             email-based ID auth.uid bilan mos kelmaydi → permission denied
 //   2. getOrCreateCenterDoc olib tashlandi (rules bilan mos emas)
-//   3. onAuthChange — mrdevId ham uzatadi
-//   4. getCenterUserId helper sifatida saqlab qolindi (eski kod uchun backward compat)
+//   3. addMrdevIdToCenter — Firebase UID bilan to'g'ri ishlaydi
+//   4. onAuthChange — mrdevId ham uzatadi
+//   5. getCenterUserId helper sifatida saqlab qolindi (eski kod uchun backward compat)
 
 import logger from './logger.js';
 import { auth, db } from './firebase-init.js';
-import { onAuthStateChanged } from 'firebase/auth';
+import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 import {
     doc, getDoc, updateDoc, arrayUnion
-} from 'firebase/firestore';
+} from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
 // ==================== YORDAMCHILAR ====================
 
@@ -76,7 +77,7 @@ export async function getCurrentUser() {
             }
         }
     } catch (e) {
-        logger.authHelper.parseError(e.message);
+        console.warn('[AuthHelper] getCurrentUser local parse xatolik:', e.message);
     }
 
     // 3. Auth yo'q
@@ -168,7 +169,19 @@ export async function getMrdevId(uid) {
         const snap = await getDoc(doc(db, 'users', uid));
         return snap.exists() ? snap.data().mrdevId || null : null;
     } catch (e) {
-        logger.authHelper.mrdevIdError(e.message);
+        console.warn('[AuthHelper] getMrdevId xatolik:', e.message);
         return null;
     }
+}
+
+/**
+ * addMrdevIdToCenter — eski nom saqlab qolindi (mrdev-login.js import qiladi).
+ * Aslida: Firebase UID asosidagi user doc'ga mrdevId qo'shadi.
+ * Hozir saveUserMrdevId bu ishni qiladi, bu funksiya ortiqcha.
+ * Xatoliksiz davom etish uchun stub sifatida qoldirildi.
+ */
+export async function addMrdevIdToCenter(email, mrdevId) {
+    // Bu funksiya endi ishlatilmaydi — saveUserMrdevId (notif-pass.js) buni qiladi.
+    // Backward compatibility uchun saqlab qolindi.
+    console.log('[AuthHelper] addMrdevIdToCenter chaqirildi (deprecated):', email, mrdevId);
 }

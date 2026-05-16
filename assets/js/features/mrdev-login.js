@@ -3,8 +3,8 @@
 
 import logger from '../core/logger.js';
 import { db, rtdb, auth } from '../core/firebase-init.js';
-import { ref, push, get, update, set } from 'firebase/database';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { ref, push, get, update, set } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+import { signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 import { showToast } from '../core/toast.js';
 import { showModal, closeModal } from '../ui/modal.js';
 import { loginWithMrdevId, getLinkedAccount } from '../notif-pass.js';
@@ -42,7 +42,8 @@ function showLoading() {
 }
 
 function hideLoading() {
-    document.getElementById('mrdevLoadingOverlay')?.classList.remove('show');
+    const modalBody = document.querySelector('#mrdevLoginModal .modal-body');
+    if (modalBody && window.MrdevLoading) window.MrdevLoading.hide(modalBody);
 }
 
 function updateMrdevModalTexts() {
@@ -63,13 +64,13 @@ function updateMrdevModalTexts() {
     if (step1Subheading) step1Subheading.textContent = t('mrdev_id_desc');
     if (step2Heading) step2Heading.textContent = t('enter_code');
     if (step2Subheading) step2Subheading.textContent = t('code_sent');
-    if (toggleLink1 && !toggleLink1.textContent.includes('[^]')) toggleLink1.textContent = t('mrdev_what') + ' [v]';
-    if (toggleLink2 && !toggleLink2.textContent.includes('[^]')) toggleLink2.textContent = t('resend_code') + ' [v]';
+    if (toggleLink1 && !toggleLink1.textContent.includes('▲')) toggleLink1.textContent = t('mrdev_what') + ' ▼';
+    if (toggleLink2 && !toggleLink2.textContent.includes('▲')) toggleLink2.textContent = t('resend_code') + ' ▼';
     if (infoBox1Title) infoBox1Title.textContent = t('mrdev_what_desc');
     if (infoBox1Small) infoBox1Small.textContent = t('mrdev_what_desc_small');
     if (infoBox2Title) infoBox2Title.textContent = t('code_sent_desc');
-    if (moreInfoLink1) moreInfoLink1.textContent = t('more_info') ;
-    if (moreInfoLink2) moreInfoLink2.textContent = t('more_info') ;
+    if (moreInfoLink1) moreInfoLink1.textContent = t('more_info') + ' →';
+    if (moreInfoLink2) moreInfoLink2.textContent = t('more_info') + ' →';
     if (modalTitle) modalTitle.textContent = t('mrdev_login');
     
     const idInput = document.getElementById('mrdevIdInput');
@@ -117,7 +118,6 @@ function resetMrdevModal() {
     clearInterval(mrdevLoginTimer);
     currentStepData = null;
     isVerifying = false;
-    _otpBoxesSetup = false;  // OTP listener'larni qayta qo'shishga ruxsat
 }
 
 function setupIdInput() {
@@ -136,11 +136,7 @@ function setupIdInput() {
     });
 }
 
-let _otpBoxesSetup = false;
-
 function setupOtpBoxes() {
-    if (_otpBoxesSetup) return;   // Ikki marta qo'shilmasin
-    _otpBoxesSetup = true;
     for (let i = 1; i <= 6; i++) {
         const box = document.getElementById(`otp${i}`);
         if (!box) continue;
@@ -346,7 +342,7 @@ async function autoVerify() {
 
         if (currentStepData.email && currentStepData.mrdevPassword) {
             try { await signInWithEmailAndPassword(auth, currentStepData.email, currentStepData.mrdevPassword); }
-            catch (e) { logger.debug.warn(e); }
+            catch (e) { console.warn(e); }
         }
 
         saveLocalAuth({
@@ -403,7 +399,7 @@ window.toggleMrdevInfoBox = function() {
     const link = document.querySelector('#mrdevStep1 .mrdev-toggle-link');
     if (box) {
         const isOpen = box.classList.toggle('show');
-        if (link) link.textContent = isOpen ? '[^] ' + t('close') : t('mrdev_what') + ' [v]';
+        if (link) link.textContent = isOpen ? '▲ ' + t('close') : t('mrdev_what') + ' ▼';
         if (isOpen) updateMrdevModalTexts();
     }
 };
@@ -413,7 +409,7 @@ window.toggleMrdevHelpBox = function() {
     const link = document.querySelector('#mrdevStep2 .mrdev-toggle-link');
     if (box) {
         const isOpen = box.classList.toggle('show');
-        if (link) link.textContent = isOpen ? '[^] ' + t('close') : t('resend_code') + ' [v]';
+        if (link) link.textContent = isOpen ? '▲ ' + t('close') : t('resend_code') + ' ▼';
         if (isOpen) updateMrdevModalTexts();
     }
 };
@@ -439,8 +435,6 @@ document.addEventListener('languageChanged', () => {
         }
     }
 });
-
-export { autoVerify as verifyMrdevPass };
 
 window.showMrdevLogin = showMrdevLogin;
 window.closeMrdevLoginModal = closeMrdevLoginModal;

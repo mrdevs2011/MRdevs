@@ -1,5 +1,3 @@
-import { mt, initMiniI18n, onLangChange } from '../../assets/js/mini-i18n.js';
-import { getTheme, setTheme, toggleTheme } from '../../assets/js/core/global-settings.js';
 // ==================== MRDEV BINGO v4.1 — Firebase + Local Sync ====================
 import { initAuth, smartSave, smartLoad, getCurrentUser, getUserId } from '../../assets/js/firebase-helper.js';
 import { initMiniDropdown } from '../../assets/js/dropdown.js';
@@ -91,11 +89,32 @@ function sfxDraw()    { playSound(400, 'sine', 0.2, 0.05); }
 function sfxLevelUp() { playSound(800, 'sine', 0.15); setTimeout(function() { playSound(1000, 'sine', 0.15); }, 120); setTimeout(function() { playSound(1200, 'sine', 0.25); }, 240); }
 
 // ==================== THEME ====================
+function initTheme() {
+    const saved = localStorage.getItem('theme') || 'dark';
+    if (saved === 'dark') {
+        document.documentElement.classList.add('dark');
+    } else {
+        document.documentElement.classList.remove('dark');
+    }
+    updateThemeIcon();
+
+    const themeBtn = $('themeToggle');
+    if (themeBtn) {
+        themeBtn.addEventListener('click', toggleTheme);
+    }
+}
+
+function toggleTheme() {
+    const isDark = document.documentElement.classList.toggle('dark');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    updateThemeIcon();
+    sfxClick();
+}
 
 function updateThemeIcon() {
     const themeBtn = $('themeToggle');
     if (!themeBtn) return;
-    const isDark = document.body.classList.contains('dark');
+    const isDark = document.documentElement.classList.contains('dark');
     themeBtn.innerHTML = isDark
         ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>'
         : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
@@ -263,7 +282,7 @@ function addXP(amount) {
 
 function showLevelUp() {
     if (!levelUpEl) return;
-    levelUpEl.textContent = mt('level_up') + playerLevel;
+    levelUpEl.textContent = 'LEVEL UP! ' + playerLevel;
     levelUpEl.className = 'level-up show';
     setTimeout(function() { levelUpEl.className = 'level-up'; }, 2000);
     if (typeof confetti === 'function') {
@@ -314,7 +333,7 @@ function renderHistory() {
     historyList.innerHTML = recent.map(function(item) {
         var date = new Date(item.date);
         var timeAgo = getTimeAgo(date);
-        var modeText = item.mode === 'bot' ? mt('robot') : mt('two_players');
+        var modeText = item.mode === 'bot' ? 'Robot' : '2 kishi';
         var diffText = item.botDifficulty ? ' | ' + item.botDifficulty + '%' : '';
         return '<div class="history-item ' + item.type + '">' +
             '<div><strong>' + item.result + '</strong>' +
@@ -325,7 +344,7 @@ function renderHistory() {
 
 function getTimeAgo(date) {
     var seconds = Math.floor((Date.now() - date.getTime()) / 1000);
-    if (seconds < 60) return mt('just_now');
+    if (seconds < 60) return 'Hozir';
     if (seconds < 3600) return Math.floor(seconds / 60) + ' daqiqa';
     if (seconds < 86400) return Math.floor(seconds / 3600) + ' soat';
     if (seconds < 604800) return Math.floor(seconds / 86400) + ' kun';
@@ -337,17 +356,17 @@ function updateDifficultyLabel() {
     botDifficulty = parseInt(difficultySlider.value, 10);
     var icon = '-', label = '', desc = '';
     if (botDifficulty === 0) {
-        label = mt('diff_0'); desc = mt('diff_0d');
+        label = 'Juda oson (0%)'; desc = 'Robot tasodifiy o\'ynaydi';
     } else if (botDifficulty <= 20) {
-        label = mt('diff_easy') + ' (' + botDifficulty + '%)'; desc = mt('diff_easyD');
+        label = 'Oson (' + botDifficulty + '%)'; desc = 'Robot ko\'pincha xato qiladi';
     } else if (botDifficulty <= 40) {
-        label = mt('diff_mid') + ' (' + botDifficulty + '%)'; desc = mt('diff_midD');
+        label = 'O\'rta (' + botDifficulty + '%)'; desc = 'Robot ba\'zan xato qiladi';
     } else if (botDifficulty <= 60) {
-        label = mt('diff_hard') + ' (' + botDifficulty + '%)'; desc = mt('diff_hardD');
+        label = 'Qiyin (' + botDifficulty + '%)'; desc = 'Robot kam xato qiladi';
     } else if (botDifficulty <= 80) {
-        label = mt('diff_vhard') + ' (' + botDifficulty + '%)'; desc = mt('diff_vhardD');
+        label = 'Juda qiyin (' + botDifficulty + '%)'; desc = 'Robot deyarli mukammal';
     } else {
-        label = mt('diff_100'); desc = mt('diff_100D');
+        label = 'Mukammal (100%)'; desc = 'Robot hech qachon yutqazmaydi!';
     }
     if (diffIcon) diffIcon.textContent = icon;
     if (diffLabel) diffLabel.textContent = label;
@@ -400,14 +419,14 @@ function startGame(mode_) {
     gameResult.className = 'game-result';
     botThinking.style.display = 'none';
     if (mode === 'offline') {
-        gameModeBadge.textContent = mt('two_players');
+        gameModeBadge.textContent = '2 kishi';
     } else {
         gameModeBadge.textContent = 'Robot | ' + botDifficulty + '%';
     }
     gameScoreX.textContent = scoreX;
     gameScoreO.textContent = scoreO;
     turnDot('x');
-    turnText.textContent = mt('turn') + 'X';
+    turnText.textContent = 'Navbat: X';
     cells.forEach(function(c) {
         c.textContent = '';
         c.className = 'cell';
@@ -530,7 +549,7 @@ function botMove() {
             } else {
                 turn = 'X';
                 turnDot('x');
-                turnText.textContent = mt('turn') + 'X';
+                turnText.textContent = 'Navbat: X';
             }
         }
     }, delay);
@@ -616,17 +635,15 @@ function updateUserUI(user) {
             }
         }
     } else {
-        if (triggerName) triggerName.textContent = mt('guest');
+        if (triggerName) triggerName.textContent = 'Mehmon';
         if (triggerAvatar) triggerAvatar.textContent = '?';
     }
 }
 
 // ==================== INIT ====================
 async function init() {
-    initMiniI18n();
-    // Bingo v4.1 ishga tushmoqda...');
-    const _t = getTheme(); if (_t === 'dark') document.body.classList.add('dark'); else document.body.classList.remove('dark'); updateThemeIcon();
-    $('themeToggle').addEventListener('click', toggleTheme);
+    console.log('MRDEV Bingo v4.1 ishga tushmoqda...');
+    initTheme();
     updateDifficultyLabel();
     loadStatsFromLocal();
     updateStatsUI();
@@ -634,7 +651,6 @@ async function init() {
 
     initAuth(async function(user) {
         currentUser = user;
-        window.currentUser = user;
         updateUserUI(user);
         if (user) {
             await loadStatsFromCloud();
@@ -657,17 +673,4 @@ async function init() {
     console.log('Bingo tayyor!');
 }
 
-
-onLangChange(function() {
-    var noHist = document.querySelector('.history-empty');
-    if (noHist) noHist.textContent = mt('no_history');
-    if (turnText) {
-        var curr = turnText.textContent.slice(-1);
-        turnText.textContent = mt('turn') + curr;
-    }
-    var restartBtn = document.getElementById('restartBtn');
-    if (restartBtn) restartBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg> ' + mt('restart');
-    var lobbyBtn = document.getElementById('backToLobbyBtn');
-    if (lobbyBtn) lobbyBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg> ' + mt('lobby');
-});
 document.addEventListener('DOMContentLoaded', init);
