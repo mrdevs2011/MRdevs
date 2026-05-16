@@ -1,827 +1,262 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="MR Dev — O'zbek dasturchilar va talabalar uchun universal platforma. Fayl saqlash, test yaratish, kod yozish, va 22+ qulay vosita. MRDEV ID tizimi haqida batafsil.">
-<meta name="keywords" content="mrdev, mr dev, mrdev id, o'zbek dasturchilar, fayl yuklash, exam, test, uzbekistan developer, mrdev login">
-<meta property="og:title"       content="MR Dev — Platforma haqida">
-<meta property="og:description" content="O'zbekiston dasturchilar platformasi. Bepul. Kuchli. To'liq. MRDEV ID tizimi.">
-<meta property="og:url"         content="https://mrdevs.vercel.app/about">
-<title>MR Dev — Platforma haqida</title>
-<link rel="icon" type="image/svg+xml" href="../favicon.svg">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="./style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MR DEV — Platforma haqida</title>
+    <meta name="description" content="MR Dev — O'zbek dasturchilar va talabalar uchun universal platforma. Fayl saqlash, test yaratish, kod yozish, va 22+ qulay vosita. MRDEV ID tizimi haqida batafsil.">
+    <meta name="keywords" content="mrdev, mr dev, mrdev id, o'zbek dasturchilar, fayl yuklash, exam, test, uzbekistan developer">
+    <meta name="theme-color" content="#2a7de1">
+    
+    <!-- ==================== GLOBAL MRDEV ASSETS ==================== -->
+    <script src="../assets/js/core/theme-flash-fix.js"></script>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/reset.css">
+    <link rel="stylesheet" href="../assets/css/header.css">
+    <link rel="stylesheet" href="../assets/css/sidebar.css">
+    <link rel="stylesheet" href="../assets/css/dropdown.css">
+    <link rel="stylesheet" href="../assets/css/loading.css">
+    <link rel="stylesheet" href="../assets/css/splash.css">
+    <link rel="stylesheet" href="../assets/css/toast.css">
+    <link rel="stylesheet" href="../assets/css/modal.css">
+    <link rel="stylesheet" href="../assets/css/auth.css">
+    <link rel="stylesheet" href="../assets/css/mrdev-login.css">
+    
+    <!-- About sahifasiga xos stillar -->
+    <link rel="stylesheet" href="./style.css">
+    
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 </head>
 <body>
 
-<!-- PROGRESS BAR -->
-<div class="progress-bar" id="progressBar"></div>
-
-<!-- MOBILE MENU -->
-<div class="mobile-menu" id="mobileMenu">
-  <button class="mobile-menu-close" id="mobileMenuClose" aria-label="Yopish">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="20" height="20">
-      <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-    </svg>
-  </button>
-  <a href="#what"     onclick="closeMobileMenu()">Nima bu?</a>
-  <a href="#tools"    onclick="closeMobileMenu()">Vositalar</a>
-  <a href="#join"     onclick="closeMobileMenu()">Kirish</a>
-  <a href="#mrdev-id" onclick="closeMobileMenu()">MRDEV ID</a>
-  <a href="#sponsor"  onclick="closeMobileMenu()">Homiylik</a>
-  <a href="#faq"      onclick="closeMobileMenu()">FAQ</a>
-  <a href="https://mrdevs.vercel.app" class="btn-primary" style="margin-top:16px;font-size:16px;">Platformaga kirish</a>
-</div>
-
-<!-- NAVIGATION -->
-<nav id="mainNav" role="navigation">
-  <div class="nav-left">
-    <a href="https://mrdevs.vercel.app" class="nav-logo" aria-label="MR DEV">
-      MR<span class="logo-text">DEV</span>
-    </a>
-    <div class="nav-links">
-      <a href="#what">Nima bu?</a>
-      <a href="#tools">Vositalar</a>
-      <a href="#join">Kirish</a>
-      <a href="#mrdev-id">MRDEV ID</a>
-      <a href="#how">Mexanizm</a>
-      <a href="#sponsor">Homiylik</a>
-      <a href="#faq">FAQ</a>
-    </div>
-  </div>
-  <div class="nav-right">
-    <a href="https://mrdevs.vercel.app" class="nav-cta">Platformaga kirish</a>
-    <div class="nav-hamburger" id="hamburger" role="button" aria-label="Menyuni ochish" tabindex="0">
-      <span></span><span></span><span></span>
-    </div>
-  </div>
-</nav>
-
-<!-- ══════════ HERO ══════════ -->
-<section class="hero" id="home">
-  <div class="hero-orb orb1"></div>
-  <div class="hero-orb orb2"></div>
-  <div class="hero-orb orb3"></div>
-
-  <div class="hero-tag">
-    <span class="hero-tag-dot"></span>
-    O'zbek dasturchilar platformasi
-  </div>
-
-  <h1 class="hero-title">MR<br><span class="accent">DEV</span></h1>
-
-  <p class="hero-sub">
-    Fayllarni saqlang, testlar yarating, kod yozing, hamkorlik qiling.
-    Yagona platforma — 22 dan ortiq vosita, to'liq bepul, hech qanday cheklov yo'q.
-  </p>
-
-  <div class="hero-actions">
-    <a href="https://mrdevs.vercel.app" class="btn-primary">Platformaga kirish &nbsp;→</a>
-    <a href="#what" class="btn-ghost">Batafsil o'qish</a>
-  </div>
-
-  <div class="hero-stats">
-    <div class="stat"><span class="stat-num" data-target="22">0</span><div class="stat-label">Vosita</div></div>
-    <div class="stat"><span class="stat-num" data-target="100">0</span><div class="stat-label">% Bepul</div></div>
-    <div class="stat"><span class="stat-num" data-target="50">0</span><div class="stat-label">MB Fayl chegarasi</div></div>
-    <div class="stat"><span class="stat-num" data-target="256">0</span><div class="stat-label">bit AES shifrlash</div></div>
-  </div>
-</section>
-
-<!-- CODE TICKER -->
-<div class="code-ticker" aria-hidden="true">
-  <div class="ticker-wrapper">
-    <div class="ticker-track">
-      <span class="ticker-item"><span class="t-blue">import</span> mrdev <span class="t-green">from</span> <span class="t-yellow">'mrdev.uz'</span></span>
-      <span class="ticker-item"><span class="t-blue">const</span> vault = mrdev.<span class="t-green">vault</span>() <span class="t-comment">// 50MB</span></span>
-      <span class="ticker-item"><span class="t-blue">mrdev</span>.<span class="t-green">login</span>(<span class="t-yellow">'#123456'</span>) <span class="t-comment">// MRDEV ID</span></span>
-      <span class="ticker-item"><span class="t-blue">const</span> otp = mrdev.<span class="t-green">sendOTP</span>(id) <span class="t-comment">// 6-xonali kod</span></span>
-      <span class="ticker-item"><span class="t-purple">━━━</span> <span class="t-blue">SHA-256</span> <span class="t-comment">parol shifrlash</span> <span class="t-purple">━━━</span></span>
-      <span class="ticker-item"><span class="t-blue">mrdev</span>.<span class="t-green">board</span>() <span class="t-comment">→ hamkorlik</span></span>
-      <span class="ticker-item"><span class="t-blue">mrdev</span>.<span class="t-green">ai</span>() <span class="t-comment">→ sun'iy idrok</span></span>
-      <span class="ticker-item highlight"><span class="t-yellow">✦</span> <span class="t-blue">MRDEV ID</span> <span class="t-green">#_ _ _ _ _ _</span> <span class="t-comment">7 belgili shaxsiy kod</span></span>
-      <span class="ticker-item"><span class="t-blue">firebase</span>.<span class="t-green">firestore</span>() <span class="t-comment">→ real vaqt</span></span>
-      <span class="ticker-item"><span class="t-blue">supabase</span>.<span class="t-green">storage</span>() <span class="t-comment">→ 50MB</span></span>
-      <span class="ticker-item"><span class="t-blue">mrdev</span>.<span class="t-green">verify</span>(otp) <span class="t-comment">→ true ✓</span></span>
-      <span class="ticker-item highlight"><span class="t-yellow">✦</span> <span class="t-blue">NEW</span> <span class="t-green">mrdev.gram</span>() <span class="t-comment">Ijtimoiy tarmoq</span></span>
-      <!-- duplicate for loop -->
-      <span class="ticker-item"><span class="t-blue">import</span> mrdev <span class="t-green">from</span> <span class="t-yellow">'mrdev.uz'</span></span>
-      <span class="ticker-item"><span class="t-blue">const</span> vault = mrdev.<span class="t-green">vault</span>() <span class="t-comment">// 50MB</span></span>
-      <span class="ticker-item"><span class="t-blue">mrdev</span>.<span class="t-green">login</span>(<span class="t-yellow">'#123456'</span>) <span class="t-comment">// MRDEV ID</span></span>
-      <span class="ticker-item"><span class="t-blue">const</span> otp = mrdev.<span class="t-green">sendOTP</span>(id) <span class="t-comment">// 6-xonali kod</span></span>
-      <span class="ticker-item"><span class="t-purple">━━━</span> <span class="t-blue">SHA-256</span> <span class="t-comment">parol shifrlash</span> <span class="t-purple">━━━</span></span>
-      <span class="ticker-item highlight"><span class="t-yellow">✦</span> <span class="t-blue">MRDEV ID</span> <span class="t-green">#_ _ _ _ _ _</span> <span class="t-comment">7 belgili shaxsiy kod</span></span>
-    </div>
-  </div>
-</div>
-
-<!-- ══════════ 01 — NIMA BU? ══════════ -->
-<section class="what-is reveal" id="what">
-  <div class="container">
-    <div class="section-label">01 — Platforma haqida</div>
-    <h2 class="section-title">MR Dev nima?</h2>
-
-    <div class="what-grid">
-      <div class="what-visual">
-        <div class="terminal">
-          <div class="terminal-bar">
-            <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
-            <span class="terminal-title">mrdev.uz — platform.config.js</span>
-          </div>
-          <div class="terminal-body">
-            <div><span class="t-comment-code">// MR Dev Platform v6.0</span></div>
-            <div><span class="t-comment-code">// Yaratuvchi: MR Dev Jamoasi</span></div>
-            <div>&nbsp;</div>
-            <div><span class="t-key">const</span> platform = {</div>
-            <div>&nbsp;&nbsp;<span class="t-key">name</span>: <span class="t-str">"MR Dev"</span>,</div>
-            <div>&nbsp;&nbsp;<span class="t-key">version</span>: <span class="t-str">"6.0"</span>,</div>
-            <div>&nbsp;&nbsp;<span class="t-key">language</span>: <span class="t-str">"uz"</span>,</div>
-            <div>&nbsp;&nbsp;<span class="t-key">free</span>: <span class="t-blue">true</span>,</div>
-            <div>&nbsp;&nbsp;<span class="t-key">tools</span>: <span class="t-blue">22</span>,</div>
-            <div>&nbsp;&nbsp;<span class="t-key">auth</span>: <span class="t-str">"Firebase"</span>,</div>
-            <div>&nbsp;&nbsp;<span class="t-key">mrdevId</span>: <span class="t-str">"#XXXXXX"</span>,</div>
-            <div>&nbsp;&nbsp;<span class="t-key">storage</span>: <span class="t-str">"Supabase"</span>,</div>
-            <div>&nbsp;&nbsp;<span class="t-key">encryption</span>: <span class="t-str">"SHA-256"</span>,</div>
-            <div>&nbsp;&nbsp;<span class="t-key">fileLimit</span>: <span class="t-str">"50MB"</span>,</div>
-            <div>&nbsp;&nbsp;<span class="t-key">mobile</span>: <span class="t-blue">true</span></div>
-            <div>};</div>
-            <div>&nbsp;</div>
-            <div><span class="t-key">export default</span> platform; <span class="t-cursor"></span></div>
-          </div>
-        </div>
-        <div class="what-badges">
-          <span class="what-badge">Firebase</span>
-          <span class="what-badge">Supabase</span>
-          <span class="what-badge">SHA-256</span>
-          <span class="what-badge">MRDEV ID</span>
-          <span class="what-badge">AES-256</span>
-          <span class="what-badge">Responsive</span>
-        </div>
-      </div>
-
-      <div class="what-points">
-        <p style="font-size:17px;color:var(--muted);line-height:1.8;margin-bottom:12px;">
-          MR Dev — O'zbekiston dasturchilar, talabalar va ijodkorlar uchun yaratilgan
-          <strong style="color:var(--text)">universal veb-platforma</strong>. Bitta hisob orqali 22 ta qulay vositadan foydalanishingiz mumkin.
-        </p>
-        <div class="what-point">
-          <div class="point-icon"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
-          <div>
-            <div class="point-title">To'liq bepul platforma</div>
-            <div class="point-desc">Barcha 22 vosita hech qanday to'lovsiz. Kredit karta yoki yashirin to'lovlar yo'q.</div>
-          </div>
-        </div>
-        <div class="what-point">
-          <div class="point-icon"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
-          <div>
-            <div class="point-title">Xavfsizlik birinchi o'rinda</div>
-            <div class="point-desc">Parollar SHA-256 hash bilan, fayllar AES-256 sifrlash bilan himoyalangan. MRDEV ID tizimi qo'shimcha xavfsizlik qatlami beradi.</div>
-          </div>
-        </div>
-        <div class="what-point">
-          <div class="point-icon"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
-          <div>
-            <div class="point-title">Real vaqt hamkorlik</div>
-            <div class="point-desc">Firebase Firestore tufayli ma'lumotlar millisekundlar ichida boshqa qurilmalarga uzatiladi.</div>
-          </div>
-        </div>
-        <div class="what-point">
-          <div class="point-icon"><svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div>
-          <div>
-            <div class="point-title">Mobil mos dizayn</div>
-            <div class="point-desc">Telefon, planshet yoki kompyuter — har qanday qurilmada bir xil ishlaydi. Ilova yuklab olish shart emas.</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════ 02 — VOSITALAR ══════════ -->
-<section class="tools reveal" id="tools">
-  <div class="container">
-    <div class="section-label">02 — Vositalar</div>
-    <h2 class="section-title">22 ta kuchli vosita</h2>
-    <p class="section-desc">Bitta hisob — barcha vositalar. Har biri mustaqil, ammo bitta ekotizimda ishlaydi.</p>
-
-    <div class="tools-filter">
-      <button class="filter-btn active" data-filter="all">Barchasi</button>
-      <button class="filter-btn" data-filter="storage">Saqlash</button>
-      <button class="filter-btn" data-filter="edu">Ta'lim</button>
-      <button class="filter-btn" data-filter="productivity">Unumdorlik</button>
-      <button class="filter-btn" data-filter="dev">Dasturlash</button>
-      <button class="filter-btn" data-filter="fun">Ko'ngilochar</button>
-    </div>
-
-    <div class="tools-grid">
-      <div class="tool-card reveal reveal-delay-1" data-category="storage">
-        <div class="tool-card-header"><div class="tool-icon-wrap"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/><circle cx="12" cy="16" r="1"/></svg></div><span class="tool-num">01</span></div>
-        <div class="tool-name">MR Vault</div>
-        <div class="tool-desc">Shaxsiy va ommaviy fayl omboringiz. Rasm, video, audio, hujjat va arxivlarni 50 MB gacha yuklang, noyob havolalar orqali ulashing.</div>
-        <div class="tool-tags"><span class="tag">Fayl yuklash</span><span class="tag">50MB</span><span class="tag green">Bepul</span></div>
-      </div>
-      <div class="tool-card reveal reveal-delay-2" data-category="edu">
-        <div class="tool-card-header"><div class="tool-icon-wrap"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div><span class="tool-num">02</span></div>
-        <div class="tool-name">Examer</div>
-        <div class="tool-desc">Professional test va imtihon yaratuvchi. Savollar, to'g'ri javoblar, vaqt chegarasi — havolani do'stlaringizga yuboring. Natijalar avtomatik.</div>
-        <div class="tool-tags"><span class="tag">Test yaratish</span><span class="tag">Ulashish</span><span class="tag green">Avtomatik natija</span></div>
-      </div>
-      <div class="tool-card reveal reveal-delay-3" data-category="productivity">
-        <div class="tool-card-header"><div class="tool-icon-wrap"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div><span class="tool-num">03</span></div>
-        <div class="tool-name">Group Board</div>
-        <div class="tool-desc">Real vaqt hamkorlik uchun virtual doskangiz. Bir vaqtda bir nechta foydalanuvchi chizishi, yozishi, ulashishi mumkin.</div>
-        <div class="tool-tags"><span class="tag">Real vaqt</span><span class="tag yellow">Hamkorlik</span></div>
-      </div>
-      <div class="tool-card reveal" data-category="dev">
-        <div class="tool-card-header"><div class="tool-icon-wrap"><svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div><span class="tool-num">04</span></div>
-        <div class="tool-name">Code Studio</div>
-        <div class="tool-desc">Brauzerda to'liq kod muharriri. HTML, CSS, JavaScript, Python va boshqa tillarni qo'llab-quvvatlaydi. Sintaksis ajratish va natijani ko'rish imkoni.</div>
-        <div class="tool-tags"><span class="tag">HTML/CSS/JS</span><span class="tag yellow">Onlayn IDE</span></div>
-      </div>
-      <div class="tool-card reveal reveal-delay-1" data-category="fun">
-        <div class="tool-card-header"><div class="tool-icon-wrap"><svg viewBox="0 0 24 24"><path d="M21 2H3v16h5v4l4-4h9V2z"/><line x1="7" y1="8" x2="17" y2="8"/><line x1="7" y1="12" x2="13" y2="12"/></svg></div><span class="tool-num">05</span></div>
-        <div class="tool-name">MR Gram</div>
-        <div class="tool-desc">MR Dev ichidagi ijtimoiy tarmoq. Post, rasm, video ulashing, izoh qoldiring, do'stlaringizni kuzatib boring.</div>
-        <div class="tool-tags"><span class="tag">Ijtimoiy</span><span class="tag yellow">Post</span></div>
-      </div>
-      <div class="tool-card reveal reveal-delay-2" data-category="dev">
-        <div class="tool-card-header"><div class="tool-icon-wrap"><svg viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="1"/><path d="M9 5V3M15 5V3M9 21V19M15 21V19M5 9H3M5 15H3M21 9H19M21 15H19"/><rect x="9" y="9" width="6" height="6" rx="1" stroke-width="1.5"/></svg></div><span class="tool-num">06</span></div>
-        <div class="tool-name">MR AI Assistant</div>
-        <div class="tool-desc">Suniy idrok yordamchisi. Savollaringizga javob oling, matn yozdiring, kodni tekshirting yoki tarjima qildiring.</div>
-        <div class="tool-tags"><span class="tag">Chat</span><span class="tag yellow">Tarjima</span><span class="tag">Kod tekshirish</span></div>
-      </div>
-      <div class="tool-card reveal reveal-delay-3" data-category="productivity">
-        <div class="tool-card-header"><div class="tool-icon-wrap"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div><span class="tool-num">07</span></div>
-        <div class="tool-name">Notes</div>
-        <div class="tool-desc">Tezkor va qulay eslatmalar ilovasi. Markdown formatlash, ranglar, yorliqlar va qidiruv imkoni. Barcha eslatmalar bulutda saqlanadi.</div>
-        <div class="tool-tags"><span class="tag">Markdown</span><span class="tag green">Bulutda</span></div>
-      </div>
-      <div class="tool-card reveal" data-category="productivity">
-        <div class="tool-card-header"><div class="tool-icon-wrap"><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M5 3L2 6M22 6l-3-3"/></svg></div><span class="tool-num">08</span></div>
-        <div class="tool-name">Timer</div>
-        <div class="tool-desc">Pomodoro va oddiy taymerni birida. Vaqtni belgilang, boshlang, ovoz bildirishnomasi qo'ying.</div>
-        <div class="tool-tags"><span class="tag">Pomodoro</span><span class="tag">Bildirishnoma</span></div>
-      </div>
-      <div class="tool-card reveal reveal-delay-1" data-category="edu">
-        <div class="tool-card-header"><div class="tool-icon-wrap"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M8 12h.01M12 12h.01M16 12h.01M7 16h10"/></svg></div><span class="tool-num">09</span></div>
-        <div class="tool-name">Typing Test</div>
-        <div class="tool-desc">Yozish tezligi va aniqligi sinovi. WPM va to'g'rilik foizini ko'ring. O'zbek, rus va ingliz tillarida testlar.</div>
-        <div class="tool-tags"><span class="tag">WPM</span><span class="tag">3 til</span></div>
-      </div>
-      <div class="tool-card reveal reveal-delay-2" data-category="dev">
-        <div class="tool-card-header"><div class="tool-icon-wrap"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><span class="tool-num">10</span></div>
-        <div class="tool-name">Security</div>
-        <div class="tool-desc">Parol generatori va xavfsizlik tekshiruvi. Kuchli tasodifiy parollar yarating. MD5, SHA-1, SHA-256 hash generatori ham mavjud.</div>
-        <div class="tool-tags"><span class="tag">Parol generator</span><span class="tag yellow">Hash</span></div>
-      </div>
-      <div class="tool-card reveal reveal-delay-3" data-category="productivity">
-        <div class="tool-card-header"><div class="tool-icon-wrap"><svg viewBox="0 0 24 24"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg></div><span class="tool-num">11</span></div>
-        <div class="tool-name">Weather</div>
-        <div class="tool-desc">Ob-havo ilovasi. Real vaqt harorat, shamol tezligi va haftalik prognoz. O'zbekiston shaharlari uchun aniq ma'lumotlar.</div>
-        <div class="tool-tags"><span class="tag">Real vaqt</span><span class="tag">7 kunlik</span></div>
-      </div>
-      <div class="tool-card reveal" data-category="dev">
-        <div class="tool-card-header"><div class="tool-icon-wrap"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div><span class="tool-num">12</span></div>
-        <div class="tool-name">QR Generator</div>
-        <div class="tool-desc">QR kod yaratuvchi. URL, matn, telefon raqam yoki kontakt ma'lumotlarini QR kodga aylantiring.</div>
-        <div class="tool-tags"><span class="tag">URL</span><span class="tag">Yuklab olish</span></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════ 03 — QANDAY KIRISH ══════════ -->
-<section class="join reveal" id="join">
-  <div class="container">
-    <div class="section-label">03 — Boshlash</div>
-    <h2 class="section-title">30 soniyada boshlang</h2>
-    <p class="section-desc">Ro'yxatdan o'tish jarayoni juda oddiy. Hech qanday kredit karta yoki kutish kerak emas.</p>
-
-    <div class="steps">
-      <div class="steps-line"></div>
-      <div class="step reveal reveal-delay-1">
-        <div class="step-num">01</div>
-        <div class="step-body">
-          <div class="step-label">Birinchi qadam</div>
-          <div class="step-title">Saytga kiring</div>
-          <div class="step-desc">Brauzeringizda mrdev.uz manzilini oching. Maxsus ilova yuklab olishingiz shart emas.</div>
-          <div class="step-code">mrdevs.vercel.app → Asosiy sahifa</div>
-        </div>
-        <div class="step-visual">
-          <div class="step-visual-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10"/></svg></div>
-          <p>Hech qanday dastur kerak emas</p>
-        </div>
-      </div>
-      <div class="step reveal reveal-delay-2">
-        <div class="step-num">02</div>
-        <div class="step-body">
-          <div class="step-label">Ikkinchi qadam</div>
-          <div class="step-title">Hisobga kiring</div>
-          <div class="step-desc">E-mail + parol, Google yoki <strong style="color:var(--blue)">MRDEV ID</strong> orqali kirish mumkin. Har uch usul 30 soniyadan oshmaydi.</div>
-          <div class="step-code">E-mail · Google · MRDEV ID</div>
-        </div>
-        <div class="step-visual">
-          <div class="step-visual-icon"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
-          <p>3 ta kirish usuli</p>
-        </div>
-      </div>
-      <div class="step reveal reveal-delay-3">
-        <div class="step-num">03</div>
-        <div class="step-body">
-          <div class="step-label">Uchinchi qadam</div>
-          <div class="step-title">Vositani tanlang</div>
-          <div class="step-desc">Bosh sahifadan yoki yon menyudan kerakli vositani tanlang. Barcha 22 vositaga bitta hisob orqali kiring.</div>
-          <div class="step-code">mrdevs.vercel.app/vault · /exam · /board</div>
-        </div>
-        <div class="step-visual">
-          <div class="step-visual-icon"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
-          <p>22 vosita darhol tayyor</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════════════════════════════════════
-     04 — MRDEV ID TIZIMI  (YANGI BO'LIM)
-══════════════════════════════════════════ -->
-<section class="mrdev-id-section reveal" id="mrdev-id">
-  <div class="container">
-    <div class="section-label">04 — Shaxsiy identifikator</div>
-    <h2 class="section-title">MRDEV ID nima?</h2>
-    <p class="section-desc">
-      MRDEV ID — har bir foydalanuvchiga berilgan noyob 7 belgili kod. E-mail yoki parolsiz platformaga
-      kirish imkonini beruvchi maxsus autentifikatsiya tizimi.
-    </p>
-
-    <!-- Hero grid: ID card + info -->
-    <div class="mrdev-id-hero">
-
-      <!-- ID Card visual -->
-      <div class="id-card-visual reveal reveal-delay-1">
-        <div class="id-card-top">
-          <div class="id-card-logo">
-            <div class="id-card-logo-mark">
-              <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round">
-                <path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"/>
-                <line x1="8" y1="12" x2="16" y2="12"/>
-              </svg>
+    <!-- ==================== SIDEBAR ==================== -->
+    <aside id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <span class="logo-mr">MR</span><span class="logo-dev">DEV</span>
             </div>
-            <div class="id-card-logo-text">
-              MRDEV<small>Shaxsiy ID karta</small>
+            <button class="sidebar-close" onclick="window.closeSidebar?.()">✕</button>
+        </div>
+        <div class="sidebar-scroll">
+            <div class="sidebar-user is-loading" id="sidebarUser">
+                <div class="user-avatar-large" id="sidebarAvatar">U</div>
+                <div class="user-details">
+                    <div class="user-fullname" id="sidebarName">Yuklanmoqda...</div>
+                    <div class="user-email" id="sidebarEmail"></div>
+                    <div class="user-mrdev-id" id="sidebarMrdevId"></div>
+                </div>
             </div>
-          </div>
-          <div class="id-card-chip"></div>
-        </div>
-
-        <div class="id-display">
-          <span class="hash">#</span><span class="digits">_ _ _ _ _ _</span>
-        </div>
-        <div class="id-hint">6 xonali raqam · hash belgisi bilan boshlanadi</div>
-
-        <div style="margin-bottom:20px;">
-          <div style="font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:2px;margin-bottom:10px;text-transform:uppercase;">Bir martalik tasdiqlash kodi (OTP)</div>
-          <div class="otp-demo">
-            <div class="otp-box-demo filled">4</div>
-            <div class="otp-box-demo filled">2</div>
-            <div class="otp-box-demo filled">8</div>
-            <div class="otp-box-demo active"></div>
-            <div class="otp-box-demo"></div>
-            <div class="otp-box-demo"></div>
-          </div>
-        </div>
-
-        <div class="id-card-footer">
-          <div>
-            <div class="id-card-owner-label">Hisob egasi</div>
-            <div class="id-card-owner-name">MRDEV A'ZOSI</div>
-          </div>
-          <div class="id-card-badge">VERIFIED ✓</div>
-        </div>
-      </div>
-
-      <!-- Info cards -->
-      <div class="mrdev-id-info reveal reveal-delay-2">
-
-        <div class="id-info-card">
-          <div class="id-info-icon">
-            <svg viewBox="0 0 24 24"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
-          </div>
-          <div class="id-info-title">MRDEV ID nima?</div>
-          <div class="id-info-desc">
-            Har bir ro'yxatdan o'tgan foydalanuvchiga avtomatik tarzda beriladi. <code style="background:var(--blue-dim);color:var(--blue);padding:1px 6px;border-radius:4px;font-family:var(--mono);font-size:12px;">#</code> belgisi bilan boshlanadigan 7 belgili shaxsiy raqam: masalan <code style="background:var(--blue-dim);color:var(--blue);padding:1px 6px;border-radius:4px;font-family:var(--mono);font-size:12px;">#428139</code>. Hisob sozlamalarida ko'ring.
-          </div>
-        </div>
-
-        <div class="id-info-card">
-          <div class="id-info-icon">
-            <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/><circle cx="12" cy="16" r="1"/></svg>
-          </div>
-          <div class="id-info-title">Nima uchun kerak?</div>
-          <div class="id-info-desc">
-            E-mail yoki parolni bilmasangiz ham MRDEV ID yordamida platformaga kirishingiz mumkin. OTP kod tizimi orqali ikki bosqichli tekshiruv amalga oshiriladi — xavfsiz va tez.
-          </div>
-        </div>
-
-        <div class="id-info-card">
-          <div class="id-info-icon">
-            <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-          </div>
-          <div class="id-info-title">Kod qayerga keladi?</div>
-          <div class="id-info-desc">
-            MRDEV ID orqali kirish so'ralganda, 6 xonali OTP kod hisob egasining <strong style="color:var(--text)">"Parol xabarlari"</strong> bo'limiga yuboriladi. Kod 2 daqiqa amal qiladi, keyin yangilanishi kerak.
-          </div>
-        </div>
-
-        <div style="padding:18px 22px;background:rgba(36,161,222,.06);border:1px solid rgba(36,161,222,.2);border-radius:var(--radius-md);display:flex;align-items:flex-start;gap:14px;">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-          <div style="font-size:13px;color:var(--muted);line-height:1.7;">
-            <strong style="color:var(--text)">Eslatma:</strong> MRDEV ID boshqa birovga ulashish uchun mo'ljallangan, ammo OTP kodni <em>hech kim bilan</em> ulashmang. Har bir kirish uchun yangi kod yuboriladi.
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- How it works flow -->
-    <div class="mrdev-id-flow reveal">
-      <div class="mrdev-id-flow-title">MRDEV ID orqali kirish qanday ishlaydi?</div>
-      <div class="id-flow-grid">
-
-        <div class="id-flow-item">
-          <div class="id-flow-arrow">→</div>
-          <div class="id-flow-num">01</div>
-          <div class="id-flow-icon"><svg viewBox="0 0 24 24"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div>
-          <div class="id-flow-title">ID kiriting</div>
-          <div class="id-flow-desc">Kirish sahifasida "MRDEV ID orqali kirish" tugmasini bosing va <code style="color:var(--blue);font-family:var(--mono)">#XXXXXX</code> formatida ID raqamingizni kiriting.</div>
-        </div>
-
-        <div class="id-flow-item">
-          <div class="id-flow-arrow">→</div>
-          <div class="id-flow-num">02</div>
-          <div class="id-flow-icon"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
-          <div class="id-flow-title">OTP yuboriladi</div>
-          <div class="id-flow-desc">Tizim hisob egasining "Parol xabarlari" bo'limiga 6 xonali bir martalik kod yuboradi. Kod 2 daqiqa amal qiladi.</div>
-        </div>
-
-        <div class="id-flow-item">
-          <div class="id-flow-arrow">→</div>
-          <div class="id-flow-num">03</div>
-          <div class="id-flow-icon"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
-          <div class="id-flow-title">Kodni tasdiqlang</div>
-          <div class="id-flow-desc">6 ta katakka OTP kodni kiriting. Barcha kataklar to'lishi bilan tasdiqlash avtomatik amalga oshadi.</div>
-        </div>
-
-        <div class="id-flow-item">
-          <div class="id-flow-num">04</div>
-          <div class="id-flow-icon"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
-          <div class="id-flow-title">Muvaffaqiyatli kirish</div>
-          <div class="id-flow-desc">Tasdiqlash o'tsa, siz platforma hisobingizga kirgansiz. Barcha 22 vosita va shaxsiy ma'lumotlaringizga kirish ochiladi.</div>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- Security features -->
-    <div class="id-security-grid reveal">
-      <div class="id-security-item">
-        <div class="badge">SHA-256</div>
-        <h4>Shifrlangan saqlash</h4>
-        <p>Barcha ID va parollar ma'lumotlar bazasida SHA-256 hash bilan saqlanadi. Hatto administrator ham asl qiymatni ko'ra olmaydi.</p>
-      </div>
-      <div class="id-security-item">
-        <div class="badge">2 DAQIQA</div>
-        <h4>Muddatli OTP</h4>
-        <p>Har bir OTP kod faqat 2 daqiqa amal qiladi. Muddat o'tsa, yangi kod so'rash kerak. Bu brute-force hujumlaridan himoya qiladi.</p>
-      </div>
-      <div class="id-security-item">
-        <div class="badge">NOYOB</div>
-        <h4>Bir martalik kod</h4>
-        <p>Har bir kirish so'rovida yangi OTP yaratiladi. Bir OTP faqat bir marta ishlatiladi — takroran foydalanib bo'lmaydi.</p>
-      </div>
-    </div>
-
-    <!-- Terminal demo -->
-    <div class="id-terminal-block reveal">
-      <div class="id-terminal-header">
-        <div class="dots"><div class="dot-sm r"></div><div class="dot-sm y"></div><div class="dot-sm g"></div></div>
-        <span class="id-terminal-label">mrdev — auth/mrdev-id-flow.js</span>
-      </div>
-      <div class="id-terminal-body">
-        <div class="line"><span class="prompt">→</span><span class="cmd">mrdev.auth.<span style="color:#85e89d">mrdevIdLogin</span>(<span style="color:#f0c674">'#428139'</span>)</span></div>
-        <div class="line"><span class="prompt"> </span><span class="info">// 1. ID tekshirilmoqda...</span></div>
-        <div class="line"><span class="prompt"> </span><span class="ok">✓ ID topildi</span><span class="info"> → foydalanuvchi: Sardor K.</span></div>
-        <div class="line"><span class="prompt"> </span><span class="info">// 2. OTP generatsiya qilinmoqda...</span></div>
-        <div class="line"><span class="prompt"> </span><span class="ok">✓ OTP yuborildi</span><span class="info"> → "Parol xabarlari" bo'limi</span></div>
-        <div class="line"><span class="prompt"> </span><span class="info">// 3. Foydalanuvchi kodni kiritdi: ██████</span></div>
-        <div class="line"><span class="prompt"> </span><span class="info">// 4. SHA-256 hash solishtirish...</span></div>
-        <div class="line"><span class="prompt"> </span><span class="ok">✓ OTP tasdiqlandi</span><span class="info"> → token yaratildi</span></div>
-        <div class="line"><span class="prompt"> </span><span class="ok">✓ Kirish muvaffaqiyatli</span><span class="info"> → platforma ochildi</span></div>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<!-- ══════════ 05 — MEXANIZM ══════════ -->
-<section class="how reveal" id="how">
-  <div class="container">
-    <div class="section-label">05 — Texnik tuzilma</div>
-    <h2 class="section-title">Qanday ishlaydi?</h2>
-    <p class="section-desc">MR Dev sanoat darajasidagi texnologiyalar asosida qurilgan. Ma'lumotlaringiz qayerda va qanday saqlanishini bilib oling.</p>
-
-    <div class="flow-grid">
-      <div class="flow-item">
-        <div class="flow-arrow-badge">→</div>
-        <div class="flow-num">01</div>
-        <div class="flow-title">Autentifikatsiya</div>
-        <div class="flow-desc">Firebase Authentication tizimi orqali ishlaydi. Parolingiz SHA-256 algoritmi bilan shifrlangan holda saqlanadi. Google OAuth va MRDEV ID ham qo'llab-quvvatlanadi.</div>
-      </div>
-      <div class="flow-item">
-        <div class="flow-arrow-badge">→</div>
-        <div class="flow-num">02</div>
-        <div class="flow-title">Fayl saqlash</div>
-        <div class="flow-desc">Yuklagan fayllaringiz Supabase Storage'da AES-256 sifrlash bilan saqlanadi. Har bir faylga noyob va doimiy URL beriladi. 50 MB gacha istalgan format.</div>
-      </div>
-      <div class="flow-item">
-        <div class="flow-num">03</div>
-        <div class="flow-title">Ma'lumotlar bazasi</div>
-        <div class="flow-desc">Post, test, natija va foydalanuvchi ma'lumotlari Firebase Firestore NoSQL bazasida real vaqt rejimida saqlanadi. O'zgarishlar millisekundlar ichida ko'rinadi.</div>
-      </div>
-    </div>
-
-    <div class="how-details-grid">
-      <div class="what-point reveal reveal-delay-1">
-        <div class="point-icon"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
-        <div>
-          <div class="point-title">Parol himoya</div>
-          <div class="point-desc">Har bir post uchun alohida parol. SHA-256 hash — kimdir ma'lumotlar bazasiga kirsa ham parolni ko'ra olmaydi.</div>
-        </div>
-      </div>
-      <div class="what-point reveal reveal-delay-2">
-        <div class="point-icon"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
-        <div>
-          <div class="point-title">Blur himoya</div>
-          <div class="point-desc">Mediangizni xiralashtirib ko'rsating. Ko'rish uchun maxsus harakat talab qilinadi — reklama yoki yot ko'zlardan himoya.</div>
-        </div>
-      </div>
-      <div class="what-point reveal reveal-delay-3">
-        <div class="point-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10"/></svg></div>
-        <div>
-          <div class="point-title">Ommaviy / Maxfiy</div>
-          <div class="point-desc">Ommaviy postlar barcha foydalanuvchilarga ko'rinadi. Maxfiy postlar faqat siz kirganingizda ko'rinadi.</div>
-        </div>
-      </div>
-      <div class="what-point reveal">
-        <div class="point-icon"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></div>
-        <div>
-          <div class="point-title">Doimiy URL</div>
-          <div class="point-desc">Har bir fayl va post uchun o'zgarmas URL. Telegram, WhatsApp, Instagram — istalgan joyda ulashing.</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════ 06 — RUXSATLAR ══════════ -->
-<section class="access reveal" id="access">
-  <div class="container">
-    <div class="section-label">06 — Ruxsatlar</div>
-    <h2 class="section-title">Kim nima qila oladi?</h2>
-
-    <div class="access-grid">
-      <div class="access-card">
-        <div class="access-type">Mehmon</div>
-        <div class="access-title">Ro'yxatsiz</div>
-        <div class="access-subtitle">Saytga kirmasdan ham bir qancha vositalardan foydalanish mumkin.</div>
-        <div class="access-list">
-          <div class="access-item"><div class="access-check yes"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><div class="access-item-text">Ommaviy postlarni ko'rish</div></div>
-          <div class="access-item"><div class="access-check yes"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><div class="access-item-text">Examlarni hal qilish</div></div>
-          <div class="access-item"><div class="access-check yes"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><div class="access-item-text">Calculator, Timer, Clock</div></div>
-          <div class="access-item"><div class="access-check yes"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><div class="access-item-text">Weather va QR Generator</div></div>
-          <div class="access-item"><div class="access-check no"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div><div class="access-item-text">Fayl yuklash va saqlash</div></div>
-          <div class="access-item"><div class="access-check no"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div><div class="access-item-text">MRDEV ID olish</div></div>
-          <div class="access-item"><div class="access-check no"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div><div class="access-item-text">Exam yaratish va ulashish</div></div>
-        </div>
-      </div>
-      <div class="access-card highlight">
-        <div class="access-type">A'zo</div>
-        <div class="access-title">Ro'yxatdan o'tgan</div>
-        <div class="access-subtitle">Barcha 22 vositaning to'liq imkoniyatlari ochiq — bepul, cheksiz.</div>
-        <div class="access-list">
-          <div class="access-item"><div class="access-check yes"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><div class="access-item-text">Shaxsiy MRDEV ID raqam</div></div>
-          <div class="access-item"><div class="access-check yes"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><div class="access-item-text">MRDEV ID orqali kirish (OTP)</div></div>
-          <div class="access-item"><div class="access-check yes"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><div class="access-item-text">Fayl yuklash, saqlash, ulashish</div></div>
-          <div class="access-item"><div class="access-check yes"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><div class="access-item-text">Shaxsiy va ommaviy postlar</div></div>
-          <div class="access-item"><div class="access-check yes"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><div class="access-item-text">Exam yaratish va ulashish</div></div>
-          <div class="access-item"><div class="access-check yes"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><div class="access-item-text">Board, Notes, MR Gram (to'liq)</div></div>
-          <div class="access-item"><div class="access-check yes"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><div class="access-item-text">MR AI va Code Studio</div></div>
-          <div class="access-item"><div class="access-check yes"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><div class="access-item-text">Barcha qurilmalarda sinxronlash</div></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════ 07 — HOMIYLIK ══════════ -->
-<section class="sponsor reveal" id="sponsor">
-  <div class="container">
-    <div class="section-label">07 — Qo'llab-quvvatlash</div>
-    <h2 class="section-title">Homiylik</h2>
-    <div class="sponsor-intro">
-      <p>MR Dev to'liq bepul platforma. Server, domen, xizmatlar — barchasi haqiqiy pul talab qiladi. Agar bu platforma sizga foydali bo'lsa, quyidagi rekvizitlar orqali yordam bera olasiz.</p>
-      <p>Har qanday miqdor muhim. Siz yuborganingiz to'g'ridan-to'g'ri server xarajatlari, yangi funksiyalar yaratish va platformaning bepul bo'lib qolishiga sarflanadi.</p>
-    </div>
-    <div class="sponsor-grid">
-      <div>
-        <div class="payment-card">
-          <div class="card-header">
-            <div class="card-logo">
-              <div class="card-logo-mark"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div>
-              <div class="card-logo-text">MR Dev<small>Homiylik kartasi</small></div>
+            <div class="sidebar-login" id="sidebarLogin" style="display:none;">
+                <button class="login-sidebar-btn" onclick="window.showAuthModal?.()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M5 20v-2a7 7 0 0 1 14 0v2"/></svg>
+                    <span>Hisobga kirish</span>
+                </button>
             </div>
-            <div class="card-chip"></div>
-          </div>
-          <div class="card-number" id="cardNumber" title="Nusxalash uchun bosing">8600 &nbsp; 1234 &nbsp; 5678 &nbsp; 9012</div>
-          <div class="card-number-hint"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Bosib nusxa oling</div>
-          <div class="card-footer">
-            <div><div class="card-owner-label">Karta egasi</div><div class="card-owner-name">MUHAMMADRASUL QOSIMOV</div></div>
-            <div class="card-bank">HAMKOR BANK</div>
-          </div>
+            <div class="sidebar-divider"></div>
+            <nav class="sidebar-nav">
+                <a href="../" class="sidebar-nav-item">
+                    <span class="nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span>
+                    <span class="nav-text">Barcha ilovalar</span>
+                </a>
+                <a href="../about/" class="sidebar-nav-item active">
+                    <span class="nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></span>
+                    <span class="nav-text">Loyiha haqida</span>
+                </a>
+            </nav>
+            <div class="sidebar-divider"></div>
         </div>
-        <button class="copy-btn" id="copyCardBtn" onclick="copyCard()">
-          <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-          <span id="copyCardText">Karta raqamini nusxalash</span>
-        </button>
-      </div>
-      <div class="contact-card">
-        <div style="font-family:var(--mono);font-size:11px;color:var(--blue);letter-spacing:2px;margin-bottom:24px;text-transform:uppercase;">Aloqa rekvizitlari</div>
-        <div class="contact-item">
-          <div class="contact-icon"><svg viewBox="0 0 24 24"><path d="M21.2 8.4c.5.38.8.97.8 1.6v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V10a2 2 0 0 1 .8-1.6l8-6a2 2 0 0 1 2.4 0l8 6z"/><path d="m22 10-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 10"/></svg></div>
-          <div><div class="contact-label">Elektron pochta</div><div class="contact-value"><a href="mailto:mrdevs2011@gmail.com">mrdevs2011@gmail.com</a></div><div class="contact-note">Texnik muammolar va taklif-shikoyatlar</div></div>
+        <div class="sidebar-footer">
+            <button class="logout-sidebar-btn" id="sidebarLogout" style="display:none;" onclick="window.logout?.()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                <span>Chiqish</span>
+            </button>
+            <div class="sidebar-version">MRDEV made with mr</div>
         </div>
-        <div class="contact-item">
-          <div class="contact-icon"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></div>
-          <div><div class="contact-label">Telegram kanal</div><div class="contact-value"><a href="https://t.me/mrdevuz" target="_blank" rel="noopener">@mrdevuz</a></div><div class="contact-note">Yangiliklar, yangilanishlar va e'lonlar</div></div>
+    </aside>
+
+    <div id="overlay" class="overlay" onclick="window.closeSidebar?.()"></div>
+
+    <!-- ==================== HEADER ==================== -->
+    <header>
+        <div class="header-left">
+            <button class="header-btn" onclick="window.toggleSidebar?.()">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            </button>
+            <a href="../" class="logo"><span class="logo-mr">MR</span><span class="logo-dev">DEV</span></a>
         </div>
-        <div class="contact-item">
-          <div class="contact-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10"/></svg></div>
-          <div><div class="contact-label">Veb-sayt</div><div class="contact-value"><a href="https://mrdevs.vercel.app" target="_blank" rel="noopener">mrdevs.vercel.app</a></div><div class="contact-note">Asosiy platforma manzili</div></div>
+        <div class="header-center"></div>
+        <div class="header-right">
+            <button class="header-user-trigger is-loading" id="headerUserTrigger">
+                <div class="header-user-avatar" id="headerUserAvatar">?</div>
+                <div class="header-user-info">
+                    <span class="header-user-name" id="headerUserName">Mehmon</span>
+                    <span class="header-user-role">Foydalanuvchi</span>
+                </div>
+                <svg class="header-user-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <button id="theme-btn" class="header-btn theme-btn" onclick="window.toggleTheme?.()"></button>
         </div>
-      </div>
-    </div>
-    <div class="sponsor-why reveal">
-      <div class="sponsor-why-title">Nima uchun qo'llab-quvvatlash muhim?</div>
-      <div class="sponsor-why-grid">
-        <div class="sponsor-why-item"><div class="sponsor-why-icon"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div><div class="sponsor-why-item-title">Server xarajatlari</div><div class="sponsor-why-item-desc">Firebase, Supabase, Vercel — uchta xizmatning to'lovlari oy sayin to'lanadi.</div></div>
-        <div class="sponsor-why-item"><div class="sponsor-why-icon"><svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div><div class="sponsor-why-item-title">Yangi funksiyalar</div><div class="sponsor-why-item-desc">Yangi vositalar va MRDEV ID kabi yaxshilanishlar uchun vaqt va resurs kerak.</div></div>
-        <div class="sponsor-why-item"><div class="sponsor-why-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><div class="sponsor-why-item-title">Hamjamiyat uchun</div><div class="sponsor-why-item-desc">Platforma O'zbekiston yoshlari uchun yaratilgan. Siz yuborganingiz bepul ta'limni ko'proq odamga yetkazishga yordam beradi.</div></div>
-      </div>
-    </div>
-  </div>
-</section>
+    </header>
 
-<!-- ══════════ 08 — MILESTONES ══════════ -->
-<section class="milestones reveal" id="milestones">
-  <div class="container">
-    <div class="section-label">08 — Tarix</div>
-    <h2 class="section-title">Rivojlanish yo'li</h2>
-    <div class="timeline">
-      <div class="timeline-item reveal reveal-delay-1"><div class="timeline-dot"></div><div class="timeline-date">2025 — Yanvar</div><div class="timeline-title">Dastlabki g'oya</div><div class="timeline-desc">MR Dev dastlab shaxsiy fayllarni saqlash uchun oddiy veb-ilova sifatida tug'ildi. Firebase va vanilla JavaScript bilan birinchi versiya yaratildi.</div></div>
-      <div class="timeline-item reveal reveal-delay-2"><div class="timeline-dot"></div><div class="timeline-date">2025 — Fevral-Mart</div><div class="timeline-title">MR Vault</div><div class="timeline-desc">Birinchi rasmiy versiya — MR Vault nomi bilan ishga tushirildi. Fayl yuklash va ulashish imkoni. Dastlabki 100 foydalanuvchi qo'shildi.</div></div>
-      <div class="timeline-item reveal reveal-delay-3"><div class="timeline-dot"></div><div class="timeline-date">2025 — Aprel-Noyabr</div><div class="timeline-title">Platform kengayishi</div><div class="timeline-desc">Examer, Calculator, Notes va Board qo'shildi. Supabase Storage integratsiyasi amalga oshirildi.</div></div>
-      <div class="timeline-item reveal"><div class="timeline-dot"></div><div class="timeline-date">2026 — Yanvar</div><div class="timeline-title">MR Gram va ijtimoiy xususiyatlar</div><div class="timeline-desc">MR Gram ijtimoiy tarmog'i ishga tushirildi. Group Board va Code Studio qo'shildi.</div></div>
-      <div class="timeline-item reveal reveal-delay-1"><div class="timeline-dot"></div><div class="timeline-date">2026 — May</div><div class="timeline-title">MRDEV ID & Katta yangilanish</div><div class="timeline-desc">MRDEV ID autentifikatsiya tizimi ishga tushirildi. OTP orqali xavfsiz kirish. Qayta ishlab chiqilgan dizayn, AI Assistant, Weather, Typing Test. 10+ xususiyat yaxshilandi.</div></div>
-      <div class="timeline-item reveal reveal-delay-2"><div class="timeline-dot"></div><div class="timeline-date">2026 — Hozir</div><div class="timeline-title">Joriy versiya</div><div class="timeline-desc">22 ta vosita, 3 ta kirish usuli (E-mail, Google, MRDEV ID), yaxshilangan xavfsizlik va mobil mos dizayn. MR Dev O'zbekistonning eng yirik bepul dasturchilar platformasiga aylanmoqda.</div></div>
-    </div>
-  </div>
-</section>
+    <!-- ==================== MAIN CONTENT ==================== -->
+    <main class="about-main">
+        
+        <!-- Hero Section -->
+        <section class="about-hero">
+            <div class="about-hero-badge">
+                <span class="badge-dot"></span>
+                O'zbek dasturchilar platformasi
+            </div>
+            <h1 class="about-hero-title">
+                MR<span class="accent">DEV</span>
+            </h1>
+            <p class="about-hero-desc">
+                Fayllarni saqlang, testlar yarating, kod yozing, hamkorlik qiling.<br>
+                Yagona platforma — 22 dan ortiq vosita, to'liq bepul.
+            </p>
+            <div class="about-hero-buttons">
+                <a href="../" class="btn-primary">Platformaga kirish →</a>
+                <a href="#tools" class="btn-secondary">Vositalarni ko'rish</a>
+            </div>
+        </section>
 
-<!-- ══════════ 09 — FAQ ══════════ -->
-<section class="faq reveal" id="faq">
-  <div class="container">
-    <div class="section-label">09 — Savol-javob</div>
-    <h2 class="section-title">Ko'p so'raladigan savollar</h2>
-    <div class="faq-list">
-
-      <div class="faq-item">
-        <div class="faq-q">MRDEV ID qayerdan olinadi?<span class="faq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></div>
-        <div class="faq-a">Ro'yxatdan o'tgan har bir foydalanuvchiga avtomatik tarzda MRDEV ID beriladi. Hisobingizga kirib, sozlamalar yoki profil bo'limida ko'rishingiz mumkin. ID formatida # belgisi va 6 ta raqam bo'ladi: masalan <code style="font-family:var(--mono);color:var(--blue)">#428139</code>.</div>
-      </div>
-
-      <div class="faq-item">
-        <div class="faq-q">MRDEV ID orqali kirish xavfsizmi?<span class="faq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></div>
-        <div class="faq-a">Ha, MRDEV ID tizimi xavfsiz. OTP (bir martalik kod) tizimi ishlatiladi — har bir kirish uchun yangi 6 xonali kod yuboriladi. Kod faqat 2 daqiqa amal qiladi va bir marta ishlatilgach, bekor bo'ladi. SHA-256 hash algoritmi barcha ma'lumotlarni himoya qiladi.</div>
-      </div>
-
-      <div class="faq-item">
-        <div class="faq-q">OTP kod kelmasa nima qilaman?<span class="faq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></div>
-        <div class="faq-a">OTP kod hisob egasining "Parol xabarlari" bo'limiga keladi — bu platforma ichidagi bildirishnomalar markazidir, xuddi telefon SMS emas. Hisobingizga oddiy usulda kirib, yuqori o'ngdagi qo'ng'iroq belgisini bosing va "Parol xabarlari"ni ko'ring.</div>
-      </div>
-
-      <div class="faq-item">
-        <div class="faq-q">MRDEV ID boshqa kishiga bersam xavfli bo'ladimi?<span class="faq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></div>
-        <div class="faq-a">MRDEV ID o'zi yetarli emas — kirish uchun OTP kod ham kerak. OTP kod esa faqat hisob egasining "Parol xabarlari"ga keladi. Shuning uchun MRDEV ID'ni ulashish nisbatan xavfsiz, lekin OTP kodni hech kim bilan ulashmang.</div>
-      </div>
-
-      <div class="faq-item">
-        <div class="faq-q">MR Dev to'liq bepulmi?<span class="faq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></div>
-        <div class="faq-a">Ha, MR Dev to'liq bepul. Ro'yxatdan o'tish, fayl yuklash, exam yaratish, Board, MR Gram, MRDEV ID — hech birida to'lov yo'q. Hech qanday yashirin to'lov, premium obuna yoki cheklov mavjud emas.</div>
-      </div>
-
-      <div class="faq-item">
-        <div class="faq-q">Qanday fayl turlari yuklab bo'ladi?<span class="faq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></div>
-        <div class="faq-a">Rasm (jpg, png, gif, webp, svg), video (mp4, mov, avi, mkv), audio (mp3, wav, ogg, flac), hujjat (pdf, doc, docx, txt, xlsx, pptx), arxiv (zip, rar, 7z) va boshqa ko'plab format qo'llab-quvvatlanadi. Bir fayl uchun maksimal hajm 50 MB.</div>
-      </div>
-
-      <div class="faq-item">
-        <div class="faq-q">Exam qanday ishlaydi?<span class="faq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></div>
-        <div class="faq-a">Examer'da test yaratasiz: nom, savollar, to'g'ri javoblar va ixtiyoriy vaqt chegarasini kiritasiz. Yaratilgan exam alohida havolaga ega — shu havolani do'stlaringizga yuboring. Ular javob beradi, natija avtomatik hisoblanadi.</div>
-      </div>
-
-      <div class="faq-item">
-        <div class="faq-q">Telefonda ham to'g'ri ishlaydi?<span class="faq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></div>
-        <div class="faq-a">Ha, platforma to'liq responsive dizaynda yaratilgan. Telefon, planshet va kompyuterda bir xil yaxshi ishlaydi. Maxsus ilova yuklab olish shart emas — brauzerda oching va ishlatavering.</div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- ══════════ CTA ══════════ -->
-<section class="cta-section reveal">
-  <div class="container">
-    <span class="cta-tag">Bepul · Hech qanday karta kerak emas</span>
-    <h2 class="cta-title">Bugun boshlang</h2>
-    <p class="cta-sub">Ro'yxatdan o'tish 30 soniya. Barcha 22 vosita uchun. MRDEV ID avtomatik beriladi.</p>
-    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
-      <a href="https://mrdevs.vercel.app" class="btn-primary">mrdev ga kirish &nbsp;→</a>
-      <a href="#mrdev-id" class="btn-ghost">MRDEV ID haqida</a>
-    </div>
-    <div class="cta-url">mrdevs.vercel.app</div>
-  </div>
-</section>
-
-<!-- ══════════ FOOTER ══════════ -->
-<footer>
-  <div class="footer-inner">
-    <div class="footer-top">
-      <div>
-        <div class="footer-brand-logo">MR<span>DEV</span></div>
-        <div class="footer-brand-desc">O'zbekiston dasturchilar va talabalar uchun bepul universal platforma. 22 ta vosita, MRDEV ID tizimi, bitta hisob.</div>
-        <div class="footer-social">
-          <a href="https://t.me/mrdevuz" class="footer-social-link" target="_blank" rel="noopener" aria-label="Telegram"><svg viewBox="0 0 24 24"><path d="M21.2 5.6 3 11.6c-1.2.4-1.1 1.1-.2 1.4l4.6 1.4 1.8 5.5c.2.6.5.8 1 .7l2.5-2.3 4.8 3.5c.9.5 1.5.2 1.7-.8l3.1-14.6c.3-1.3-.5-1.9-1.1-1.8z"/></svg></a>
-          <a href="https://github.com/mrdevuz" class="footer-social-link" target="_blank" rel="noopener" aria-label="GitHub"><svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg></a>
-          <a href="mailto:mrdevs2011@gmail.com" class="footer-social-link" aria-label="Email"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></a>
+        <!-- Statlar -->
+        <div class="about-stats">
+            <div class="stat-card"><span class="stat-number" id="statTools">22</span><span class="stat-label">Vosita</span></div>
+            <div class="stat-card"><span class="stat-number" id="statFree">100</span><span class="stat-label">% Bepul</span></div>
+            <div class="stat-card"><span class="stat-number" id="statStorage">50</span><span class="stat-label">MB Fayl chegarasi</span></div>
+            <div class="stat-card"><span class="stat-number" id="statEncrypt">256</span><span class="stat-label">bit AES shifrlash</span></div>
         </div>
-      </div>
-      <div>
-        <div class="footer-col-title">Vositalar</div>
-        <div class="footer-col-links">
-          <a href="https://mrdevs.vercel.app/vault">MR Vault</a>
-          <a href="https://mrdevs.vercel.app/exam">Examer</a>
-          <a href="https://mrdevs.vercel.app/board">Group Board</a>
-          <a href="https://mrdevs.vercel.app/codestudio">Code Studio</a>
-          <a href="https://mrdevs.vercel.app/mrgram">MR Gram</a>
-          <a href="https://mrdevs.vercel.app/ai">AI Assistant</a>
-        </div>
-      </div>
-      <div>
-        <div class="footer-col-title">Platforma</div>
-        <div class="footer-col-links">
-          <a href="#what">Nima bu?</a>
-          <a href="#tools">Barcha vositalar</a>
-          <a href="#join">Qanday kirish</a>
-          <a href="#mrdev-id">MRDEV ID tizimi</a>
-          <a href="#how">Mexanizm</a>
-          <a href="#milestones">Tarix</a>
-        </div>
-      </div>
-      <div>
-        <div class="footer-col-title">Yordam</div>
-        <div class="footer-col-links">
-          <a href="#faq">FAQ</a>
-          <a href="mailto:mrdevs2011@gmail.com">Murojaat</a>
-          <a href="https://mrdevs.vercel.app/privacy">Maxfiylik siyosati</a>
-          <a href="https://mrdevs.vercel.app/terms">Foydalanish shartlari</a>
-          <a href="https://t.me/mrdevuz" target="_blank" rel="noopener">Telegram</a>
-        </div>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <div class="footer-copyright">&copy; 2024–2026 <a href="https://mrdevs.vercel.app">MR Dev</a> — O'zbekiston. Barcha huquqlar himoyalangan.</div>
-      <div class="footer-version">v6.0 · Firebase + Supabase · MRDEV ID</div>
-    </div>
-  </div>
-</footer>
 
-<!-- BACK TO TOP -->
-<button class="back-to-top" id="backToTop" aria-label="Yuqoriga qaytish" onclick="window.scrollTo({top:0,behavior:'smooth'})">
-  <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
-</button>
+        <!-- Nima bu? -->
+        <section class="about-section" id="what">
+            <div class="container">
+                <div class="section-label">01 — Platforma haqida</div>
+                <h2 class="section-title">MR Dev nima?</h2>
+                <div class="what-grid">
+                    <div class="what-card">
+                        <div class="card-icon blue"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+                        <h3>To'liq bepul</h3>
+                        <p>Barcha 22 vosita hech qanday to'lovsiz. Kredit karta yoki yashirin to'lovlar yo'q.</p>
+                    </div>
+                    <div class="what-card">
+                        <div class="card-icon blue"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+                        <h3>Xavfsizlik birinchi</h3>
+                        <p>Parollar SHA-256 hash bilan, fayllar AES-256 sifrlash bilan himoyalangan.</p>
+                    </div>
+                    <div class="what-card">
+                        <div class="card-icon blue"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+                        <h3>Real vaqt hamkorlik</h3>
+                        <p>Firebase Firestore tufayli ma'lumotlar millisekundlar ichida uzatiladi.</p>
+                    </div>
+                    <div class="what-card">
+                        <div class="card-icon blue"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div>
+                        <h3>Mobil mos</h3>
+                        <p>Telefon, planshet yoki kompyuter — har qanday qurilmada bir xil ishlaydi.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-<script src="./script.js"></script>
+        <!-- MRDEV ID bo'limi -->
+        <section class="about-section" id="mrdev-id">
+            <div class="container">
+                <div class="section-label">02 — Shaxsiy identifikator</div>
+                <h2 class="section-title">MRDEV ID nima?</h2>
+                <div class="id-showcase">
+                    <div class="id-card">
+                        <div class="id-card-header">
+                            <div class="id-logo">MRDEV<small>Shaxsiy ID karta</small></div>
+                            <div class="id-chip"></div>
+                        </div>
+                        <div class="id-number"><span class="hash">#</span><span class="digits">428139</span></div>
+                        <div class="id-owner">MRDEV A'ZOSI</div>
+                        <div class="id-badge">VERIFIED ✓</div>
+                    </div>
+                    <div class="id-info">
+                        <div class="id-info-item">
+                            <div class="id-info-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div>
+                            <div><strong>MRDEV ID nima?</strong><br>Har bir foydalanuvchiga beriladigan noyob 7 belgili kod.</div>
+                        </div>
+                        <div class="id-info-item">
+                            <div class="id-info-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+                            <div><strong>Nima uchun kerak?</strong><br>E-mail yoki parolsiz platformaga kirish imkonini beradi.</div>
+                        </div>
+                        <div class="id-info-item">
+                            <div class="id-info-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+                            <div><strong>Xavfsizlik</strong><br>6 xonali OTP kod faqat 2 daqiqa amal qiladi, bir martalik.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Vositalar ro'yxati -->
+        <section class="about-section" id="tools">
+            <div class="container">
+                <div class="section-label">03 — Vositalar</div>
+                <h2 class="section-title">22 ta kuchli vosita</h2>
+                <div class="tools-grid" id="toolsGrid"></div>
+            </div>
+        </section>
+
+        <!-- Qanday boshlash -->
+        <section class="about-section" id="howto">
+            <div class="container">
+                <div class="section-label">04 — Boshlash</div>
+                <h2 class="section-title">30 soniyada boshlang</h2>
+                <div class="steps">
+                    <div class="step"><div class="step-num">01</div><div><h3>Saytga kiring</h3><p>mrdevs.vercel.app manzilini oching. Hech qanday dastur kerak emas.</p></div></div>
+                    <div class="step"><div class="step-num">02</div><div><h3>Hisobga kiring</h3><p>E-mail + parol, Google yoki MRDEV ID orqali 30 soniyada kirish.</p></div></div>
+                    <div class="step"><div class="step-num">03</div><div><h3>Vositani tanlang</h3><p>22 vositadan birini tanlang va ishlatishni boshlang.</p></div></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Texnik tuzilma -->
+        <section class="about-section" id="tech">
+            <div class="container">
+                <div class="section-label">05 — Texnologiyalar</div>
+                <h2 class="section-title">Qanday ishlaydi?</h2>
+                <div class="tech-grid">
+                    <div class="tech-item"><span class="tech-icon">🔥</span><span>Firebase Auth</span><small>Autentifikatsiya</small></div>
+                    <div class="tech-item"><span class="tech-icon">📦</span><span>Supabase Storage</span><small>Fayl saqlash</small></div>
+                    <div class="tech-item"><span class="tech-icon">🗄️</span><span>Firestore</span><small>Ma'lumotlar bazasi</small></div>
+                    <div class="tech-item"><span class="tech-icon">🔐</span><span>SHA-256 + AES-256</span><small>Shifrlash</small></div>
+                    <div class="tech-item"><span class="tech-icon">🌐</span><span>Vercel</span><small>Hosting</small></div>
+                    <div class="tech-item"><span class="tech-icon">🎨</span><span>Vanilla JS + CSS</span><small>Frontend</small></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="about-footer">
+            <div class="footer-content">
+                <div class="footer-brand">MR<span>DEV</span></div>
+                <p>O'zbekiston dasturchilar va talabalar uchun bepul universal platforma.</p>
+                <div class="footer-links">
+                    <a href="https://t.me/mrdevuz" target="_blank">Telegram</a>
+                    <a href="mailto:mrdevs2011@gmail.com">Email</a>
+                    <a href="../settings/">Sozlamalar</a>
+                </div>
+                <div class="footer-copyright">© 2024–2026 MR Dev — O'zbekiston</div>
+            </div>
+        </footer>
+    </main>
+
+    <!-- ==================== MODALLAR ==================== -->
+    <div id="authModal" class="modal"><div class="modal-content"><div class="modal-header"><h3>Hisobga kirish</h3><button class="modal-close" onclick="window.closeAuthModal?.()">✕</button></div><div class="modal-body"><div id="registerFields" style="display:none;"><div class="input-group"><label>Ism Familiya</label><input type="text" id="registerName" placeholder="Sardor Karimov"></div></div><div class="input-group"><label>Email</label><input type="text" id="loginEmail" placeholder="username@mrdev.uz"></div><div class="input-group"><label>Parol</label><input type="password" id="loginPassword" placeholder="••••••••"></div><p id="authError" style="display:none;"></p><button id="authSubmitBtn" class="auth-submit-btn">Kirish</button><div class="auth-divider"><span>yoki</span></div><button class="google-auth-btn" onclick="window.signInWithGoogle?.()">Google orqali kirish</button><button class="mrdev-auth-btn" onclick="window.showMrdevLogin?.()">MRDEV ID orqali kirish</button><div class="auth-toggle"><span id="authToggleText">Hisobingiz yo'qmi?</span> <a href="#" id="authToggleLink" onclick="event.preventDefault();window.toggleAuthMode?.()">Ro'yxatdan o'tish</a></div></div></div></div>
+
+    <div id="mrdevLoginModal" class="modal"><div class="modal-content"><div class="modal-header"><h3>MRDEV orqali kirish</h3><button class="modal-close" onclick="window.closeMrdevLoginModal?.()">✕</button></div><div class="modal-body"><div id="mrdevStep1"><div class="mrdev-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div><p class="mrdev-heading">MRDEV ID kiriting</p><input type="text" id="mrdevIdInput" class="mrdev-id-input" placeholder="# _ _ _ _ _ _" maxlength="7"><button class="mrdev-submit" onclick="window.submitMrdevId?.()">Kirish</button></div><div id="mrdevStep2" style="display:none;"><div class="mrdev-otp-wrap"><input type="text" maxlength="1" class="mrdev-otp-box" id="otp1"><input type="text" maxlength="1" class="mrdev-otp-box" id="otp2"><input type="text" maxlength="1" class="mrdev-otp-box" id="otp3"><input type="text" maxlength="1" class="mrdev-otp-box" id="otp4"><input type="text" maxlength="1" class="mrdev-otp-box" id="otp5"><input type="text" maxlength="1" class="mrdev-otp-box" id="otp6"></div><div class="mrdev-timer-row"><span id="mrdevTimer">02:00</span></div><button class="mrdev-submit" onclick="window.verifyMrdevPass?.()">Tasdiqlash</button></div><p id="mrdevError" class="mrdev-error-msg"></p></div></div></div>
+
+    <div id="passNotifModal" class="modal"><div class="modal-content"><div class="modal-header"><h3>Parol xabarlari</h3><button class="modal-close" onclick="window.closePassNotifModal?.()">✕</button></div><div class="modal-body" id="passNotifList"><div style="text-align:center;padding:20px;">Yuklanmoqda...</div></div></div></div>
+
+    <!-- ==================== SCRIPTS ==================== -->
+    <script src="../assets/js/core/theme-flash-fix.js"></script>
+    <script src="../assets/js/core/splash.js"></script>
+    <script src="../assets/js/core/loading.js"></script>
+    <script type="module" src="./script.js"></script>
 </body>
 </html>
