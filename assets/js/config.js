@@ -15,6 +15,8 @@ if (!cfg.groupboard?.apiKey) {
 
 export const firebaseConfig = cfg.groupboard;
 
+export function getConfig() { return cfg; }  // ← faqat shu qator yangi
+
 export const appConfig = {
     maxFileSize:      5 * 1024 * 1024,
     maxMessageLength: 250,
