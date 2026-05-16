@@ -1,6 +1,7 @@
 // ==================== MRDEV FIREBASE HELPER v7.0 ====================
 
 import logger from './core/logger.js';
+import { AUTH_EXPIRY_HOURS } from './config.js';
 import { initializeApp, getApps } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import {
     getAuth,
@@ -55,6 +56,7 @@ async function getFirebase() {
     } catch (e) {
         logger.error.firebase(e.message);
     }
+    if (!_app) throw new Error('[Firebase] Initialize muvaffaqiyatsiz: _app null. Config yoki tarmoqni tekshiring.');
     return { app: _app, auth: _auth, db: _db };
 }
 
@@ -76,8 +78,8 @@ function getLocalAuthUser() {
             return null;
         }
 
-        const days = (Date.now() - (local.loginTime || 0)) / (1000 * 60 * 60 * 24);
-        if (days > 7) {
+        const hours = (Date.now() - (local.loginTime || 0)) / (1000 * 60 * 60);
+        if (hours > AUTH_EXPIRY_HOURS) {
             logger.error.auth('local auth muddati tugagan');
             localStorage.removeItem('mrdev_local_auth');
             return null;
@@ -100,8 +102,16 @@ function getLocalAuthUser() {
 
 // ==================== AUTH ====================
 
-function initAuth(callback) {
-    const { auth } = getFirebase();
+async function initAuth(callback) {
+    let auth;
+    try {
+        ({ auth } = await getFirebase());
+    } catch (e) {
+        logger.error.firebase(e.message);
+        const localUser = getLocalAuthUser();
+        if (callback) callback(localUser);
+        return () => {};
+    }
 
     if (auth) {
         return onAuthStateChanged(auth, async (user) => {
@@ -154,9 +164,15 @@ function initAuth(callback) {
     return () => {};
 }
 
-function getCurrentUser() {
-    const { auth } = getFirebase();
-    const fbUser   = auth ? auth.currentUser : null;
+async function getCurrentUser() {
+    let auth;
+    try {
+        ({ auth } = await getFirebase());
+    } catch (e) {
+        logger.error.firebase(e.message);
+        return getLocalAuthUser();
+    }
+    const fbUser = auth ? auth.currentUser : null;
 
     if (fbUser) {
         return {
@@ -173,9 +189,15 @@ function getCurrentUser() {
     return getLocalAuthUser();
 }
 
-function getUserId() {
-    const { auth } = getFirebase();
-    const fbUser   = auth ? auth.currentUser : null;
+async function getUserId() {
+    let auth;
+    try {
+        ({ auth } = await getFirebase());
+    } catch (e) {
+        logger.error.firebase(e.message);
+        auth = null;
+    }
+    const fbUser = auth ? auth.currentUser : null;
     if (fbUser) return fbUser.uid;
 
     try {
@@ -189,7 +211,13 @@ function getUserId() {
 }
 
 async function logoutUser() {
-    const { auth } = getFirebase();
+    let auth;
+    try {
+        ({ auth } = await getFirebase());
+    } catch (e) {
+        logger.error.firebase(e.message);
+        auth = null;
+    }
     if (auth) {
         try { await signOut(auth); } catch (e) {}
     }
@@ -218,7 +246,13 @@ function clearAllLocalData() {
 
 async function syncCloudToLocal(uid) {
     if (!uid) return;
-    const { db } = getFirebase();
+    let db;
+    try {
+        ({ db } = await getFirebase());
+    } catch (e) {
+        logger.error.firebase(e.message);
+        return;
+    }
     if (!db) return;
 
     const collections = [
@@ -261,7 +295,7 @@ async function syncCloudToLocal(uid) {
 // ==================== SMART SAVE ====================
 
 async function smartSave(collectionName, localKey, data) {
-    const uid = getUserId();
+    const uid = await getUserId();
 
     try {
         const local = JSON.parse(localStorage.getItem(localKey) || '[]');
@@ -277,7 +311,7 @@ async function smartSave(collectionName, localKey, data) {
 
     if (uid) {
         try {
-            const { db } = getFirebase();
+            const { db } = await getFirebase();
             if (db) {
                 await addDoc(collection(db, 'users', uid, collectionName), {
                     ...data,
@@ -292,9 +326,19 @@ async function smartSave(collectionName, localKey, data) {
 
 // ==================== SMART LOAD ====================
 
-function smartLoad(collectionName, localKey, callback) {
-    const uid    = getUserId();
-    const { db } = getFirebase();
+async function smartLoad(collectionName, localKey, callback) {
+    let uid, db;
+    try {
+        uid        = await getUserId();
+        ({ db }    = await getFirebase());
+    } catch (e) {
+        logger.error.firebase(e.message);
+        try {
+            const localItems = JSON.parse(localStorage.getItem(localKey) || '[]');
+            if (callback && localItems.length > 0) callback(localItems);
+        } catch (_) {}
+        return () => {};
+    }
 
     try {
         const localItems = JSON.parse(localStorage.getItem(localKey) || '[]');
@@ -346,7 +390,7 @@ function smartLoad(collectionName, localKey, callback) {
 // ==================== DELETE ====================
 
 async function smartDelete(collectionName, localKey, itemId, isCloud) {
-    const uid = getUserId();
+    const uid = await getUserId();
 
     try {
         const local = JSON.parse(localStorage.getItem(localKey) || '[]');
@@ -355,7 +399,7 @@ async function smartDelete(collectionName, localKey, itemId, isCloud) {
 
     if (uid && isCloud) {
         try {
-            const { db } = getFirebase();
+            const { db } = await getFirebase();
             if (db) await deleteDoc(doc(db, 'users', uid, collectionName, itemId));
         } catch (e) {
             logger.error.cloud(e.message);
@@ -366,12 +410,12 @@ async function smartDelete(collectionName, localKey, itemId, isCloud) {
 // ==================== CLEAR ALL ====================
 
 async function clearAll(collectionName, localKey) {
-    const uid = getUserId();
+    const uid = await getUserId();
     localStorage.removeItem(localKey);
 
     if (uid) {
         try {
-            const { db } = getFirebase();
+            const { db } = await getFirebase();
             if (db) {
                 const snap = await getDocs(collection(db, 'users', uid, collectionName));
                 if (!snap.empty) {

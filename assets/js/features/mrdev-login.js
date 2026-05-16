@@ -12,7 +12,32 @@ import { t, getCurrentLang } from '../core/i18n.js';
 
 let mrdevLoginTimer = null;
 let currentStepData = null;
-let isVerifying = false;
+let isVerifying     = false;
+let otpAttempts     = 0;
+
+// ==================== BRUTE-FORCE HIMOYA KONSTANTALARI ====================
+const OTP_MAX_ATTEMPTS = 5;           // Maksimal noto'g'ri urinishlar soni
+const OTP_LOCKOUT_MS   = 30 * 1000;  // 30 soniya blok
+const LOCKOUT_KEY      = 'mrdev_otp_lockout';
+
+// ==================== LOCKOUT YORDAMCHILARI ====================
+
+function getOtpLockout() {
+    try {
+        const data = JSON.parse(localStorage.getItem(LOCKOUT_KEY));
+        if (!data) return null;
+        if (Date.now() > data.until) { localStorage.removeItem(LOCKOUT_KEY); return null; }
+        return data;
+    } catch (e) { return null; }
+}
+
+function setOtpLockout() {
+    localStorage.setItem(LOCKOUT_KEY, JSON.stringify({ until: Date.now() + OTP_LOCKOUT_MS }));
+}
+
+function clearOtpLockout() {
+    localStorage.removeItem(LOCKOUT_KEY);
+}
 
 function generateSecureOTP() {
     const arr = new Uint32Array(1);
@@ -79,6 +104,12 @@ function updateMrdevModalTexts() {
 }
 
 export function showMrdevLogin() {
+    const lockout = getOtpLockout();
+    if (lockout) {
+        const secsLeft = Math.ceil((lockout.until - Date.now()) / 1000);
+        showToast(t('otp_locked_wait').replace('{s}', secsLeft) || `Bloklandi. ${secsLeft}s kuting.`, 'error');
+        return;
+    }
     resetMrdevModal();
     updateMrdevModalTexts();
     closeModal('authModal');
@@ -90,7 +121,8 @@ export function closeMrdevLoginModal() {
     clearInterval(mrdevLoginTimer);
     closeModal('mrdevLoginModal');
     currentStepData = null;
-    isVerifying = false;
+    isVerifying     = false;
+    otpAttempts     = 0;
 }
 
 function resetMrdevModal() {
@@ -126,7 +158,8 @@ function resetMrdevModal() {
 
     clearInterval(mrdevLoginTimer);
     currentStepData = null;
-    isVerifying = false;
+    isVerifying     = false;
+    otpAttempts     = 0;
 }
 
 function setupIdInput() {
@@ -205,9 +238,33 @@ function startTimer(sec) {
         if (remaining <= 0) {
             clearInterval(mrdevLoginTimer);
             if (el) { el.textContent = '00:00'; el.style.color = 'var(--red)'; }
+
+            // OTP inputlarni darhol tozala va o'chirib qo'y
+            for (let i = 1; i <= 6; i++) {
+                const box = document.getElementById(`otp${i}`);
+                if (box) {
+                    box.value = '';
+                    box.classList.remove('filled', 'box-error', 'box-success', 'loading-bar');
+                    box.classList.add('box-error');
+                    box.setAttribute('disabled', true);
+                }
+            }
+
             const errorEl = document.getElementById('mrdevError');
-            if (errorEl) { errorEl.textContent = t('expired'); errorEl.classList.add('show'); }
-            setTimeout(resetMrdevModal, 2500);
+            if (errorEl) {
+                errorEl.textContent = t('otp_expired_resend') || 'Kod muddati tugadi. Yangi kod so\'rang.';
+                errorEl.classList.add('show');
+            }
+
+            // 2.5s keyin step1 ga qaytib yangi OTP so'rash imkonini ber
+            setTimeout(() => {
+                for (let i = 1; i <= 6; i++) {
+                    const box = document.getElementById(`otp${i}`);
+                    if (box) box.removeAttribute('disabled');
+                }
+                resetMrdevModal();
+                setTimeout(() => document.getElementById('mrdevIdInput')?.focus(), 300);
+            }, 2500);
         }
     }, 1000);
 }
@@ -309,6 +366,19 @@ export async function submitMrdevId() {
 }
 
 async function autoVerify() {
+    // Lockout tekshiruvi
+    const lockout = getOtpLockout();
+    if (lockout) {
+        const secsLeft = Math.ceil((lockout.until - Date.now()) / 1000);
+        const errorEl  = document.getElementById('mrdevError');
+        if (errorEl) {
+            errorEl.textContent = (t('otp_locked_wait') || 'Bloklandi. {s}s kuting.').replace('{s}', secsLeft);
+            errorEl.classList.add('show');
+        }
+        showErrorAnimation();
+        return;
+    }
+
     if (isVerifying) return;
     isVerifying = true;
 
@@ -345,10 +415,55 @@ async function autoVerify() {
             }
         }
 
-        if (!foundData) throw new Error(t('error'));
+        if (!foundData) {
+            // ---- NOTO'G'RI OTP: urinishlar hisoblagichi ----
+            otpAttempts++;
+            const remaining = OTP_MAX_ATTEMPTS - otpAttempts;
 
+            // RTDB da attemptCount ni oshir (server-side rate limiting uchun)
+            for (const [key, val] of Object.entries(data)) {
+                if (val.mrdevId === currentStepData.mrdevId && !val.used && val.expiresAt > Date.now()) {
+                    const newCount = (val.attemptCount || 0) + 1;
+                    await update(ref(rtdb, `pass_notifications/${key}`), { attemptCount: newCount })
+                        .catch(() => {}); // RTDB rule 10 ga yetsa o'zi bloklanadi
+                    break;
+                }
+            }
+
+            hideLoading();
+            for (let i = 1; i <= 6; i++) document.getElementById(`otp${i}`)?.classList.remove('loading-bar');
+
+            if (otpAttempts >= OTP_MAX_ATTEMPTS) {
+                // Maksimal urinishga yetildi — lockout
+                setOtpLockout();
+                if (errorEl) {
+                    errorEl.textContent = (t('otp_max_attempts') || 'Juda ko\'p urinish. 30s kuting.') ;
+                    errorEl.classList.add('show');
+                }
+                showErrorAnimation();
+                setTimeout(() => {
+                    closeMrdevLoginModal();
+                    showToast((t('otp_max_attempts') || 'Juda ko\'p urinish. 30s kuting.'), 'error');
+                }, 1500);
+            } else {
+                // Qolgan urinishlar sonini ko'rsat
+                const attemptsMsg = (t('otp_attempts_left') || '{n} ta urinish qoldi').replace('{n}', remaining);
+                if (errorEl) {
+                    errorEl.textContent = `${t('wrong_code') || 'Noto\'g\'ri kod.'} ${attemptsMsg}`;
+                    errorEl.classList.add('show');
+                }
+                showErrorAnimation();
+            }
+
+            isVerifying = false;
+            return;
+        }
+
+        // ---- TO'G'RI OTP ----
         await update(ref(rtdb, `pass_notifications/${foundKey}`), { used: true, verifiedAt: Date.now() });
         clearInterval(mrdevLoginTimer);
+        clearOtpLockout();
+        otpAttempts = 0;
 
         hideLoading();
         for (let i = 1; i <= 6; i++) document.getElementById(`otp${i}`)?.classList.remove('loading-bar');

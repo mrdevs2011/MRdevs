@@ -14,6 +14,7 @@ import { showToast } from '../core/toast.js';
 import { showModal, closeModal } from '../ui/modal.js';
 import { logout } from '../core/auth.js';
 import { t } from '../core/i18n.js';
+import { sanitizeURL, sanitizeText } from '../core/sanitize.js';
 
 export function createAccountSwitcherHTML() {
     return `
@@ -97,42 +98,46 @@ function renderAccountList() {
 
     container.innerHTML = accounts.map((account, index) => {
         const isActive = active && active.uid === account.uid;
-        const avatarChar = (account.displayName || 'U').charAt(0).toUpperCase();
+        const avatarChar   = (account.displayName || 'U').charAt(0).toUpperCase();
         const providerIcon = getProviderIcon(account.provider);
         const providerName = getProviderName(account.provider);
+        const safeSrc      = sanitizeURL(account.photoURL);
+        const safeAlt      = sanitizeText(account.displayName || 'U');
+        const safeName     = sanitizeText(account.displayName || 'User');
+        const safeEmail    = sanitizeText(account.email || '');
 
         return `
-            <div class="account-item ${isActive ? 'active' : ''}" data-uid="${account.uid}">
+            <div class="account-item ${isActive ? 'active' : ''}" data-uid="${sanitizeText(account.uid)}">
                 <div class="account-item-left">
                     <div class="account-avatar">
-                        ${account.photoURL 
-                            ? `<img src="${account.photoURL}" alt="${account.displayName}">` 
-                            : avatarChar
+                        ${safeSrc
+                            ? `<img src="${safeSrc}" alt="${safeAlt}">`
+                            : sanitizeText(avatarChar)
                         }
                     </div>
                     <div class="account-info">
                         <div class="account-name">
-                            ${account.displayName || 'User'}
+                            ${safeName}
                             ${isActive ? `<span class="active-badge">${t('active')}</span>` : ''}
                         </div>
-                        <div class="account-email">${account.email || ''}</div>
+                        <div class="account-email">${safeEmail}</div>
                         <div class="account-meta">
                             <span class="account-provider">
-                                ${providerIcon} ${providerName}
+                                ${providerIcon} ${sanitizeText(providerName)}
                             </span>
-                            ${account.mrdevId ? `<span class="account-id">${account.mrdevId}</span>` : ''}
+                            ${account.mrdevId ? `<span class="account-id">${sanitizeText(account.mrdevId)}</span>` : ''}
                         </div>
                     </div>
                 </div>
                 <div class="account-item-actions">
                     ${!isActive ? `
-                        <button class="account-action-btn switch-btn" data-uid="${account.uid}" title="${t('switch') || 'O\'tish'}">
+                        <button class="account-action-btn switch-btn" data-uid="${sanitizeText(account.uid)}" title="${sanitizeText(t('switch') || 'O\'tish')}">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <polyline points="9 18 15 12 9 6"/>
                             </svg>
                         </button>
                     ` : ''}
-                    <button class="account-action-btn delete-btn" data-uid="${account.uid}" title="${t('delete') || 'O\'chirish'}">
+                    <button class="account-action-btn delete-btn" data-uid="${sanitizeText(account.uid)}" title="${sanitizeText(t('delete') || 'O\'chirish')}">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <polyline points="3 6 5 6 21 6"/>
                             <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>

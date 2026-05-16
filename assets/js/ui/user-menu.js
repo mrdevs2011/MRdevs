@@ -4,6 +4,7 @@
 // Asosiy dropdown logikasi dropdown.js da.
 
 import { t } from '../core/i18n.js';
+import { sanitizeURL, sanitizeText, setAvatarSafe } from '../core/sanitize.js';
 
 export function toggleUserMenu() {
     const menu = document.getElementById('userMenu');
@@ -63,9 +64,12 @@ export function updateUserMenuForUser(user) {
         if (notif)   notif.style.display   = 'flex';
 
         if (avatar) {
-            avatar.innerHTML = user.photoURL
-                ? `<img src="${user.photoURL}" alt="${displayName}" style="width:100%;height:100%;object-fit:cover;">`
-                : displayName.charAt(0).toUpperCase();
+            setAvatarSafe(
+                avatar,
+                user.photoURL,
+                displayName.charAt(0).toUpperCase(),
+                'width:100%;height:100%;object-fit:cover;'
+            );
         }
         if (name)    name.textContent    = displayName;
         if (email)   email.textContent   = user.email || '';

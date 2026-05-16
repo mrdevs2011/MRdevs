@@ -8,6 +8,7 @@ import { showPassNotifications }           from './features/pass-notifications.j
 import { logout }                           from './core/auth.js';
 import { getAllAccounts }                   from './core/multi-account.js';
 import { t }                               from './core/i18n.js';
+import { sanitizeURL, sanitizeText, setAvatarSafe, avatarHTMLSafe } from './core/sanitize.js';
 import {
     detectSection,
     getBasePath,
@@ -68,9 +69,7 @@ function updateTrigger(user) {
         if (nm) nm.textContent = 'Mehmon';
     } else {
         const dn = user.displayName || user.email?.split('@')[0] || 'User';
-        if (av) av.innerHTML = user.photoURL
-            ? `<img src="${user.photoURL}" alt="${dn}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`
-            : dn.charAt(0).toUpperCase();
+        if (av) setAvatarSafe(av, user.photoURL, dn.charAt(0).toUpperCase());
         if (nm) nm.textContent = dn;
     }
     setTriggerLoading(trigger, false);
@@ -169,13 +168,9 @@ function bindTrigger() {
 // AVATAR HTML HELPER
 // =====================================================================
 
+// avatarHTMLSafe (core/sanitize.js) dan re-export — mahalliy alias
 function avatarHTML(user, size = 44) {
-    if (!user) return `<span style="font-size:${Math.round(size*0.45)}px;">?</span>`;
-    const dn = user.displayName || user.email?.split('@')[0] || 'U';
-    if (user.photoURL) {
-        return `<img src="${user.photoURL}" alt="${dn}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" loading="lazy">`;
-    }
-    return `<span style="font-size:${Math.round(size*0.42)}px;font-weight:700;">${dn.charAt(0).toUpperCase()}</span>`;
+    return avatarHTMLSafe(user, size);
 }
 
 // =====================================================================
@@ -272,10 +267,11 @@ function buildRootHTML(user) {
                 <span class="cfg-item-badge" id="cfg-notif-badge" style="display:none;"></span>
             </button>
 
-           <a href="./about" class="cfg-item" id="cfg-about-btn" style="text-decoration: none; color: inherit; display: flex; align-items: center;">
-    <span class="cfg-item-icon cfg-icon-info">${Icons.info}</span>
-    <span class="cfg-item-text">Loyiha haqida</span>
-</a>
+            <button class="cfg-item" id="cfg-about-btn">
+                <span class="cfg-item-icon cfg-icon-info">${Icons.info}</span>
+                <span class="cfg-item-text">Loyiha haqida</span>
+            </button>
+
             <a href="${BASE}/settings/" class="cfg-item">
                 <span class="cfg-item-icon cfg-icon-settings">${Icons.settings}</span>
                 <span class="cfg-item-text">Sozlamalar</span>
@@ -371,18 +367,21 @@ function buildSettingsHTML(user) {
         accountsHTML = accounts.map(acc => {
             const accDn    = acc.displayName || acc.email?.split('@')[0] || t('user_role');
             const pInfo    = getProviderInfo(acc.provider);
-            const isActive = acc.uid === user?.uid;
-            const accAv    = acc.photoURL
-                ? `<img src="${acc.photoURL}" alt="${accDn}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`
-                : `<span>${accDn.charAt(0).toUpperCase()}</span>`;
+            const isActive  = acc.uid === user?.uid;
+            const safeSrc   = sanitizeURL(acc.photoURL);
+            const safeAlt   = sanitizeText(accDn);
+            const safeAccDn = sanitizeText(accDn);
+            const accAv     = safeSrc
+                ? `<img src="${safeSrc}" alt="${safeAlt}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`
+                : `<span>${sanitizeText(accDn.charAt(0).toUpperCase())}</span>`;
 
             return `<div class="cfg-device-item${isActive ? ' cfg-device-active' : ''}">
                 <div class="cfg-device-av">${accAv}</div>
                 <div class="cfg-device-info">
-                    <div class="cfg-device-name">${accDn}</div>
+                    <div class="cfg-device-name">${safeAccDn}</div>
                     <div class="cfg-device-meta">
-                        <span class="cfg-provider-tag" style="--p-color:${pInfo.color};">
-                            ${pInfo.icon}${pInfo.label}
+                        <span class="cfg-provider-tag" style="--p-color:${sanitizeText(pInfo.color)};">
+                            ${pInfo.icon}${sanitizeText(pInfo.label)}
                         </span>
                     </div>
                 </div>
@@ -457,19 +456,22 @@ function fillSettingsDynamic(user) {
         return;
     }
     list.innerHTML = accounts.map(acc => {
-        const accDn    = acc.displayName || acc.email?.split('@')[0] || t('user_role');
-        const pInfo    = getProviderInfo(acc.provider);
-        const isActive = acc.uid === user?.uid;
-        const accAv    = acc.photoURL
-            ? `<img src="${acc.photoURL}" alt="${accDn}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`
-            : `<span>${accDn.charAt(0).toUpperCase()}</span>`;
+        const accDn     = acc.displayName || acc.email?.split('@')[0] || t('user_role');
+        const pInfo     = getProviderInfo(acc.provider);
+        const isActive  = acc.uid === user?.uid;
+        const safeSrc   = sanitizeURL(acc.photoURL);
+        const safeAlt   = sanitizeText(accDn);
+        const safeAccDn = sanitizeText(accDn);
+        const accAv     = safeSrc
+            ? `<img src="${safeSrc}" alt="${safeAlt}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`
+            : `<span>${sanitizeText(accDn.charAt(0).toUpperCase())}</span>`;
         return `<div class="cfg-device-item${isActive ? ' cfg-device-active' : ''}">
             <div class="cfg-device-av">${accAv}</div>
             <div class="cfg-device-info">
-                <div class="cfg-device-name">${accDn}</div>
+                <div class="cfg-device-name">${safeAccDn}</div>
                 <div class="cfg-device-meta">
-                    <span class="cfg-provider-tag" style="--p-color:${pInfo.color};">
-                        ${pInfo.icon}${pInfo.label}
+                    <span class="cfg-provider-tag" style="--p-color:${sanitizeText(pInfo.color)};">
+                        ${pInfo.icon}${sanitizeText(pInfo.label)}
                     </span>
                 </div>
             </div>

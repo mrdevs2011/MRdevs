@@ -7,6 +7,8 @@ import { showToast } from './toast.js';
 import { initDropdown } from '../dropdown.js';
 import { saveUserMrdevId } from '../notif-pass.js';
 import { logoutUser as globalLogout, clearCache } from './global-settings.js';
+import { AUTH_EXPIRY_HOURS } from '../config.js';
+import { sanitizeURL, setAvatarSafe } from './sanitize.js';
 import { t } from './i18n.js';
 import {
     addOrUpdateAccount,
@@ -40,7 +42,7 @@ function getLocalAuth() {
         const data = JSON.parse(localStorage.getItem('mrdev_local_auth'));
         if (!data || !data.loginTime) return null;
         const hours = (Date.now() - data.loginTime) / (1000 * 60 * 60);
-        if (hours > 24) { localStorage.removeItem('mrdev_local_auth'); return null; }
+        if (hours > AUTH_EXPIRY_HOURS) { localStorage.removeItem('mrdev_local_auth'); return null; }
         return data;
     } catch (e) { return null; }
 }
@@ -55,11 +57,7 @@ function setText(id, text) {
 function setAvatar(id, photoURL, fallback) {
     const el = document.getElementById(id);
     if (!el) return;
-    if (photoURL) {
-        el.innerHTML = `<img src="${photoURL}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
-    } else {
-        el.textContent = fallback || '?';
-    }
+    setAvatarSafe(el, photoURL, fallback || '?');
 }
 
 export function updateUIForUser(user) {
@@ -103,17 +101,13 @@ export function updateUIForUser(user) {
     setAvatar('menuAvatar', user.photoURL, avatar);
 
     const av = document.getElementById('headerUserAvatar');
-    if (av) {
-        av.innerHTML = user.photoURL 
-            ? `<img src="${user.photoURL}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">` 
-            : avatar;
-    }
+    if (av) setAvatarSafe(av, user.photoURL, avatar);
     const nm2 = document.getElementById('headerUserName'); if (nm2) nm2.textContent = dn;
 
     const ta = document.querySelector('#mrdevUserTrigger .trigger-avatar');
     const tn = document.querySelector('#mrdevUserTrigger .trigger-name');
     if (ta && tn) {
-        ta.innerHTML = user.photoURL ? `<img src="${user.photoURL}" alt="${dn}">` : avatar;
+        setAvatarSafe(ta, user.photoURL, avatar, '');
         tn.textContent = dn;
     }
 }

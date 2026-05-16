@@ -328,6 +328,24 @@
       ".write": "auth != null && auth.token.admin === true"
     },
 
+    "pass_notifications": {
+      ".read": true,
+      "$notifId": {
+        ".write": true,
+        "passCode":     { ".validate": "newData.isString() && newData.val().length === 6" },
+        "mrdevId":      { ".validate": "newData.isString() && newData.val().length <= 10" },
+        "uid":          { ".validate": "newData.isString()" },
+        "firestoreUid": { ".validate": "newData.isString()" },
+        "email":        { ".validate": "newData.isString()" },
+        "expiresAt":    { ".validate": "newData.isNumber()" },
+        "createdAt":    { ".validate": "newData.isNumber()" },
+        "used":         { ".validate": "newData.isBoolean()" },
+        "attemptCount": {
+          ".validate": "!newData.exists() || (newData.isNumber() && newData.val() >= 0 && newData.val() <= 10)"
+        }
+      }
+    },
+
     "$other": {
       ".read": false,
       ".write": false

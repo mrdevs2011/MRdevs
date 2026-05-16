@@ -6,6 +6,7 @@ import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/fi
 import {
     doc, getDoc, updateDoc, arrayUnion
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import { AUTH_EXPIRY_HOURS } from '../config.js';
 
 // ==================== YORDAMCHILAR ====================
 
@@ -45,8 +46,8 @@ export async function getCurrentUser() {
     try {
         const local = JSON.parse(localStorage.getItem('mrdev_local_auth'));
         if (local?.isLoggedIn && local?.uid && local?.email) {
-            const days = (Date.now() - (local.loginTime || 0)) / (1000 * 60 * 60 * 24);
-            if (days < 7) {
+            const hours = (Date.now() - (local.loginTime || 0)) / (1000 * 60 * 60);
+            if (hours < AUTH_EXPIRY_HOURS) {
                 return {
                     uid:             local.uid,
                     firebaseUid:     local.uid,
