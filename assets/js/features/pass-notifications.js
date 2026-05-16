@@ -1,5 +1,5 @@
-// ==================== MRDEV PASS NOTIFICATIONS v4.0 ====================
-// Global notifications bilan integratsiyalashgan
+// ==================== MRDEV PASS NOTIFICATIONS v4.1 ====================
+// BUG #1 FIX: pass_notifications/$uid yo'li + passCode ko'rsatilmaydi (hash)
 
 import logger from '../core/logger.js';
 import { auth, rtdb } from '../core/firebase-init.js';
@@ -66,7 +66,8 @@ async function loadPassNotifications(uid, email) {
 
         logger.notif.searching(uid, email);
 
-        const notifRef = ref(rtdb, 'pass_notifications');
+        // BUG #1 FIX: faqat o'z UID'i ostidagi yozuvlarni o'qiymiz
+        const notifRef = ref(rtdb, `pass_notifications/${uid}`);
         const snapshot = await get(notifRef);
 
         if (!snapshot.exists()) {
@@ -78,13 +79,8 @@ async function loadPassNotifications(uid, email) {
         snapshot.forEach((child) => {
             const data = child.val();
             if (!data) return;
-
-            const matchesUid   = (uid   && (data.uid === uid || data.firestoreUid === uid));
-            const matchesEmail = (email && data.email === email);
-
-            if (matchesUid || matchesEmail) {
-                items.push({ id: child.key, ...data, createdAt: data.createdAt || Date.now() });
-            }
+            // Per-uid path bo'lgani uchun qo'shimcha UID filtri shart emas
+            items.push({ id: child.key, ...data, createdAt: data.createdAt || Date.now() });
         });
 
         items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
@@ -113,7 +109,7 @@ async function loadPassNotifications(uid, email) {
             return `
                 <div class="pass-notif-item">
                     <div class="pass-notif-header">
-                        <span class="pass-notif-code">${data.passCode || '------'}</span>
+                        <span class="pass-notif-code">••••••</span>
                         <span class="pass-notif-status ${status}">${statusText}</span>
                     </div>
                     <div class="pass-notif-date">
