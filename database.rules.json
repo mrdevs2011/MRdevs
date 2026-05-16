@@ -1,17 +1,25 @@
 {
   "rules": {
-    "users": {
-      "$uid": {
-        ".read":  "$uid === auth.uid",
-        ".write": "$uid === auth.uid"
+    "todo_tasks": {
+      "$userId": {
+        ".read": "$userId === auth.uid",
+        ".write": "$userId === auth.uid"
       }
     },
-    "system": {
-      ".read": true,
-      ".write": "auth != null && auth.token.admin === true"
+    "notes": {
+      "$userId": {
+        ".read": "$userId === auth.uid",
+        ".write": "$userId === auth.uid"
+      }
+    },
+    "timer_settings": {
+      "$userId": {
+        ".read": "$userId === auth.uid",
+        ".write": "$userId === auth.uid"
+      }
     },
     "$other": {
-      ".read":  false,
+      ".read": false,
       ".write": false
     }
   }

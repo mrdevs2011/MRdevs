@@ -1,22 +1,112 @@
 {
   "rules": {
-    "vault_files": { ".read": true, ".write": "auth != null" },
-    "exams": { ".read": true, ".write": "auth != null" },
-    "exam_results": { ".read": true, ".write": "auth != null" },
-    "system": { ".read": true, ".write": "auth != null && auth.token.admin === true" },
-    "board_data": { ".read": true, ".write": "auth != null" },
-    "messages": { ".read": "auth != null", ".write": "auth != null" },
-    "channels": { ".read": "auth != null", ".write": "auth != null" },
-    "posts": { ".read": true, ".write": "auth != null" },
-    "comments": { ".read": true, ".write": "auth != null" },
-    "notes": { "$uid": { ".read": "$uid === auth.uid", ".write": "$uid === auth.uid" } },
-    "todos": { "$uid": { ".read": "$uid === auth.uid", ".write": "$uid === auth.uid" } },
-    "weather_cache": { ".read": true, ".write": "auth != null" },
-    "ai_conversations": { "$uid": { ".read": "$uid === auth.uid", ".write": "$uid === auth.uid" } },
-    "code_projects": { "$uid": { ".read": "$uid === auth.uid", ".write": "$uid === auth.uid" } },
-    "user_progress": { "$uid": { ".read": "$uid === auth.uid", ".write": "$uid === auth.uid" } },
-    "group_boards": { ".read": "auth != null", ".write": "auth != null" },
-    "user_security": { "$uid": { ".read": "$uid === auth.uid", ".write": "$uid === auth.uid" } },
-    "admin_config": { ".read": true, ".write": "auth != null && auth.token.admin === true" }
+    "vault_files": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid"
+      }
+    },
+    "exams": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid"
+      }
+    },
+    "exam_results": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid"
+      }
+    },
+    "system": {
+      ".read": true,
+      ".write": "auth != null && auth.token.admin === true"
+    },
+    "board_data": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid"
+      }
+    },
+    "messages": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid"
+      }
+    },
+    "channels": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid"
+      }
+    },
+    "posts": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid"
+      }
+    },
+    "comments": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid"
+      }
+    },
+    "notes": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid"
+      }
+    },
+    "todos": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid"
+      }
+    },
+    "weather_cache": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid"
+      }
+    },
+    "ai_conversations": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid"
+      }
+    },
+    "code_projects": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid"
+      }
+    },
+    "user_progress": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid"
+      }
+    },
+    "group_boards": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid"
+      }
+    },
+    "user_security": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid"
+      }
+    },
+    "admin_config": {
+      ".read": true,
+      ".write": "auth != null && auth.token.admin === true"
+    },
+    "$other": {
+      ".read": false,
+      ".write": false
+    }
   }
 }

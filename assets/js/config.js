@@ -1,24 +1,26 @@
-// assets/js/config.js — kalitlarni /api/config dan yuklaydi
-// window.__ENV__ ga bog'liq emas
+// ==================== CONFIG — GroupBoard ====================
+// Kalitlar /api/config dan asinxron yuklanadi
 
-let MRDEV_CONFIG = null;
-
-export async function getConfig() {
-    if (MRDEV_CONFIG) return MRDEV_CONFIG;
-
-    const res = await fetch('/api/config');
-    if (!res.ok) throw new Error('Config yuklanmadi');
-    const data = await res.json();
-
-    MRDEV_CONFIG = {
-        main:       data.main,
-        secondary:  data.secondary,
-        groupboard: data.groupboard,
-        supabase:   data.supabase,
-        app:        data.app
-    };
-
-    return MRDEV_CONFIG;
+async function loadConfig() {
+    const res = await fetch("/api/config");
+    if (!res.ok) throw new Error("Config yuklanmadi");
+    return await res.json();
 }
 
-export default MRDEV_CONFIG;
+const cfg = await loadConfig();
+
+if (!cfg.groupboard?.apiKey) {
+    console.error("❌ groupboard/config: config topilmadi!");
+}
+
+export const firebaseConfig = cfg.groupboard;
+
+export const appConfig = {
+    maxFileSize:      5 * 1024 * 1024,
+    maxMessageLength: 250,
+    defaultZoom:      1,
+    minZoom:          0.2,
+    maxZoom:          5
+};
+
+export default firebaseConfig;

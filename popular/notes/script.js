@@ -1,25 +1,22 @@
 // ==================== MRDEV NOTES ====================
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import { initializeApp, getApps } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, deleteDoc, doc, updateDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { initDropdown } from '../../assets/dropdown.js';
 
-// ==================== FIREBASE (ENV dan) ====================
-const ENV = window.__ENV__ || {};
-const firebaseConfig = {
-    apiKey:            ENV.MAIN_API_KEY             || '',
-    authDomain:        ENV.MAIN_AUTH_DOMAIN         || '',
-    projectId:         ENV.MAIN_PROJECT_ID          || '',
-    storageBucket:     ENV.MAIN_STORAGE_BUCKET      || '',
-    messagingSenderId: ENV.MAIN_MESSAGING_SENDER_ID || '',
-    appId:             ENV.MAIN_APP_ID              || ''
-};
+// ==================== FIREBASE (/api/config dan) ====================
+const res  = await fetch('/api/config');
+const cfg  = await res.json();
 
-if (!firebaseConfig.apiKey) {
-    console.error('❌ notes/script: ENV kalitlar topilmadi!');
+if (!cfg.main?.apiKey) {
+    console.error('❌ notes/script: config topilmadi!');
 }
 
-const app  = initializeApp(firebaseConfig);
+const appName = 'mrdev_notes';
+let _app = getApps().find(a => a.name === appName);
+if (!_app) _app = initializeApp(cfg.main, appName);
+
+const app  = _app;
 const auth = getAuth(app);
 const db   = getFirestore(app);
 

@@ -14,8 +14,11 @@ function getDB() {
 import { collection, addDoc, query, orderBy, limit, startAfter, getDocs, deleteDoc, doc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
 // Supabase
-var SUPABASE_URL = "window.__ENV__?.SUPABASE_URL || """;
-var SUPABASE_KEY = "window.__ENV__?.SUPABASE_KEY || """;
+const _cfgRes = await fetch('/api/config');
+const _cfg = await _cfgRes.json();
+var SUPABASE_URL = _cfg.supabase?.url || '';
+var SUPABASE_KEY = _cfg.supabase?.key || '';
+if (!SUPABASE_URL) console.error('❌ music: supabase config topilmadi!');
 var supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // ==================== DOM ====================
