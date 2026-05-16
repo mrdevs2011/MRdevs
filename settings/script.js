@@ -15,93 +15,10 @@ import {
     getNotificationsEnabled
 } from '../assets/js/core/global-settings.js';
 import { toggleTheme } from '../assets/js/core/theme.js';
-import { setTriggerLoading } from '../assets/js/dropdown.js';
+import { initSettingsDropdown, setTriggerLoading } from '../assets/js/dropdown.js';
 
 let currentUser = null;
-let settingsDropdownOpen = false;
 
-// ==================== SETTINGS USER DROPDOWN ====================
-
-function initSettingsDropdown() {
-    const trigger  = document.getElementById('settingsUserTrigger');
-    const dropdown = document.getElementById('settingsUserDropdown');
-    if (!trigger || !dropdown) return;
-
-    trigger.addEventListener('click', (e) => {
-        e.stopPropagation();
-        settingsDropdownOpen = !settingsDropdownOpen;
-        dropdown.classList.toggle('show', settingsDropdownOpen);
-
-        const chevron = trigger.querySelector('.settings-user-chevron');
-        if (chevron) {
-            chevron.style.transform = settingsDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)';
-        }
-    });
-
-    // Tashqariga bosib yopish
-    document.addEventListener('click', (e) => {
-        if (settingsDropdownOpen && !trigger.contains(e.target) && !dropdown.contains(e.target)) {
-            closeSettingsDropdown();
-        }
-    });
-
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && settingsDropdownOpen) {
-            closeSettingsDropdown();
-        }
-    });
-}
-
-function closeSettingsDropdown() {
-    settingsDropdownOpen = false;
-    const dropdown = document.getElementById('settingsUserDropdown');
-    const trigger  = document.getElementById('settingsUserTrigger');
-    if (dropdown) dropdown.classList.remove('show');
-    const chevron = trigger?.querySelector('.settings-user-chevron');
-    if (chevron) chevron.style.transform = 'rotate(0deg)';
-}
-
-// ==================== SETTINGS DROPDOWN CONTENT ====================
-
-function populateSettingsDropdown(user) {
-    const dropAvatar  = document.getElementById('settingsDropAvatar');
-    const dropName    = document.getElementById('settingsDropName');
-    const dropMrdevId = document.getElementById('settingsDropMrdevId');
-
-    if (!user) {
-        if (dropAvatar)  dropAvatar.textContent  = '?';
-        if (dropName)    dropName.textContent    = t('guest');
-        if (dropMrdevId) dropMrdevId.style.display = 'none';
-        renderDevices([]);
-        return;
-    }
-
-    const displayName = user.displayName || user.email?.split('@')[0] || 'User';
-    const userId      = localStorage.getItem('mrdev_user_id') || user.mrdevId || '';
-
-    // Avatar
-    if (dropAvatar) {
-        dropAvatar.innerHTML = user.photoURL
-            ? `<img src="${user.photoURL}" alt="${displayName}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`
-            : displayName.charAt(0).toUpperCase();
-    }
-
-    // To'liq ism
-    if (dropName) dropName.textContent = displayName;
-
-    // MRDEV ID
-    if (dropMrdevId) {
-        if (userId) {
-            dropMrdevId.textContent   = `MRDEV #${userId}`;
-            dropMrdevId.style.display = 'block';
-        } else {
-            dropMrdevId.style.display = 'none';
-        }
-    }
-
-    // Ulangan qurilmalarni yuklash
-    loadDevices(user);
-}
 
 async function loadDevices(user) {
     const container = document.getElementById('settingsDropDevices');
@@ -218,14 +135,11 @@ function updateSettingsHeaderUser(user) {
     }
 
     // Skeleton olib tashlash
-    const trigger = document.getElementById('settingsUserTrigger');
+    const trigger = document.getElementById('headerUserTrigger');
     if (trigger) {
         trigger.classList.remove('is-loading');
         trigger.style.pointerEvents = '';
     }
-
-    // Dropdown content to'ldirish
-    populateSettingsDropdown(user);
 }
 
 // ==================== CACHE & SETTINGS UI ====================
@@ -332,10 +246,7 @@ loadSettings();
 // 3. Kesh hajmi
 updateCacheSize();
 
-// 4. Settings user dropdown
-initSettingsDropdown();
-
-// 5. Event listeners
+// 4. Event listeners
 initEventListeners();
 
 // 6. Firebase auth holati kuzatish
@@ -366,6 +277,7 @@ onAuthStateChanged(auth, (firebaseUser) => {
                         isAuthenticated: true
                     };
                     updateSettingsHeaderUser(currentUser);
+                    try { initSettingsDropdown(currentUser); } catch(e) { console.warn('Dropdown:', e.message); }
                     return;
                 }
             }
@@ -375,4 +287,5 @@ onAuthStateChanged(auth, (firebaseUser) => {
     }
 
     updateSettingsHeaderUser(currentUser);
+    try { initSettingsDropdown(currentUser); } catch(e) { console.warn('Dropdown:', e.message); }
 });

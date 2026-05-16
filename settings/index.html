@@ -35,36 +35,16 @@
             Auth yuklanguncha is-loading → skeleton.
             Auth resolve bo'lganda script.js is-loading ni olib tashlaydi.
         -->
-        <div class="settings-user-dropdown-wrap">
-            <button class="settings-user-trigger is-loading" id="settingsUserTrigger" aria-label="Foydalanuvchi ma'lumotlari">
-                <div class="settings-user-avatar" id="userAvatar">?</div>
-                <div class="settings-user-info-block">
-                    <span class="settings-user-name" id="userName" data-i18n="guest">Mehmon</span>
-                    <span class="settings-user-sub">MRDEV</span>
-                </div>
-                <svg class="settings-user-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="6 9 12 15 18 9"/>
-                </svg>
-            </button>
-
-            <!-- Info-only dropdown paneli (hech qanday tugma yo'q) -->
-            <div class="settings-user-dropdown" id="settingsUserDropdown" role="dialog" aria-label="Foydalanuvchi ma'lumotlari">
-                <!-- Avatar + ism + MRDEV ID -->
-                <div class="settings-dropdown-header">
-                    <div class="settings-dropdown-avatar" id="settingsDropAvatar">?</div>
-                    <div class="settings-dropdown-fullname" id="settingsDropName">—</div>
-                    <div class="settings-dropdown-mrdev-id" id="settingsDropMrdevId" style="display:none;"></div>
-                </div>
-
-                <!-- Ulangan qurilmalar -->
-                <div class="settings-dropdown-section" id="settingsDropDevicesSection">
-                    <div class="settings-dropdown-section-title">Ulangan qurilmalar</div>
-                    <div id="settingsDropDevices">
-                        <div class="settings-dropdown-empty">Yuklanmoqda...</div>
-                    </div>
-                </div>
+        <button class="header-user-trigger is-loading" id="headerUserTrigger" aria-label="Foydalanuvchi menyusi">
+            <div class="header-user-avatar">?</div>
+            <div class="header-user-info">
+                <span class="header-user-name" data-i18n="guest">Mehmon</span>
+                <span class="header-user-role">Foydalanuvchi</span>
             </div>
-        </div>
+            <svg class="header-user-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"/>
+            </svg>
+        </button>
     </div>
 
     <div class="settings-list">

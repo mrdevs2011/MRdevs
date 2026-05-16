@@ -38,7 +38,7 @@ initAuth((user) => {
     }
     
     // Dropdown init
-    import('../../assets/dropdown.js').then(m => m.initDropdown(user, window.location.pathname));
+    import('../../assets/js/dropdown.js').then(m => m.initDropdown(user));
     
     // Load tasks
     loadTasks();

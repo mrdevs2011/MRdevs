@@ -2,7 +2,7 @@
 import { initializeApp, getApps } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, deleteDoc, doc, updateDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
-import { initDropdown } from '../../assets/dropdown.js';
+import { initDropdown } from '../../assets/js/dropdown.js';
 
 // ==================== FIREBASE (/api/config dan) ====================
 const res  = await fetch('/api/config');
@@ -88,7 +88,7 @@ onAuthStateChanged(auth, (user) => {
         loadLocalNotes();
     }
 
-    initDropdown(user, window.location.pathname);
+    initDropdown(user);
 });
 
 // ==================== ADD NOTE ====================
