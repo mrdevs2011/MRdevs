@@ -7,7 +7,8 @@ import { showToast } from './toast.js';
 import { initDropdown } from '../dropdown.js';
 import { saveUserMrdevId } from '../notif-pass.js';
 import { logoutUser as globalLogout, clearCache } from './global-settings.js';
-import { t } from './i18n.js';
+import { t, initI18n } from './i18n.js';
+import { autoDetectLanguage } from './geo-lang.js';
 import {
     addOrUpdateAccount,
     getActiveAccount,
@@ -178,6 +179,11 @@ export function initAuth() {
             });
 
             addOrUpdateAccount(currentUser, { mrdevId, provider: firebaseUser.providerData?.[0]?.providerId || 'email' });
+
+            // GPS asosida til avtomatik aniqlash (faqat qo'lda tanlanmagan bo'lsa)
+            autoDetectLanguage().then(lang => {
+                if (lang) initI18n();
+            }).catch(() => {});
 
             updateUIForUser(currentUser);
             try { initDropdown(currentUser); } catch (e) {

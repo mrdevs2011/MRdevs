@@ -6,6 +6,7 @@ import { onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/
 import { doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { showToast } from '../assets/js/core/toast.js';
 import { t, setLanguage, getCurrentLang, initI18n } from '../assets/js/core/i18n.js';
+import { markLangAsManual, resetManualLang } from '../assets/js/core/geo-lang.js';
 import {
     initGlobalSettings,
     getTheme,
@@ -190,6 +191,7 @@ function initEventListeners() {
     // Til o'zgartirish
     document.querySelectorAll('.lang-option').forEach(btn => {
         btn.addEventListener('click', () => {
+            markLangAsManual();   // GPS auto-detect endi ishlamaydi
             setLanguage(btn.dataset.lang);
             loadSettings();
             updateCacheSize();
@@ -200,6 +202,7 @@ function initEventListeners() {
     // Kesh tozalash
     document.getElementById('clearCacheBtn')?.addEventListener('click', () => {
         clearCache();
+        resetManualLang();   // Kesh tozalansa GPS til-aniqlash ham qayta ishlaydi
         updateCacheSize();
     });
 
