@@ -1,13 +1,14 @@
-// ==================== MRDEV USER MENU v2.0 ====================
-// i18n va global settings bilan integratsiyalashgan
+// ==================== MRDEV USER MENU v3.0 ====================
+// initDropdown bilan birgalikda ishlaydi (dropdown.js)
+// Bu fayl root header dagi eski user-menu ni boshqaradi (backward compat)
+// Asosiy dropdown logikasi dropdown.js da.
 
 import { t } from '../core/i18n.js';
-import { getNotificationsEnabled } from '../core/global-settings.js';
 
 export function toggleUserMenu() {
     const menu = document.getElementById('userMenu');
     if (menu) menu.classList.toggle('show');
-    updateUserMenuTexts();
+    if (menu?.classList.contains('show')) updateUserMenuTexts();
 }
 
 export function closeUserMenu() {
@@ -16,70 +17,99 @@ export function closeUserMenu() {
 }
 
 export function initUserMenu() {
+    // Tashqarida click bo'lganda yopish
     document.addEventListener('click', (e) => {
-        const trigger = document.getElementById('mrdevUserTrigger');
-        const menu = document.getElementById('userMenu');
-        if (trigger && menu && !trigger.contains(e.target) && !menu.contains(e.target)) {
+        const trigger = document.getElementById('headerUserTrigger');
+        const menu    = document.getElementById('userMenu');
+        if (
+            menu?.classList.contains('show') &&
+            !menu.contains(e.target) &&
+            !trigger?.contains(e.target)
+        ) {
             closeUserMenu();
         }
     });
-    
-    // User menu dagi matnlarni i18n bilan yangilash
+
+    // Dastlabki matnlarni qo'llash
     updateUserMenuTexts();
-    
+
     // Til o'zgarganda user menu matnlarini yangilash
     document.addEventListener('languageChanged', () => {
         updateUserMenuTexts();
     });
 }
 
+/**
+ * User menu dagi foydalanuvchi ma'lumotlarini yangilaydi.
+ * auth.js tomonidan chaqiriladi.
+ */
+export function updateUserMenuForUser(user) {
+    const header  = document.getElementById('userMenuHeader');
+    const avatar  = document.getElementById('menuAvatar');
+    const name    = document.getElementById('menuName');
+    const email   = document.getElementById('menuEmail');
+    const mrdevId = document.getElementById('menuMrdevId');
+    const login   = document.getElementById('userMenuLogin');
+    const logout  = document.getElementById('userMenuLogout');
+    const notif   = document.getElementById('notifMenuLink');
+
+    if (user && user.isAuthenticated) {
+        const displayName = user.displayName || user.email?.split('@')[0] || 'User';
+        const userId      = user.mrdevId || localStorage.getItem('mrdev_user_id') || '';
+
+        if (header)  header.style.display  = 'flex';
+        if (login)   login.style.display   = 'none';
+        if (logout)  logout.style.display  = 'flex';
+        if (notif)   notif.style.display   = 'flex';
+
+        if (avatar) {
+            avatar.innerHTML = user.photoURL
+                ? `<img src="${user.photoURL}" alt="${displayName}" style="width:100%;height:100%;object-fit:cover;">`
+                : displayName.charAt(0).toUpperCase();
+        }
+        if (name)    name.textContent    = displayName;
+        if (email)   email.textContent   = user.email || '';
+        if (mrdevId) {
+            mrdevId.textContent    = userId ? `#${userId}` : '';
+            mrdevId.style.display  = userId ? 'block' : 'none';
+        }
+    } else {
+        if (header)  header.style.display = 'none';
+        if (login)   login.style.display  = 'block';
+        if (logout)  logout.style.display = 'none';
+        if (notif)   notif.style.display  = 'none';
+        if (avatar)  avatar.textContent   = '?';
+    }
+}
+
 function updateUserMenuTexts() {
-    // User menu linklar
-    const allAppsLink = document.querySelector('#userMenu a[onclick*="switchTab(\'all\')"]');
-    const popularAppsLink = document.querySelector('#userMenu a[onclick*="switchTab(\'popular\')"]');
-    const miniAppsLink = document.querySelector('#userMenu a[onclick*="switchTab(\'mini\')"]');
-    const settingsLink = document.querySelector('#userMenu a[href*="./settings/"]');
-    const notifLink = document.getElementById('notifMenuLink');
-    const logoutBtn = document.getElementById('userMenuLogout');
-    const loginBtn = document.querySelector('#userMenuLogin button');
-    
-    if (allAppsLink) {
-        const svg = allAppsLink.querySelector('svg');
-        const text = allAppsLink.childNodes[allAppsLink.childNodes.length - 1];
-        if (text && text.nodeType === 3) text.textContent = t('all_apps');
-    }
-    
-    if (popularAppsLink) {
-        const svg = popularAppsLink.querySelector('svg');
-        const text = popularAppsLink.childNodes[popularAppsLink.childNodes.length - 1];
-        if (text && text.nodeType === 3) text.textContent = t('popular_apps');
-    }
-    
-    if (miniAppsLink) {
-        const svg = miniAppsLink.querySelector('svg');
-        const text = miniAppsLink.childNodes[miniAppsLink.childNodes.length - 1];
-        if (text && text.nodeType === 3) text.textContent = t('mini_apps');
-    }
-    
-    if (settingsLink) {
-        const svg = settingsLink.querySelector('svg');
-        const text = settingsLink.childNodes[settingsLink.childNodes.length - 1];
-        if (text && text.nodeType === 3) text.textContent = t('settings');
-    }
-    
-    if (notifLink) {
-        const svg = notifLink.querySelector('svg');
-        const text = notifLink.childNodes[notifLink.childNodes.length - 1];
-        if (text && text.nodeType === 3) text.textContent = t('pass_notifications');
-    }
-    
+    const allAppsLink    = document.querySelector('#userMenu a[onclick*="switchTab(\'all\')"]');
+    const popularLink    = document.querySelector('#userMenu a[onclick*="switchTab(\'popular\')"]');
+    const miniLink       = document.querySelector('#userMenu a[onclick*="switchTab(\'mini\')"]');
+    const settingsLink   = document.querySelector('#userMenu a[href*="./settings/"]');
+    const notifLink      = document.getElementById('notifMenuLink');
+    const logoutBtn      = document.getElementById('userMenuLogout');
+    const loginBtn       = document.querySelector('#userMenuLogin button');
+
+    [
+        [allAppsLink,  'all_apps'],
+        [popularLink,  'popular_apps'],
+        [miniLink,     'mini_apps'],
+        [settingsLink, 'settings'],
+        [notifLink,    'pass_notifications'],
+    ].forEach(([el, key]) => {
+        if (!el) return;
+        const last = el.childNodes[el.childNodes.length - 1];
+        if (last?.nodeType === Node.TEXT_NODE) last.textContent = t(key);
+    });
+
     if (logoutBtn) {
         const svg = logoutBtn.querySelector('svg');
         logoutBtn.innerHTML = '';
         if (svg) logoutBtn.appendChild(svg);
         logoutBtn.appendChild(document.createTextNode(' ' + t('logout')));
     }
-    
+
     if (loginBtn) {
         const svg = loginBtn.querySelector('svg');
         loginBtn.innerHTML = '';

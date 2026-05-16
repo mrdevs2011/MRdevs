@@ -7,6 +7,8 @@
     <script src="../assets/js/core/theme-flash-fix.js"></script>
     <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet" href="./style.css">
+    <!-- Dropdown stillari (settings user dropdown uchun) -->
+    <link rel="stylesheet" href="../assets/css/dropdown.css">
     <link rel="icon" type="image/svg+xml" href="../favicon.svg">
 </head>
 <body>
@@ -21,9 +23,47 @@
             <span data-i18n="back">Bosh sahifa</span>
         </a>
         <h1 data-i18n="settings_title">Sozlamalar</h1>
-        <div class="settings-user" id="settingsUser">
-            <span id="userName" data-i18n="guest">Mehmon</span>
-            <div class="user-avatar" id="userAvatar">?</div>
+
+        <!--
+            SETTINGS USER DROPDOWN TRIGGER
+            Tugmaga bosilganda faqat ma'lumot dropdown ochiladi:
+              - To'liq ism
+              - MRDEV ID
+              - Ulangan qurilmalar
+            Hech qanday logout/settings tugmasi yo'q.
+            
+            Auth yuklanguncha is-loading → skeleton.
+            Auth resolve bo'lganda script.js is-loading ni olib tashlaydi.
+        -->
+        <div class="settings-user-dropdown-wrap">
+            <button class="settings-user-trigger is-loading" id="settingsUserTrigger" aria-label="Foydalanuvchi ma'lumotlari">
+                <div class="settings-user-avatar" id="userAvatar">?</div>
+                <div class="settings-user-info-block">
+                    <span class="settings-user-name" id="userName" data-i18n="guest">Mehmon</span>
+                    <span class="settings-user-sub">MRDEV</span>
+                </div>
+                <svg class="settings-user-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="6 9 12 15 18 9"/>
+                </svg>
+            </button>
+
+            <!-- Info-only dropdown paneli (hech qanday tugma yo'q) -->
+            <div class="settings-user-dropdown" id="settingsUserDropdown" role="dialog" aria-label="Foydalanuvchi ma'lumotlari">
+                <!-- Avatar + ism + MRDEV ID -->
+                <div class="settings-dropdown-header">
+                    <div class="settings-dropdown-avatar" id="settingsDropAvatar">?</div>
+                    <div class="settings-dropdown-fullname" id="settingsDropName">—</div>
+                    <div class="settings-dropdown-mrdev-id" id="settingsDropMrdevId" style="display:none;"></div>
+                </div>
+
+                <!-- Ulangan qurilmalar -->
+                <div class="settings-dropdown-section" id="settingsDropDevicesSection">
+                    <div class="settings-dropdown-section-title">Ulangan qurilmalar</div>
+                    <div id="settingsDropDevices">
+                        <div class="settings-dropdown-empty">Yuklanmoqda...</div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 

@@ -10,6 +10,9 @@
     
     <link rel="icon" type="image/svg+xml" href="../../assets/favicons/calculator.svg">
     <link rel="stylesheet" href="style.css">
+    <!-- Header stillari (trigger root header bilan bir xil ko'rinishi uchun) -->
+    <link rel="stylesheet" href="../../assets/css/header.css">
+    <!-- Dropdown stillari -->
     <link rel="stylesheet" href="../../assets/css/dropdown.css">
 </head>
 <body>
@@ -51,11 +54,24 @@
                 </svg>
             </button>
             
-            <!-- Mini Apps Dropdown Trigger -->
-            <button class="mrdev-user-trigger-mini" id="mrdevUserTriggerMini" aria-label="Foydalanuvchi menyusi">
+            <!--
+                Mini Apps Dropdown Trigger
+                Root header bilan AYNAN bir xil struktura va o'lcham:
+                  .mrdev-user-trigger-mini  (dropdown.css da root bilan tenglashtirildi)
+                  .trigger-avatar           (30px, root bilan bir xil)
+                  .trigger-info             (name + role, root bilan bir xil)
+                
+                Auth yuklanguncha is-loading class skeleton ko'rsatadi.
+                onAuthStateChanged resolve bo'lganda initMiniDropdown(user) chaqiriladi
+                va setTriggerLoading(trigger, false) skeleton olib tashlanadi.
+            -->
+            <button class="mrdev-user-trigger-mini is-loading" id="mrdevUserTriggerMini" aria-label="Foydalanuvchi menyusi">
                 <div class="trigger-avatar" id="triggerAvatarMini">?</div>
-                <span class="trigger-name" id="triggerNameMini">Mehmon</span>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <div class="trigger-info">
+                    <span class="trigger-name" id="triggerNameMini">Yuklanmoqda</span>
+                    <span class="trigger-role">MRDEV</span>
+                </div>
+                <svg class="trigger-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <polyline points="6 9 12 15 18 9"/>
                 </svg>
             </button>
@@ -118,6 +134,79 @@
     <!-- Toast -->
     <div class="toast" id="toast"></div>
 
+    <!-- ==================== SCRIPTS ====================
+         TARTIB MUHIM:
+         1. script.js   — calculator logikasi
+         2. auth-init   — Firebase auth + mini dropdown ulash
+    -->
     <script type="module" src="script.js"></script>
+
+    <!--
+        Firebase Auth + Mini Dropdown Initsializatsiya
+        
+        Barcha boshqa mini applarda ham xuddi shu pattern ishlatiladi:
+          - firebase-init.js import qilinadi
+          - onAuthStateChanged tinglanadi
+          - user kelganda initMiniDropdown(user) chaqiriladi
+          - user null bo'lsa ham initMiniDropdown(null) chaqiriladi
+            (mehmon holati ko'rsatiladi)
+    -->
+    <script type="module">
+        import { auth }            from '../../assets/js/core/firebase-init.js';
+        import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import { initMiniDropdown, setTriggerLoading } from '../../assets/js/dropdown.js';
+
+        // Trigger hozirda is-loading (HTML da qo'yilgan).
+        // onAuthStateChanged birinchi marta chaqirilganda auth holati ma'lum bo'ladi.
+
+        let dropdownInited = false;
+
+        onAuthStateChanged(auth, (firebaseUser) => {
+            // Global currentUser ni o'rnatamiz (boshqa skriptlar uchun ham foydali)
+            window.currentUser = firebaseUser;
+
+            if (!dropdownInited) {
+                dropdownInited = true;
+
+                if (firebaseUser) {
+                    // Autentifikatsiya qilingan user
+                    const mrdevId = localStorage.getItem('mrdev_user_id') || '';
+                    const user = {
+                        uid:         firebaseUser.uid,
+                        email:       firebaseUser.email,
+                        displayName: firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'User',
+                        photoURL:    firebaseUser.photoURL || null,
+                        mrdevId:     mrdevId,
+                        isAuthenticated: true
+                    };
+                    initMiniDropdown(user);
+                } else {
+                    // Mehmon holati — localStorage da MRDEV local auth bor-yo'qligini tekshir
+                    try {
+                        const local = JSON.parse(localStorage.getItem('mrdev_local_auth') || 'null');
+                        if (local?.isLoggedIn && local?.uid && local?.email) {
+                            const days = (Date.now() - (local.loginTime || 0)) / (1000 * 60 * 60 * 24);
+                            if (days < 7) {
+                                const user = {
+                                    uid:         local.uid,
+                                    email:       local.email,
+                                    displayName: local.displayName || 'User',
+                                    photoURL:    local.photoURL || null,
+                                    mrdevId:     local.mrdevId || localStorage.getItem('mrdev_user_id') || '',
+                                    isAuthenticated: true
+                                };
+                                window.currentUser = user;
+                                initMiniDropdown(user);
+                                return;
+                            }
+                        }
+                    } catch (e) {}
+
+                    // Haqiqiy mehmon
+                    initMiniDropdown(null);
+                }
+            }
+        });
+    </script>
 </body>
 </html>

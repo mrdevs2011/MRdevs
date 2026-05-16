@@ -1,0 +1,726 @@
+mr@MR ~/M/i/m/MRDEV (main)> tree
+.
+├── about
+│   ├── index.html
+│   ├── script.js
+│   └── style.css
+├── ai-rules.md
+├── api
+│   ├── config.js
+│   └── groq.js
+├── assets
+│   ├── css
+│   │   ├── auth.css
+│   │   ├── dropdown.css
+│   │   ├── header.css
+│   │   ├── loading.css
+│   │   ├── main.css
+│   │   ├── modal.css
+│   │   ├── mrdev-login.css
+│   │   ├── reset.css
+│   │   ├── responsive.css
+│   │   ├── sidebar.css
+│   │   ├── splash.css
+│   │   ├── toast.css
+│   │   ├── user-menu.css
+│   │   └── variables.css
+│   ├── favicons
+│   │   ├── ai.svg
+│   │   ├── bingo.svg
+│   │   ├── board.svg
+│   │   ├── calculator.svg
+│   │   ├── clock.svg
+│   │   ├── codestudio.svg
+│   │   ├── examer.svg
+│   │   ├── groupboard.svg
+│   │   ├── learncode.svg
+│   │   ├── mrgram.svg
+│   │   ├── music.svg
+│   │   ├── notes.svg
+│   │   ├── notifyhub.svg
+│   │   ├── qr.svg
+│   │   ├── security.svg
+│   │   ├── splitview.svg
+│   │   ├── stopwatch.svg
+│   │   ├── timer.svg
+│   │   ├── todo.svg
+│   │   ├── typing.svg
+│   │   ├── videohub.svg
+│   │   └── weather.svg
+│   └── js
+│       ├── app.js
+│       ├── config.js
+│       ├── core
+│       │   ├── auth-helper.js
+│       │   ├── auth.js
+│       │   ├── firebase-init.js
+│       │   ├── global-settings.js
+│       │   ├── i18n.js
+│       │   ├── loading.js
+│       │   ├── logger.js
+│       │   ├── multi-account.js
+│       │   ├── splash.js
+│       │   ├── theme-flash-fix.js
+│       │   ├── theme.js
+│       │   └── toast.js
+│       ├── dropdown.js
+│       ├── features
+│       │   ├── account-switcher.js
+│       │   ├── email-auth.js
+│       │   ├── google-auth.js
+│       │   ├── login-auth.js
+│       │   ├── mrdev-login.js
+│       │   └── pass-notifications.js
+│       ├── firebase-helper.js
+│       ├── notif-pass.js
+│       └── ui
+│           ├── grid.js
+│           ├── modal.js
+│           ├── search.js
+│           ├── sidebar.js
+│           ├── tabs.js
+│           └── user-menu.js
+├── build.js
+├── database.rules.json
+├── favicon.svg
+├── firestore.rules
+├── index.html
+├── mini
+│   ├── bingo
+│   │   ├── bingo.svg
+│   │   ├── database.rules.json
+│   │   ├── index.html
+│   │   ├── script.js
+│   │   └── style.css
+│   ├── board
+│   │   ├── board.svg
+│   │   ├── database.rules.json
+│   │   ├── index.html
+│   │   ├── script.js
+│   │   └── style.css
+│   ├── calculator
+│   │   ├── calculator.svg
+│   │   ├── database.rules.json
+│   │   ├── index.html
+│   │   ├── script.js
+│   │   └── style.css
+│   ├── clock
+│   │   ├── clock.svg
+│   │   ├── database.rules.json
+│   │   ├── index.html
+│   │   ├── script.js
+│   │   └── style.css
+│   ├── database.rules.json
+│   ├── examer
+│   │   ├── database.rules.json
+│   │   ├── examer.svg
+│   │   ├── index.html
+│   │   ├── script.js
+│   │   └── style.css
+│   ├── music
+│   │   ├── database.rules.json
+│   │   ├── index.html
+│   │   ├── music.svg
+│   │   ├── script.js
+│   │   └── style.css
+│   ├── qr
+│   │   ├── database.rules.json
+│   │   ├── index.html
+│   │   ├── qr.svg
+│   │   ├── script.js
+│   │   └── style.css
+│   ├── splitview
+│   │   ├── database.rules.json
+│   │   ├── index.html
+│   │   ├── script.js
+│   │   ├── splitview.svg
+│   │   └── style.css
+│   ├── stopwatch
+│   │   ├── database.rules.json
+│   │   ├── index.html
+│   │   ├── script.js
+│   │   ├── stopwatch.svg
+│   │   └── style.css
+│   └── timer
+│       ├── database.rules.json
+│       ├── index.html
+│       ├── script.js
+│       ├── style.css
+│       └── timer.svg
+├── package.json
+├── popular
+│   ├── ai
+│   │   ├── ai.svg
+│   │   ├── database.rules.json
+│   │   └── index.html
+│   ├── codestudio
+│   │   ├── database.rules.json
+│   │   └── index.html
+│   ├── database.rules.json
+│   ├── groupboard
+│   │   ├── board.html
+│   │   ├── css
+│   │   │   └── style.css
+│   │   ├── dashboard.html
+│   │   ├── doc.html
+│   │   ├── favicon.svg
+│   │   ├── index.html
+│   │   ├── js
+│   │   │   ├── ai-modal.js
+│   │   │   ├── audio.js
+│   │   │   ├── auth.js
+│   │   │   ├── chat.js
+│   │   │   ├── color-wheel.js
+│   │   │   ├── config.js
+│   │   │   ├── dashboard.js
+│   │   │   ├── database.rules.json
+│   │   │   ├── donate-modal.js
+│   │   │   ├── events.js
+│   │   │   ├── firebase.js
+│   │   │   ├── graphics.js
+│   │   │   ├── main.js
+│   │   │   ├── minimap.js
+│   │   │   ├── settings.js
+│   │   │   ├── shapes.js
+│   │   │   ├── shortcuts.js
+│   │   │   ├── store.js
+│   │   │   ├── tools.js
+│   │   │   ├── ui.js
+│   │   │   ├── users.js
+│   │   │   └── utils.js
+│   │   ├── part10.html
+│   │   ├── part11.html
+│   │   ├── part12.html
+│   │   ├── part13.html
+│   │   ├── part14.html
+│   │   ├── part15.html
+│   │   ├── part16.html
+│   │   ├── part17.html
+│   │   ├── part18.html
+│   │   ├── part19.html
+│   │   ├── part1.html
+│   │   ├── part20.html
+│   │   ├── part2.html
+│   │   ├── part3.html
+│   │   ├── part4.html
+│   │   ├── part5.html
+│   │   ├── part6.html
+│   │   ├── part7.html
+│   │   ├── part8.html
+│   │   ├── part9.html
+│   │   ├── profile.html
+│   │   ├── README.md
+│   │   └── rooms.html
+│   ├── learncode
+│   │   ├── assets
+│   │   │   ├── firebase-config.js
+│   │   │   └── lesson-common.js
+│   │   ├── bootstrap
+│   │   │   ├── 1
+│   │   │   │   ├── index.html
+│   │   │   │   └── style.css
+│   │   │   ├── 10
+│   │   │   │   ├── index.html
+│   │   │   │   └── style.css
+│   │   │   ├── 11
+│   │   │   │   ├── index.html
+│   │   │   │   └── style.css
+│   │   │   ├── 12
+│   │   │   │   ├── index.html
+│   │   │   │   └── style.css
+│   │   │   ├── 13
+│   │   │   │   ├── index.html
+│   │   │   │   └── style.css
+│   │   │   ├── 14
+│   │   │   │   ├── index.html
+│   │   │   │   └── style.css
+│   │   │   ├── 15
+│   │   │   │   ├── index.html
+│   │   │   │   └── style.css
+│   │   │   ├── 16
+│   │   │   │   ├── index.html
+│   │   │   │   └── style.css
+│   │   │   ├── 17
+│   │   │   │   ├── index.html
+│   │   │   │   └── style.css
+│   │   │   ├── 18
+│   │   │   │   ├── index.html
+│   │   │   │   └── style.css
+│   │   │   ├── 19
+│   │   │   │   ├── index.html
+│   │   │   │   └── style.css
+│   │   │   ├── 2
+│   │   │   │   ├── index.html
+│   │   │   │   └── style.css
+│   │   │   ├── 20
+│   │   │   │   ├── index.html
+│   │   │   │   └── style.css
+│   │   │   ├── 3
+│   │   │   │   ├── index.html
+│   │   │   │   └── style.css
+│   │   │   ├── 4
+│   │   │   │   ├── index.html
+│   │   │   │   └── style.css
+│   │   │   ├── 5
+│   │   │   │   ├── index.html
+│   │   │   │   └── style.css
+│   │   │   ├── 6
+│   │   │   │   ├── index.html
+│   │   │   │   └── style.css
+│   │   │   ├── 7
+│   │   │   │   ├── index.html
+│   │   │   │   └── style.css
+│   │   │   ├── 8
+│   │   │   │   ├── index.html
+│   │   │   │   └── style.css
+│   │   │   ├── 9
+│   │   │   │   ├── index.html
+│   │   │   │   └── style.css
+│   │   │   ├── index.html
+│   │   │   └── style.css
+│   │   ├── css
+│   │   │   ├── 1
+│   │   │   │   └── index.html
+│   │   │   ├── 10
+│   │   │   │   └── index.html
+│   │   │   ├── 11
+│   │   │   │   └── index.html
+│   │   │   ├── 12
+│   │   │   │   └── index.html
+│   │   │   ├── 13
+│   │   │   │   └── index.html
+│   │   │   ├── 14
+│   │   │   │   └── index.html
+│   │   │   ├── 15
+│   │   │   │   └── index.html
+│   │   │   ├── 16
+│   │   │   │   └── index.html
+│   │   │   ├── 17
+│   │   │   │   └── index.html
+│   │   │   ├── 18
+│   │   │   │   └── index.html
+│   │   │   ├── 19
+│   │   │   │   └── index.html
+│   │   │   ├── 2
+│   │   │   │   └── index.html
+│   │   │   ├── 20
+│   │   │   │   └── index.html
+│   │   │   ├── 21
+│   │   │   │   └── index.html
+│   │   │   ├── 22
+│   │   │   │   └── index.html
+│   │   │   ├── 23
+│   │   │   │   └── index.html
+│   │   │   ├── 24
+│   │   │   │   └── index.html
+│   │   │   ├── 25
+│   │   │   │   └── index.html
+│   │   │   ├── 26
+│   │   │   │   └── index.html
+│   │   │   ├── 27
+│   │   │   │   └── index.html
+│   │   │   ├── 28
+│   │   │   │   └── index.html
+│   │   │   ├── 29
+│   │   │   │   └── index.html
+│   │   │   ├── 3
+│   │   │   │   └── index.html
+│   │   │   ├── 30
+│   │   │   │   └── index.html
+│   │   │   ├── 31
+│   │   │   │   └── index.html
+│   │   │   ├── 32
+│   │   │   │   └── index.html
+│   │   │   ├── 33
+│   │   │   │   └── index.html
+│   │   │   ├── 34
+│   │   │   │   └── index.html
+│   │   │   ├── 35
+│   │   │   │   └── index.html
+│   │   │   ├── 36
+│   │   │   │   └── index.html
+│   │   │   ├── 37
+│   │   │   │   └── index.html
+│   │   │   ├── 38
+│   │   │   │   └── index.html
+│   │   │   ├── 39
+│   │   │   │   └── index.html
+│   │   │   ├── 4
+│   │   │   │   └── index.html
+│   │   │   ├── 40
+│   │   │   │   └── index.html
+│   │   │   ├── 41
+│   │   │   │   └── index.html
+│   │   │   ├── 42
+│   │   │   │   └── index.html
+│   │   │   ├── 43
+│   │   │   │   └── index.html
+│   │   │   ├── 44
+│   │   │   │   └── index.html
+│   │   │   ├── 45
+│   │   │   │   └── index.html
+│   │   │   ├── 46
+│   │   │   │   └── index.html
+│   │   │   ├── 47
+│   │   │   │   └── index.html
+│   │   │   ├── 48
+│   │   │   │   └── index.html
+│   │   │   ├── 49
+│   │   │   │   └── index.html
+│   │   │   ├── 5
+│   │   │   │   └── index.html
+│   │   │   ├── 50
+│   │   │   │   └── index.html
+│   │   │   ├── 51
+│   │   │   │   └── index.html
+│   │   │   ├── 52
+│   │   │   │   └── index.html
+│   │   │   ├── 53
+│   │   │   │   └── index.html
+│   │   │   ├── 54
+│   │   │   │   └── index.html
+│   │   │   ├── 55
+│   │   │   │   └── index.html
+│   │   │   ├── 56
+│   │   │   │   └── index.html
+│   │   │   ├── 57
+│   │   │   │   └── index.html
+│   │   │   ├── 58
+│   │   │   │   └── index.html
+│   │   │   ├── 59
+│   │   │   │   └── index.html
+│   │   │   ├── 6
+│   │   │   │   └── index.html
+│   │   │   ├── 60
+│   │   │   │   └── index.html
+│   │   │   ├── 61
+│   │   │   │   └── index.html
+│   │   │   ├── 62
+│   │   │   │   └── index.html
+│   │   │   ├── 63
+│   │   │   │   └── index.html
+│   │   │   ├── 7
+│   │   │   │   └── index.html
+│   │   │   ├── 8
+│   │   │   │   └── index.html
+│   │   │   ├── 9
+│   │   │   │   └── index.html
+│   │   │   ├── index.html
+│   │   │   ├── script.js
+│   │   │   └── style.css
+│   │   ├── database.rules.json
+│   │   ├── html
+│   │   │   ├── 1
+│   │   │   │   └── index.html
+│   │   │   ├── 10
+│   │   │   │   └── index.html
+│   │   │   ├── 11
+│   │   │   │   └── index.html
+│   │   │   ├── 12
+│   │   │   │   └── index.html
+│   │   │   ├── 13
+│   │   │   │   └── index.html
+│   │   │   ├── 14
+│   │   │   │   └── index.html
+│   │   │   ├── 15
+│   │   │   │   └── index.html
+│   │   │   ├── 16
+│   │   │   │   └── index.html
+│   │   │   ├── 17
+│   │   │   │   └── index.html
+│   │   │   ├── 18
+│   │   │   │   └── index.html
+│   │   │   ├── 19
+│   │   │   │   └── index.html
+│   │   │   ├── 2
+│   │   │   │   └── index.html
+│   │   │   ├── 20
+│   │   │   │   └── index.html
+│   │   │   ├── 21
+│   │   │   │   └── index.html
+│   │   │   ├── 22
+│   │   │   │   └── index.html
+│   │   │   ├── 23
+│   │   │   │   └── index.html
+│   │   │   ├── 24
+│   │   │   │   └── index.html
+│   │   │   ├── 25
+│   │   │   │   └── index.html
+│   │   │   ├── 26
+│   │   │   │   └── index.html
+│   │   │   ├── 27
+│   │   │   │   └── index.html
+│   │   │   ├── 28
+│   │   │   │   └── index.html
+│   │   │   ├── 29
+│   │   │   │   └── index.html
+│   │   │   ├── 3
+│   │   │   │   └── index.html
+│   │   │   ├── 30
+│   │   │   │   └── index.html
+│   │   │   ├── 4
+│   │   │   │   └── index.html
+│   │   │   ├── 5
+│   │   │   │   └── index.html
+│   │   │   ├── 6
+│   │   │   │   └── index.html
+│   │   │   ├── 7
+│   │   │   │   └── index.html
+│   │   │   ├── 8
+│   │   │   │   └── index.html
+│   │   │   ├── 9
+│   │   │   │   └── index.html
+│   │   │   ├── index.html
+│   │   │   └── style.css
+│   │   ├── icons
+│   │   │   ├── bootstrap.svg
+│   │   │   ├── css3.svg
+│   │   │   ├── html5.svg
+│   │   │   ├── js.svg
+│   │   │   ├── learncode_favicon.svg
+│   │   │   └── learncode.svg
+│   │   ├── index.html
+│   │   ├── js
+│   │   │   ├── 1
+│   │   │   │   └── index.html
+│   │   │   ├── 10
+│   │   │   │   └── index.html
+│   │   │   ├── 11
+│   │   │   │   └── index.html
+│   │   │   ├── 12
+│   │   │   │   └── index.html
+│   │   │   ├── 13
+│   │   │   │   └── index.html
+│   │   │   ├── 14
+│   │   │   │   └── index.html
+│   │   │   ├── 15
+│   │   │   │   └── index.html
+│   │   │   ├── 16
+│   │   │   │   └── index.html
+│   │   │   ├── 17
+│   │   │   │   └── index.html
+│   │   │   ├── 18
+│   │   │   │   └── index.html
+│   │   │   ├── 19
+│   │   │   │   └── index.html
+│   │   │   ├── 2
+│   │   │   │   └── index.html
+│   │   │   ├── 20
+│   │   │   │   └── index.html
+│   │   │   ├── 21
+│   │   │   │   └── index.html
+│   │   │   ├── 22
+│   │   │   │   └── index.html
+│   │   │   ├── 23
+│   │   │   │   └── index.html
+│   │   │   ├── 24
+│   │   │   │   └── index.html
+│   │   │   ├── 25
+│   │   │   │   └── index.html
+│   │   │   ├── 26
+│   │   │   │   └── index.html
+│   │   │   ├── 27
+│   │   │   │   └── index.html
+│   │   │   ├── 28
+│   │   │   │   └── index.html
+│   │   │   ├── 29
+│   │   │   │   └── index.html
+│   │   │   ├── 3
+│   │   │   │   └── index.html
+│   │   │   ├── 30
+│   │   │   │   └── index.html
+│   │   │   ├── 31
+│   │   │   │   └── index.html
+│   │   │   ├── 32
+│   │   │   │   └── index.html
+│   │   │   ├── 33
+│   │   │   │   └── index.html
+│   │   │   ├── 34
+│   │   │   │   └── index.html
+│   │   │   ├── 35
+│   │   │   │   └── index.html
+│   │   │   ├── 36
+│   │   │   │   └── index.html
+│   │   │   ├── 37
+│   │   │   │   └── index.html
+│   │   │   ├── 38
+│   │   │   │   └── index.html
+│   │   │   ├── 39
+│   │   │   │   └── index.html
+│   │   │   ├── 4
+│   │   │   │   └── index.html
+│   │   │   ├── 40
+│   │   │   │   └── index.html
+│   │   │   ├── 41
+│   │   │   │   └── index.html
+│   │   │   ├── 42
+│   │   │   │   └── index.html
+│   │   │   ├── 43
+│   │   │   │   └── index.html
+│   │   │   ├── 44
+│   │   │   │   └── index.html
+│   │   │   ├── 45
+│   │   │   │   └── index.html
+│   │   │   ├── 46
+│   │   │   │   └── index.html
+│   │   │   ├── 47
+│   │   │   │   └── index.html
+│   │   │   ├── 48
+│   │   │   │   └── index.html
+│   │   │   ├── 49
+│   │   │   │   └── index.html
+│   │   │   ├── 5
+│   │   │   │   └── index.html
+│   │   │   ├── 50
+│   │   │   │   └── index.html
+│   │   │   ├── 6
+│   │   │   │   └── index.html
+│   │   │   ├── 7
+│   │   │   │   └── index.html
+│   │   │   ├── 8
+│   │   │   │   └── index.html
+│   │   │   ├── 9
+│   │   │   │   └── index.html
+│   │   │   ├── index.html
+│   │   │   └── style.css
+│   │   ├── script.js
+│   │   └── style.css
+│   ├── mrgram
+│   │   ├── admin.js
+│   │   ├── app.js
+│   │   ├── assets
+│   │   │   ├── admin
+│   │   │   │   ├── admin.css
+│   │   │   │   ├── admin.html
+│   │   │   │   └── admin.js
+│   │   │   ├── app
+│   │   │   │   ├── app.css
+│   │   │   │   └── app.js
+│   │   │   ├── auth
+│   │   │   │   ├── auth.css
+│   │   │   │   └── auth.js
+│   │   │   ├── call
+│   │   │   │   ├── call.css
+│   │   │   │   └── call.js
+│   │   │   ├── channel
+│   │   │   │   ├── channel.css
+│   │   │   │   └── channel.js
+│   │   │   ├── chat
+│   │   │   │   ├── chat.css
+│   │   │   │   ├── chat.js
+│   │   │   │   └── chat-new.js
+│   │   │   ├── config
+│   │   │   │   ├── firebase-config.js
+│   │   │   │   └── supabase-config.js
+│   │   │   ├── contacts
+│   │   │   │   ├── contacts.css
+│   │   │   │   └── contacts.js
+│   │   │   ├── group
+│   │   │   │   ├── group.css
+│   │   │   │   └── group.js
+│   │   │   ├── media
+│   │   │   │   ├── media-preview.css
+│   │   │   │   └── media-preview.js
+│   │   │   ├── messages
+│   │   │   │   ├── messages.css
+│   │   │   │   └── messages.js
+│   │   │   ├── sounds
+│   │   │   │   └── S
+│   │   │   ├── status
+│   │   │   │   ├── user-status.css
+│   │   │   │   └── user-status.js
+│   │   │   ├── svg-icons
+│   │   │   │   └── #-
+│   │   │   ├── tabs
+│   │   │   │   ├── tabs.css
+│   │   │   │   └── tabs.js
+│   │   │   ├── ui
+│   │   │   │   ├── ui-helpers.css
+│   │   │   │   └── ui-helpers.js
+│   │   │   ├── upload
+│   │   │   │   ├── upload-file.css
+│   │   │   │   └── upload-file.js
+│   │   │   └── voice
+│   │   │       ├── voice.css
+│   │   │       └── voice.js
+│   │   ├── auth.js
+│   │   ├── call.js
+│   │   ├── channel.js
+│   │   ├── chat.js
+│   │   ├── chat-new.js
+│   │   ├── contacts.js
+│   │   ├── database.rules.json
+│   │   ├── firebase-config.js
+│   │   ├── group.js
+│   │   ├── index.html
+│   │   ├── media-preview.js
+│   │   ├── messages.js
+│   │   ├── style.css
+│   │   ├── supabase-config.js
+│   │   ├── tabs.js
+│   │   ├── ui-helpers.js
+│   │   ├── upload-file.js
+│   │   ├── user-status.js
+│   │   └── voice.js
+│   ├── notes
+│   │   ├── database.rules.json
+│   │   ├── index.html
+│   │   ├── notes.svg
+│   │   ├── script.js
+│   │   └── style.css
+│   ├── notifyhub
+│   │   ├── database.rules.json
+│   │   ├── index.html
+│   │   ├── notifyhub.svg
+│   │   ├── script.js
+│   │   └── style.css
+│   ├── security
+│   │   ├── database.rules.json
+│   │   ├── index.html
+│   │   ├── script.js
+│   │   └── style.css
+│   ├── todo
+│   │   ├── database.rules.json
+│   │   ├── index.html
+│   │   ├── script.js
+│   │   ├── style.css
+│   │   └── todo.svg
+│   ├── typing
+│   │   ├── database.rules.json
+│   │   ├── index.html
+│   │   ├── script.js
+│   │   ├── style.css
+│   │   └── words.js
+│   ├── vault
+│   │   ├── database.rules.json
+│   │   ├── files.svg
+│   │   ├── index.html
+│   │   ├── mixkit-collect-material-3209.wav
+│   │   ├── mixkit-quick-positive-video-game-notification-interface-265.wav
+│   │   ├── mixkit-retro-arcade-casino-notification-211.wav
+│   │   ├── mixkit-sci-fi-click-900.wav
+│   │   ├── mixkit-sci-fi-interface-robot-click-901.wav
+│   │   └── mixkit-video-game-mystery-alert-234.wav
+│   ├── videohub
+│   │   ├── database.rules.json
+│   │   ├── index.html
+│   │   └── videohub.svg
+│   └── weather
+│       ├── database.rules.json
+│       ├── index.html
+│       └── weather.svg
+├── README.md
+├── realtime-database.rules.json
+├── script.js
+├── settings
+│   ├── flags
+│   │   ├── eng.svg
+│   │   ├── ru.svg
+│   │   └── uz.svg
+│   ├── index.html
+│   ├── script.js
+│   └── style.css
+├── style.css
+└── vercel.json
+
+226 directories, 496 files

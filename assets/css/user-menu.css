@@ -1,4 +1,7 @@
 /* ==================== USER MENU DROPDOWN ==================== */
+/* Bu fayl asosiy user-menu (eski) stillari uchun.              */
+/* Yangi asosiy dropdown: dropdown.css da.                      */
+
 .user-menu {
     position: absolute;
     top: calc(var(--header-h) + 6px);
@@ -44,9 +47,15 @@
     color: white;
     flex-shrink: 0;
     overflow: hidden;
+    transition: filter 0.5s ease;
 }
 
-.user-menu-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.user-menu-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
 .user-menu-info { flex: 1; min-width: 0; }
 
 .user-menu-name {
@@ -56,6 +65,7 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    transition: opacity 0.4s ease;
 }
 
 .user-menu-email {
@@ -65,6 +75,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     margin-top: 1px;
+    transition: opacity 0.4s ease;
 }
 
 .user-menu-mrdev-id {
@@ -92,7 +103,9 @@
     transition: background 0.15s;
 }
 
-.user-menu-login button:hover { background: var(--accent-dim); }
+.user-menu-login button:hover {
+    background: var(--accent-dim);
+}
 
 .user-menu a,
 .user-menu > button {
