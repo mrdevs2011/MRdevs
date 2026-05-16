@@ -117,8 +117,10 @@
              stroke="currentColor" stroke-width="2" stroke-linecap="round">
             <polyline points="15 18 9 12 15 6"/>
         </svg>
-        <span id="err-btn-text">Bosh sahifa</span>
+        <span id="err-btn-text">Bosh sahifaga</span>
     </a>
+
+    <span class="err-brand">MRDEV</span>
 
     <script>
         // ============ TEMA ============
@@ -133,25 +135,43 @@
         const i18n = {
             uz: {
                 title:    'Sahifa topilmadi',
-                desc:     'URL ni tekshiring',
-                btn:      'Bosh sahifa',
+                desc:     'URL ni tekshiring yoki bosh sahifaga qayting',
+                btn:      'Bosh sahifaga',
                 htmlLang: 'uz'
             },
             ru: {
                 title:    'Страница не найдена',
-                desc:     'Проверьте URL адрес',
+                desc:     'Проверьте URL или вернитесь на главную',
                 btn:      'На главную',
                 htmlLang: 'ru'
             },
             en: {
                 title:    'Page not found',
-                desc:     'Check the URL',
+                desc:     'Check the URL or return to home',
                 btn:      'Go to home',
                 htmlLang: 'en'
             }
         };
 
-        const lang   = localStorage.getItem('mrdev_lang') || 'uz';
+        // i18n.js dagi detectInitialLang() bilan bir xil mantiq
+        function detectLang() {
+            var saved = localStorage.getItem('mrdev_lang');
+            if (saved && i18n[saved]) return saved;
+            var nav = (navigator.language || navigator.userLanguage || '').toLowerCase();
+            if (nav.startsWith('ru')) return 'ru';
+            if (nav.startsWith('en')) return 'en';
+            if (nav.startsWith('uz')) return 'uz';
+            var langs = navigator.languages || [];
+            for (var i = 0; i < langs.length; i++) {
+                var c = langs[i].toLowerCase();
+                if (c.startsWith('ru')) return 'ru';
+                if (c.startsWith('en')) return 'en';
+                if (c.startsWith('uz')) return 'uz';
+            }
+            return 'uz';
+        }
+
+        const lang   = detectLang();
         const t      = i18n[lang] || i18n.uz;
 
         document.getElementById('err-title').textContent    = t.title;

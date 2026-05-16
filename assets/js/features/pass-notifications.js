@@ -102,12 +102,12 @@ async function loadPassNotifications(uid, email) {
             const isUsed    = data.used === true;
 
             let status     = 'active';
-            let statusText = '✅ Faol';
+            let statusText = `✅ ${t('active_status')}`;
 
             if (isUsed) {
-                status = 'used'; statusText = '✓ Ishlatilgan';
+                status = 'used'; statusText = `✓ ${t('used')}`;
             } else if (isExpired) {
-                status = 'expired'; statusText = '⏰ Muddati tugagan';
+                status = 'expired'; statusText = `⏰ ${t('expired')}`;
             }
 
             return `

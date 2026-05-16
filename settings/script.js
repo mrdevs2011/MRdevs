@@ -60,7 +60,7 @@ function renderDevices(devices) {
     if (!container) return;
 
     if (!devices || devices.length === 0) {
-        container.innerHTML = `<div class="settings-dropdown-empty">Ulangan qurilma topilmadi</div>`;
+        container.innerHTML = `<div class="settings-dropdown-empty">${t('device_not_found')}</div>`;
         return;
     }
 
@@ -75,9 +75,9 @@ function renderDevices(devices) {
                 </div>
                 <div class="settings-device-info">
                     <div class="settings-device-name">${escapeHtml(device.name || device.type || 'Qurilma')}</div>
-                    <div class="settings-device-meta">${isCurrent ? 'Hozirgi qurilma' : (device.lastSeen ? formatDate(device.lastSeen) : '')}</div>
+                    <div class="settings-device-meta">${isCurrent ? t('current_device') : (device.lastSeen ? formatDate(device.lastSeen) : '')}</div>
                 </div>
-                ${isCurrent ? '<div class="settings-device-badge">Faol</div>' : ''}
+                ${isCurrent ? `<div class="settings-device-badge">${t('active_device')}</div>` : ''}
             </div>
         `;
     }).join('');

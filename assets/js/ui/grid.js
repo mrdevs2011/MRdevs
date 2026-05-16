@@ -1,4 +1,10 @@
 // ==================== MRDEV APP GRID RENDERER ====================
+
+// i18n global window orqali (ES module emas)
+function _gt(key) {
+    return (window.mrdevI18n && window.mrdevI18n.t) ? window.mrdevI18n.t(key) : key;
+}
+
 function getIconFallback(name) {
     const map = {
         'AI': 'AI', 'Jamoaviy-Doska': 'GB', 'LearnCode': 'LC', 'MrGram': 'MG',
@@ -16,7 +22,7 @@ export function renderAppGrid(apps, containerId) {
     if (!container) return;
 
     if (!apps || apps.length === 0) {
-        container.innerHTML = '<div class="empty-state">Ilovalar topilmadi</div>';
+        container.innerHTML = `<div class="empty-state">${_gt('apps_not_found')}</div>`;
         return;
     }
 

@@ -3,6 +3,20 @@
 
 const translations = {
     uz: {
+        // ========== DROPDOWN / DYNAMIC ==========
+        guest: "Mehmon",
+        notifications_label: "Bildirishnomalar",
+        settings_label: "Sozlamalar",
+        about_label: "Loyiha haqida",
+        logout_label: "Chiqish",
+        logout_confirm_short: "Ishonchingiz komilmi?",
+        connected_accounts: "Ulangan hisoblar",
+        accounts_not_found: "Ulangan hisob topilmadi",
+        apps_not_found: "Ilovalar topilmadi",
+        device_not_found: "Ulangan qurilma topilmadi",
+        current_device: "Hozirgi qurilma",
+        active_device: "Faol",
+
         // ========== HEADER & MENU ==========
         back: "Bosh sahifa",
         settings_title: "Sozlamalar",
@@ -117,6 +131,20 @@ const translations = {
     },
 
     ru: {
+        // ========== DROPDOWN / DYNAMIC ==========
+        guest: "Гость",
+        notifications_label: "Уведомления",
+        settings_label: "Настройки",
+        about_label: "О проекте",
+        logout_label: "Выйти",
+        logout_confirm_short: "Вы уверены?",
+        connected_accounts: "Подключённые аккаунты",
+        accounts_not_found: "Аккаунты не найдены",
+        apps_not_found: "Приложения не найдены",
+        device_not_found: "Устройства не найдены",
+        current_device: "Текущее устройство",
+        active_device: "Активен",
+
         // ========== HEADER & MENU ==========
         back: "Главная",
         settings_title: "Настройки",
@@ -231,6 +259,20 @@ const translations = {
     },
 
     en: {
+        // ========== DROPDOWN / DYNAMIC ==========
+        guest: "Guest",
+        notifications_label: "Notifications",
+        settings_label: "Settings",
+        about_label: "About",
+        logout_label: "Logout",
+        logout_confirm_short: "Are you sure?",
+        connected_accounts: "Connected accounts",
+        accounts_not_found: "No accounts found",
+        apps_not_found: "No apps found",
+        device_not_found: "No devices found",
+        current_device: "Current device",
+        active_device: "Active",
+
         // ========== HEADER & MENU ==========
         back: "Home",
         settings_title: "Settings",
@@ -345,7 +387,32 @@ const translations = {
     }
 };
 
-let currentLang = localStorage.getItem('mrdev_lang') || 'uz';
+// ==================== BRAUZER TILI AUTO-ANIQLASH ====================
+function detectInitialLang() {
+    // 1. Saqlangan til — ustuvor
+    const saved = localStorage.getItem('mrdev_lang');
+    if (saved && translations[saved]) return saved;
+
+    // 2. Brauzer/OS tili
+    const nav = (navigator.language || navigator.userLanguage || '').toLowerCase();
+    if (nav.startsWith('ru')) return 'ru';
+    if (nav.startsWith('en')) return 'en';
+    if (nav.startsWith('uz')) return 'uz';
+
+    // 3. navigator.languages ro'yxati (Chrome, Firefox)
+    const langs = navigator.languages || [];
+    for (const l of langs) {
+        const code = l.toLowerCase();
+        if (code.startsWith('ru')) return 'ru';
+        if (code.startsWith('en')) return 'en';
+        if (code.startsWith('uz')) return 'uz';
+    }
+
+    // 4. Default — o'zbek (Markaziy Osiyo default)
+    return 'uz';
+}
+
+let currentLang = detectInitialLang();
 
 export function t(key) {
     return translations[currentLang]?.[key] || translations.uz[key] || key;
