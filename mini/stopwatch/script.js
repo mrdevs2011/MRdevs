@@ -2,6 +2,7 @@
 import { initAuth, smartSave, getCurrentUser, getUserId } from '../../assets/js/firebase-helper.js';
 import { initMiniDropdown } from '../../assets/js/dropdown.js';
 import { getFirebase } from '../../assets/js/firebase-helper.js';
+import { t, initI18n } from '../../assets/js/core/i18n.js';
 
 var _db = null;
 function getDB() {
@@ -147,12 +148,12 @@ function reset() {
 
 function updateUI() {
     if (isRunning) {
-        startBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> Pauza';
+        startBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> ' + t('sw_pause');
         startBtn.classList.remove('primary');
         startBtn.classList.add('running');
         lapBtn.disabled = false;
     } else {
-        startBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 3 20 12 6 21 6 3"/></svg> Boshlash';
+        startBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 3 20 12 6 21 6 3"/></svg> ' + t('sw_start');
         startBtn.classList.remove('running');
         startBtn.classList.add('primary');
         lapBtn.disabled = true;
@@ -170,7 +171,7 @@ function recordLap() {
 }
 
 function renderLaps() {
-    if (!laps.length) { lapsList.innerHTML = '<div class="empty-laps">Lap mavjud emas</div>'; return; }
+    if (!laps.length) { lapsList.innerHTML = '<div class="empty-laps">' + t('sw_laps_empty') + '</div>'; return; }
     var best = Math.min.apply(null, laps.map(function(l) { return l.time; }));
     var worst = Math.max.apply(null, laps.map(function(l) { return l.time; }));
     lapsList.innerHTML = laps.slice().reverse().map(function(lap) {
@@ -238,14 +239,14 @@ async function saveSession() {
 }
 
 function renderHistory() {
-    if (!history.length) { historyList.innerHTML = '<div class="empty-history">Tarix bo\'sh</div>'; return; }
+    if (!history.length) { historyList.innerHTML = '<div class="empty-history">' + t('sw_history_empty') + '</div>'; return; }
     historyList.innerHTML = history.slice(0, 15).map(function(item) {
         return '<div class="history-item"><div><span style="font-weight:500;color:var(--text);">' + formatMain(item.totalTime) + '</span><span style="font-size:11px;color:var(--text-3);margin-left:8px;">' + (item.lapCount || 0) + ' lap</span></div><span style="font-size:10px;color:var(--text-3);">' + new Date(item.createdAt || item.date).toLocaleDateString() + '</span></div>';
     }).join('');
 }
 
 $('clearHistoryBtn').addEventListener('click', async function() {
-    if (!confirm('Tarixni tozalash?')) return;
+    if (!confirm(t('sw_clear_confirm'))) return;
     var uid = getUserId();
     var db = getDB();
     if (uid && db) {
@@ -257,7 +258,7 @@ $('clearHistoryBtn').addEventListener('click', async function() {
     localStorage.removeItem('mr_stopwatch_history');
     history = [];
     renderHistory();
-    showToast('Tozalandi');
+    showToast(t('sw_cleared'));
 });
 
 // ==================== STATE ====================
@@ -310,7 +311,7 @@ function updateUserUI(user) {
             else triggerAvatar.textContent = dn.charAt(0).toUpperCase();
         }
     } else {
-        if (triggerName) triggerName.textContent = 'Mehmon';
+        if (triggerName) triggerName.textContent = t('guest');
         if (triggerAvatar) triggerAvatar.textContent = '?';
     }
 }
@@ -318,6 +319,7 @@ function updateUserUI(user) {
 // ==================== INIT ====================
 function init() {
     console.log('MRDEV Stopwatch v2.0 ishga tushmoqda...');
+    initI18n();
     initTheme();
     updateDisplay();
     updateUI();
@@ -330,6 +332,15 @@ function init() {
     });
 
     loadState();
+
+    document.addEventListener('languageChanged', function() {
+        initI18n();
+        updateUI();
+        updateUserUI(currentUser);
+        renderLaps();
+        renderHistory();
+    });
+
     console.log('Stopwatch tayyor!');
 }
 

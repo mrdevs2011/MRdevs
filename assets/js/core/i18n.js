@@ -193,6 +193,14 @@ const translations = {
         timer_paused:         "Pauzada",
         timer_done:           "Tugadi!",
 
+        // ========== MINI: STOPWATCH ==========
+        sw_start:             "Boshlash",
+        sw_pause:             "Pauza",
+        sw_laps_empty:        "Lap mavjud emas",
+        sw_history_empty:     "Tarix bo'sh",
+        sw_clear_confirm:     "Tarixni tozalash?",
+        sw_cleared:           "Tozalandi",
+
         // ========== MINI: MUSIC ==========
         music_empty:          "Hali musiqalar yo'q",
         music_login_load:     "Musiqalarni yuklash uchun hisobga kiring",
@@ -425,6 +433,14 @@ const translations = {
         timer_paused:         "Пауза",
         timer_done:           "Готово!",
 
+        // ========== MINI: STOPWATCH ==========
+        sw_start:             "Старт",
+        sw_pause:             "Пауза",
+        sw_laps_empty:        "Нет кругов",
+        sw_history_empty:     "История пуста",
+        sw_clear_confirm:     "Очистить историю?",
+        sw_cleared:           "Очищено",
+
         // ========== MINI: MUSIC ==========
         music_empty:          "Пока нет музыки",
         music_login_load:     "Войдите для загрузки музыки",
@@ -656,6 +672,14 @@ const translations = {
         timer_running:        "Running",
         timer_paused:         "Paused",
         timer_done:           "Done!",
+
+        // ========== MINI: STOPWATCH ==========
+        sw_start:             "Start",
+        sw_pause:             "Pause",
+        sw_laps_empty:        "No laps yet",
+        sw_history_empty:     "History is empty",
+        sw_clear_confirm:     "Clear history?",
+        sw_cleared:           "Cleared",
 
         // ========== MINI: MUSIC ==========
         music_empty:          "No music yet",

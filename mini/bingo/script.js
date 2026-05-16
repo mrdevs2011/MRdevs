@@ -1,6 +1,7 @@
 // ==================== MRDEV BINGO v4.1 — Firebase + Local Sync ====================
 import { initAuth, smartSave, smartLoad, getCurrentUser, getUserId } from '../../assets/js/firebase-helper.js';
 import { initMiniDropdown } from '../../assets/js/dropdown.js';
+import { t, initI18n } from '../../assets/js/core/i18n.js';
 
 // ==================== DOM ELEMENTLAR ====================
 const $ = (id) => document.getElementById(id);
@@ -327,13 +328,13 @@ function renderHistory() {
     if (!historyList) return;
     var recent = historyItems.slice(0, 15);
     if (recent.length === 0) {
-        historyList.innerHTML = '<div class="history-empty">Hali o\'yin tarixi yo\'q</div>';
+        historyList.innerHTML = '<div class="history-empty">' + t('bingo_history_empty') + '</div>';
         return;
     }
     historyList.innerHTML = recent.map(function(item) {
         var date = new Date(item.date);
         var timeAgo = getTimeAgo(date);
-        var modeText = item.mode === 'bot' ? 'Robot' : '2 kishi';
+        var modeText = item.mode === 'bot' ? t('bingo_bot') : t('bingo_two_players');
         var diffText = item.botDifficulty ? ' | ' + item.botDifficulty + '%' : '';
         return '<div class="history-item ' + item.type + '">' +
             '<div><strong>' + item.result + '</strong>' +
@@ -344,11 +345,11 @@ function renderHistory() {
 
 function getTimeAgo(date) {
     var seconds = Math.floor((Date.now() - date.getTime()) / 1000);
-    if (seconds < 60) return 'Hozir';
-    if (seconds < 3600) return Math.floor(seconds / 60) + ' daqiqa';
-    if (seconds < 86400) return Math.floor(seconds / 3600) + ' soat';
-    if (seconds < 604800) return Math.floor(seconds / 86400) + ' kun';
-    return date.toLocaleDateString('uz-UZ');
+    if (seconds < 60) return t('bingo_just_now') || 'Hozir';
+    if (seconds < 3600) return Math.floor(seconds / 60) + (t('bingo_mins_ago') || ' daqiqa');
+    if (seconds < 86400) return Math.floor(seconds / 3600) + (t('bingo_hours_ago') || ' soat');
+    if (seconds < 604800) return Math.floor(seconds / 86400) + (t('bingo_days_ago') || ' kun');
+    return date.toLocaleDateString();
 }
 
 // ==================== DIFFICULTY ====================
@@ -356,17 +357,17 @@ function updateDifficultyLabel() {
     botDifficulty = parseInt(difficultySlider.value, 10);
     var icon = '-', label = '', desc = '';
     if (botDifficulty === 0) {
-        label = 'Juda oson (0%)'; desc = 'Robot tasodifiy o\'ynaydi';
+        label = t('bingo_diff_0_label');   desc = t('bingo_diff_0_desc');
     } else if (botDifficulty <= 20) {
-        label = 'Oson (' + botDifficulty + '%)'; desc = 'Robot ko\'pincha xato qiladi';
+        label = t('bingo_diff_easy_label') + ' (' + botDifficulty + '%)'; desc = t('bingo_diff_easy_desc');
     } else if (botDifficulty <= 40) {
-        label = 'O\'rta (' + botDifficulty + '%)'; desc = 'Robot ba\'zan xato qiladi';
+        label = t('bingo_diff_mid_label')  + ' (' + botDifficulty + '%)'; desc = t('bingo_diff_mid_desc');
     } else if (botDifficulty <= 60) {
-        label = 'Qiyin (' + botDifficulty + '%)'; desc = 'Robot kam xato qiladi';
+        label = t('bingo_diff_hard_label') + ' (' + botDifficulty + '%)'; desc = t('bingo_diff_hard_desc');
     } else if (botDifficulty <= 80) {
-        label = 'Juda qiyin (' + botDifficulty + '%)'; desc = 'Robot deyarli mukammal';
+        label = t('bingo_diff_vhard_label')+ ' (' + botDifficulty + '%)'; desc = t('bingo_diff_vhard_desc');
     } else {
-        label = 'Mukammal (100%)'; desc = 'Robot hech qachon yutqazmaydi!';
+        label = t('bingo_diff_perf_label'); desc = t('bingo_diff_perf_desc');
     }
     if (diffIcon) diffIcon.textContent = icon;
     if (diffLabel) diffLabel.textContent = label;
@@ -419,14 +420,14 @@ function startGame(mode_) {
     gameResult.className = 'game-result';
     botThinking.style.display = 'none';
     if (mode === 'offline') {
-        gameModeBadge.textContent = '2 kishi';
+        gameModeBadge.textContent = t('bingo_two_players');
     } else {
-        gameModeBadge.textContent = 'Robot | ' + botDifficulty + '%';
+        gameModeBadge.textContent = t('bingo_bot') + ' | ' + botDifficulty + '%';
     }
     gameScoreX.textContent = scoreX;
     gameScoreO.textContent = scoreO;
     turnDot('x');
-    turnText.textContent = 'Navbat: X';
+    turnText.textContent = t('bingo_turn_prefix') + 'X';
     cells.forEach(function(c) {
         c.textContent = '';
         c.className = 'cell';
@@ -472,18 +473,18 @@ async function endGame(result) {
 
     if (result.winner === 'draw') {
         gameResult.className = 'game-result draw';
-        gameResult.textContent = 'Durang! (' + time + 's)';
+        gameResult.textContent = t('bingo_draw') + ' (' + time + 's)';
         scoreDraw++;
         addXP(5);
         sfxDraw();
-        addHistoryItem('Durang', 'draw', time);
+        addHistoryItem(t('bingo_draw_label'), 'draw', time);
     } else if (result.winner === 'X') {
         gameResult.className = 'game-result win';
         scoreX++;
         if (mode === 'offline') {
-            gameResult.textContent = 'X yutdi! (' + time + 's)';
+            gameResult.textContent = t('bingo_x_wins') + ' (' + time + 's)';
         } else {
-            gameResult.textContent = 'Siz yutdingiz! (' + time + 's)';
+            gameResult.textContent = t('bingo_you_win') + ' (' + time + 's)';
             winStreak++;
             addXP(Math.floor(botDifficulty / 2) + 20);
             sfxWin();
@@ -491,18 +492,18 @@ async function endGame(result) {
                 confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 }, colors: ['#1a73e8','#8ab4f8','#34a853','#fbbf24','#8b5cf6'] });
             }
         }
-        addHistoryItem(mode === 'offline' ? 'X g\'alaba' : 'G\'alaba', 'win', time);
+        addHistoryItem(mode === 'offline' ? t('bingo_x_wins') : t('bingo_you_win'), 'win', time);
     } else if (result.winner === 'O') {
         gameResult.className = 'game-result lose';
         scoreO++;
         if (mode === 'offline') {
-            gameResult.textContent = 'O yutdi! (' + time + 's)';
+            gameResult.textContent = t('bingo_o_wins') + ' (' + time + 's)';
         } else {
-            gameResult.textContent = 'Robot yutdi! (' + time + 's)';
+            gameResult.textContent = t('bingo_bot_wins') + ' (' + time + 's)';
             winStreak = 0;
             sfxLose();
         }
-        addHistoryItem(mode === 'offline' ? 'O g\'alaba' : 'Mag\'lubiyat', 'lose', time);
+        addHistoryItem(mode === 'offline' ? t('bingo_o_wins') : t('bingo_bot_wins'), 'lose', time);
     }
 
     if (result.cells && result.cells.length > 0 && result.winner !== 'draw') {
@@ -528,7 +529,7 @@ function handleCellClick(idx) {
     } else {
         turn = turn === 'X' ? 'O' : 'X';
         turnDot(turn.toLowerCase());
-        turnText.textContent = 'Navbat: ' + turn;
+        turnText.textContent = t('bingo_turn_prefix') + turn;
         if (mode === 'bot' && turn === 'O' && !gameOver) botMove();
     }
 }
@@ -549,7 +550,7 @@ function botMove() {
             } else {
                 turn = 'X';
                 turnDot('x');
-                turnText.textContent = 'Navbat: X';
+                turnText.textContent = t('bingo_turn_prefix') + 'X';
             }
         }
     }, delay);
@@ -635,7 +636,7 @@ function updateUserUI(user) {
             }
         }
     } else {
-        if (triggerName) triggerName.textContent = 'Mehmon';
+        if (triggerName) triggerName.textContent = t('guest');
         if (triggerAvatar) triggerAvatar.textContent = '?';
     }
 }
@@ -643,6 +644,7 @@ function updateUserUI(user) {
 // ==================== INIT ====================
 async function init() {
     console.log('MRDEV Bingo v4.1 ishga tushmoqda...');
+    initI18n();
     initTheme();
     updateDifficultyLabel();
     loadStatsFromLocal();
@@ -657,7 +659,7 @@ async function init() {
             await loadHistoryFromCloud();
             updateStatsUI();
             renderHistory();
-            showToast('Xush kelibsiz, ' + (user.displayName || 'User') + '!', 'success');
+            showToast(t('bingo_welcome') + (user.displayName || 'User') + '!', 'success');
         } else {
             loadStatsFromLocal();
             updateStatsUI();
@@ -667,6 +669,23 @@ async function init() {
             initMiniDropdown(user);
         } catch(e) {
             console.warn('Dropdown init failed:', e.message);
+        }
+    });
+
+    document.addEventListener('languageChanged', function() {
+        initI18n();
+        updateDifficultyLabel();
+        updateUserUI(currentUser);
+        renderHistory();
+        if (active && !gameOver) {
+            turnText.textContent = t('bingo_turn_prefix') + turn;
+        }
+        if (active) {
+            if (mode === 'offline') {
+                gameModeBadge.textContent = t('bingo_two_players');
+            } else {
+                gameModeBadge.textContent = t('bingo_bot') + ' | ' + botDifficulty + '%';
+            }
         }
     });
 

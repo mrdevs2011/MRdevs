@@ -1,6 +1,7 @@
 // ==================== MRDEV SPLITVIEW v2.0 — Firebase + Local Sync ====================
 import { initAuth, smartSave, smartLoad, smartDelete, getCurrentUser, getUserId } from '../../assets/js/firebase-helper.js';
 import { initMiniDropdown } from '../../assets/js/dropdown.js';
+import { t, initI18n } from '../../assets/js/core/i18n.js';
 
 var currentUser = null;
 var currentGrid = '1x1';
@@ -59,7 +60,7 @@ function updateUserUI(user) {
         }
         loadCloudBookmarks();
     } else {
-        if (triggerName) triggerName.textContent = 'Mehmon';
+        if (triggerName) triggerName.textContent = t('guest');
         if (triggerAvatar) triggerAvatar.textContent = '?';
         loadLocalBookmarks();
     }
@@ -86,7 +87,7 @@ function renderPanels() {
         panel.id = 'panel' + i;
         panel.innerHTML = '<div class="panel-placeholder" id="placeholder' + i + '">' +
             '<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>' +
-            '<span style="font-size:12px;">Video qo\'shish</span></div>' +
+            '<span style="font-size:12px;">' + t('split_add_video') + '</span></div>' +
             '<iframe id="iframe' + i + '" src="" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen style="display:none;"></iframe>';
         panel.addEventListener('click', function(panelId) { return function() { openUrlDialog(panelId); }; }(i));
         splitGrid.appendChild(panel);
@@ -162,7 +163,7 @@ function saveUrlToStorage(panelId, url) {
         }).catch(function(e) { console.warn('Cloud URL save failed:', e); });
     }
 
-    showToast('URL saqlandi', 'success');
+    showToast(t('split_url_saved'), 'success');
 }
 
 function loadSavedUrls() {
@@ -197,12 +198,12 @@ $('muteAllBtn').addEventListener('click', function() {
             }), '*');
         }
     }
-    showToast('Ovozlar o\'chirildi');
+    showToast(t('split_muted'));
 });
 
 // ==================== CLEAR ALL ====================
 $('clearAllBtn').addEventListener('click', function() {
-    if (!confirm('Barcha videolarni tozalash?')) return;
+    if (!confirm(t('split_clear_confirm'))) return;
 
     for (var i = 1; i <= panelCount; i++) {
         var iframe = $('iframe' + i);
@@ -219,7 +220,7 @@ $('clearAllBtn').addEventListener('click', function() {
         });
     }
 
-    showToast('Tozalandi');
+    showToast(t('split_cleared'));
 });
 
 // ==================== BOOKMARK ====================
@@ -234,7 +235,7 @@ function loadCloudBookmarks() {
 
     smartLoad('splitview_urls', 'splitview_cloud_urls', function(items) {
         if (!items || items.length === 0) {
-            container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-3);">Saqlangan URL\'lar yo\'q</div>';
+            container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-3);">' + t('split_no_saved') + '</div>';
             return;
         }
 
@@ -279,7 +280,7 @@ function loadCloudBookmarks() {
                     }
                 }
                 loadCloudBookmarks();
-                showToast('O\'chirildi');
+                showToast(t('split_deleted'));
             });
         });
     });
@@ -293,7 +294,7 @@ function loadLocalBookmarks() {
     var urls = Object.values(local).filter(Boolean);
 
     if (!urls.length) {
-        container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-3);">Saqlangan URL\'lar yo\'q</div>';
+        container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-3);">' + t('split_no_saved') + '</div>';
         return;
     }
 
@@ -317,8 +318,8 @@ function loadLocalBookmarks() {
 $('bookmarkBtn').addEventListener('dblclick', async function() {
     var urls = JSON.parse(localStorage.getItem('splitview_urls') || '{}');
     var urlList = Object.values(urls).filter(Boolean);
-    if (!urlList.length) { showToast('Avval video yuklang', 'error'); return; }
-    if (!currentUser) { showToast('Hisobga kiring', 'error'); return; }
+    if (!urlList.length) { showToast(t('split_load_first'), 'error'); return; }
+    if (!currentUser) { showToast(t('split_login_required'), 'error'); return; }
 
     try {
         for (var i = 0; i < urlList.length; i++) {
@@ -326,9 +327,9 @@ $('bookmarkBtn').addEventListener('dblclick', async function() {
                 url: urlList[i], grid: currentGrid, savedAt: new Date().toISOString()
             });
         }
-        showToast('Barcha URL\'lar saqlandi!', 'success');
+        showToast(t('split_all_saved'), 'success');
         loadCloudBookmarks();
-    } catch(e) { showToast('Xatolik', 'error'); }
+    } catch(e) { showToast(t('split_error'), 'error'); }
 });
 
 // ==================== KEYBOARD ====================
@@ -339,6 +340,7 @@ document.addEventListener('keydown', function(e) {
 // ==================== INIT ====================
 function init() {
     console.log('MRDEV SplitView v2.0 ishga tushmoqda...');
+    initI18n();
     initTheme();
     renderPanels();
 
@@ -350,6 +352,12 @@ function init() {
         } catch(e) {
             console.warn('Dropdown init failed:', e.message);
         }
+    });
+
+    document.addEventListener('languageChanged', function() {
+        initI18n();
+        updateUserUI(currentUser);
+        renderPanels();
     });
 
     console.log('SplitView tayyor!');

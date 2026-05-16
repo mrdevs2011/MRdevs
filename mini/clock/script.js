@@ -2,6 +2,7 @@
 import { initAuth, getCurrentUser, getUserId } from '../../assets/js/firebase-helper.js';
 import { initMiniDropdown } from '../../assets/js/dropdown.js';
 import { getFirebase } from '../../assets/js/firebase-helper.js';
+import { t, initI18n } from '../../assets/js/core/i18n.js';
 
 var _db = null;
 function getDB() {
@@ -89,8 +90,8 @@ async function syncTime() {
     } catch(e) { isOnline = false; }
 
     statusIndicator.className = 'status-indicator' + (isOnline ? '' : ' offline');
-    statusLabel.textContent = isOnline ? 'Online' : 'Offline';
-    sourceLabel.textContent = isOnline ? 'Internet vaqti' : 'Qurilma vaqti';
+    statusLabel.textContent  = isOnline ? 'Online' : 'Offline';
+    sourceLabel.textContent  = isOnline ? t('clock_internet') : t('clock_device_time');
 }
 
 function getNow() {
@@ -116,11 +117,11 @@ function updateDisplay() {
         timeText.textContent = String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
     }
 
-    var days = ['Yakshanba', 'Dushanba', 'Seshanba', 'Chorshanba', 'Payshanba', 'Juma', 'Shanba'];
-    var months = ['Yanvar', 'Fevral', 'Mart', 'Aprel', 'May', 'Iyun', 'Iyul', 'Avgust', 'Sentabr', 'Oktabr', 'Noyabr', 'Dekabr'];
+    var days   = t('clock_days');
+    var months = t('clock_months');
     dateText.textContent = days[now.getDay()] + ', ' + now.getDate() + '-' + months[now.getMonth()] + ' ' + now.getFullYear();
 
-    var tz = currentTimezone === 'local' ? 'Mahalliy' : currentTimezone.split('/').pop().replace('_', ' ');
+    var tz = currentTimezone === 'local' ? t('clock_local') : currentTimezone.split('/').pop().replace('_', ' ');
     timezoneLabel.textContent = tz;
 
     checkAlarms(now);
@@ -215,7 +216,7 @@ timezoneSelect.addEventListener('change', function() {
 // ==================== SYNC ====================
 $('syncBtn').addEventListener('click', async function() {
     await syncTime();
-    showToast(isOnline ? 'Vaqt sinxronlandi' : 'Internet yo\'q');
+    showToast(isOnline ? t('clock_synced') : t('clock_no_internet'));
 });
 
 // ==================== ALARMS ====================
@@ -232,7 +233,7 @@ function loadAlarms() {
 
 function renderAlarms() {
     if (!alarms.length) {
-        alarmsList.innerHTML = '<div class="empty-alarms"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/></svg><p>Alarmlar mavjud emas</p></div>';
+        alarmsList.innerHTML = '<div class="empty-alarms"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/></svg><p>' + t('clock_no_alarms') + '</p></div>';
         return;
     }
     alarmsList.innerHTML = alarms.map(function(a) {
@@ -277,13 +278,13 @@ async function deleteAlarmHandler(id) {
         alarms = alarms.filter(function(a) { return a.id !== id; });
         renderAlarms();
     }
-    showToast('Alarm o\'chirildi');
+    showToast(t('clock_alarm_deleted'));
 }
 
 // ==================== ALARM MODAL ====================
 $('addAlarmBtn').addEventListener('click', function() {
     editAlarmId = null;
-    alarmModalTitle.textContent = 'Yangi alarm';
+    alarmModalTitle.textContent = t('clock_new_alarm');
     alarmTime.value = '07:00';
     alarmLabel.value = '';
     alarmEnabled.checked = true;
@@ -315,7 +316,7 @@ $('saveAlarm').addEventListener('click', async function() {
         renderAlarms();
     }
     alarmModal.classList.remove('show');
-    showToast('Alarm saqlandi');
+    showToast(t('clock_alarm_saved'));
 });
 
 // ==================== CHECK ALARMS ====================
@@ -353,7 +354,7 @@ function updateUserUI(user) {
             }
         }
     } else {
-        if (triggerName) triggerName.textContent = 'Mehmon';
+        if (triggerName) triggerName.textContent = t('guest');
         if (triggerAvatar) triggerAvatar.textContent = '?';
     }
 }
@@ -375,6 +376,7 @@ function tick() {
 // ==================== INIT ====================
 async function init() {
     console.log('MRDEV Clock v2.0 ishga tushmoqda...');
+    initI18n();
     initTheme();
     initCanvas();
 
@@ -400,6 +402,13 @@ async function init() {
         } catch(e) {
             console.warn('Dropdown init failed:', e.message);
         }
+    });
+
+    document.addEventListener('languageChanged', function() {
+        initI18n();
+        updateUserUI(currentUser);
+        renderAlarms();
+        sourceLabel.textContent = isOnline ? t('clock_internet') : t('clock_device_time');
     });
 
     console.log('Clock tayyor!');

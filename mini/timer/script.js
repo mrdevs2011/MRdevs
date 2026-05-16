@@ -2,6 +2,7 @@
 import { initAuth, smartSave, getCurrentUser, getUserId } from '../../assets/js/firebase-helper.js';
 import { initMiniDropdown } from '../../assets/js/dropdown.js';
 import { getFirebase } from '../../assets/js/firebase-helper.js';
+import { t, initI18n } from '../../assets/js/core/i18n.js';
 
 var _db = null;
 function getDB() {
@@ -83,9 +84,9 @@ function formatTimeLong(sec) {
     var m = Math.floor((sec % 3600) / 60);
     var s = sec % 60;
     var parts = [];
-    if (h > 0) parts.push(h + ' soat');
-    if (m > 0) parts.push(m + ' daq');
-    if (s > 0 || !parts.length) parts.push(s + ' sek');
+    if (h > 0) parts.push(h + ' ' + t('timer_hours'));
+    if (m > 0) parts.push(m + ' ' + t('timer_minutes'));
+    if (s > 0 || !parts.length) parts.push(s + ' ' + t('timer_seconds'));
     return parts.join(' ');
 }
 
@@ -137,7 +138,7 @@ document.querySelectorAll('.preset-btn').forEach(function(btn) {
         totalSeconds = secs;
         setInputsFromRemaining();
         updateDisplay();
-        updateStatus('Tayyor');
+        updateStatus(t('timer_ready'));
         document.querySelectorAll('.preset-btn').forEach(function(b) { b.classList.remove('active'); });
         btn.classList.add('active');
     });
@@ -150,7 +151,7 @@ startBtn.addEventListener('click', function() {
     if (remainingSeconds <= 0 || (isPaused === false && totalSeconds === 0)) {
         remainingSeconds = getTotalFromInputs();
         totalSeconds = remainingSeconds;
-        if (remainingSeconds <= 0) { showToast('Vaqt kiriting', 'error'); return; }
+        if (remainingSeconds <= 0) { showToast(t('timer_enter_time'), 'error'); return; }
     }
 
     isRunning = true;
@@ -158,7 +159,7 @@ startBtn.addEventListener('click', function() {
     enableInputs(true);
     startBtn.disabled = true;
     pauseBtn.disabled = false;
-    updateStatus('Ishlamoqda', 'running');
+    updateStatus(t('timer_running'), 'running');
     saveState();
 
     timerInterval = setInterval(function() {
@@ -180,7 +181,7 @@ pauseBtn.addEventListener('click', function() {
     enableInputs(false);
     startBtn.disabled = false;
     pauseBtn.disabled = true;
-    updateStatus('Pauzada', 'paused');
+    updateStatus(t('timer_paused'), 'paused');
     saveState();
 });
 
@@ -194,7 +195,7 @@ resetBtn.addEventListener('click', function() {
     startBtn.disabled = false;
     pauseBtn.disabled = true;
     updateDisplay();
-    updateStatus('Tayyor');
+    updateStatus(t('timer_ready'));
     clearState();
 });
 
@@ -208,7 +209,7 @@ function completeTimer() {
     startBtn.disabled = false;
     pauseBtn.disabled = true;
     updateDisplay();
-    updateStatus('Tugadi!', 'done');
+    updateStatus(t('timer_done'), 'done');
     clearState();
     saveToHistory(totalSeconds);
     playAlert();
@@ -218,7 +219,7 @@ function completeTimer() {
             remainingSeconds = totalSeconds;
             setInputsFromRemaining();
             updateDisplay();
-            updateStatus('Tayyor');
+            updateStatus(t('timer_ready'));
         }
     }, 5000);
 }
@@ -258,7 +259,7 @@ function loadState() {
             remainingSeconds = state.remaining;
             updateDisplay();
             setInputsFromRemaining();
-            if (state.remaining === 0 && state.total > 0) updateStatus('Tugadi!', 'done');
+            if (state.remaining === 0 && state.total > 0) updateStatus(t('timer_done'), 'done');
         }
     } catch(e) {}
 }
@@ -299,14 +300,14 @@ async function saveToHistory(seconds) {
 }
 
 function renderHistory() {
-    if (!history.length) { historyList.innerHTML = '<div class="empty-history">Tarix bo\'sh</div>'; return; }
+    if (!history.length) { historyList.innerHTML = '<div class="empty-history">' + t('timer_empty') + '</div>'; return; }
     historyList.innerHTML = history.slice(0, 20).map(function(item) {
         return '<div class="history-item"><div><div class="history-time">' + formatTime(item.seconds) + '</div><div class="history-label">' + (item.label || '') + ' | ' + new Date(item.createdAt || item.date).toLocaleDateString() + '</div></div><span style="font-size:10px;color:var(--text-3);">' + (item.isCloud ? 'Cloud' : 'Local') + '</span></div>';
     }).join('');
 }
 
 $('clearHistoryBtn').addEventListener('click', async function() {
-    if (!confirm('Tarixni tozalash?')) return;
+    if (!confirm(t('timer_clear_confirm'))) return;
     var uid = getUserId();
     var db = getDB();
     if (uid && db) {
@@ -318,7 +319,7 @@ $('clearHistoryBtn').addEventListener('click', async function() {
     localStorage.removeItem('mr_timer_history');
     history = [];
     renderHistory();
-    showToast('Tozalandi');
+    showToast(t('timer_cleared'));
 });
 
 // ==================== INPUT CHANGE ====================
@@ -328,7 +329,7 @@ $('clearHistoryBtn').addEventListener('click', async function() {
             remainingSeconds = getTotalFromInputs();
             totalSeconds = remainingSeconds;
             updateDisplay();
-            updateStatus('Tayyor');
+            updateStatus(t('timer_ready'));
         }
     });
 });
@@ -351,7 +352,7 @@ function updateUserUI(user) {
             else triggerAvatar.textContent = dn.charAt(0).toUpperCase();
         }
     } else {
-        if (triggerName) triggerName.textContent = 'Mehmon';
+        if (triggerName) triggerName.textContent = t('guest');
         if (triggerAvatar) triggerAvatar.textContent = '?';
     }
 }
@@ -359,6 +360,7 @@ function updateUserUI(user) {
 // ==================== INIT ====================
 function init() {
     console.log('MRDEV Timer v2.0 ishga tushmoqda...');
+    initI18n();
     initTheme();
     progressCircle.style.strokeDasharray = CIRCUMFERENCE;
     loadState();
@@ -368,6 +370,18 @@ function init() {
         updateUserUI(user);
         if (user) loadCloudHistory(); else loadLocalHistory();
         try { initMiniDropdown(user); } catch(e) { console.warn('Dropdown init failed:', e.message); }
+    });
+
+    document.addEventListener('languageChanged', function() {
+        initI18n();
+        updateUserUI(currentUser);
+        renderHistory();
+        updateStatus(
+            isRunning ? t('timer_running') :
+            isPaused  ? t('timer_paused')  :
+            remainingSeconds === 0 && totalSeconds > 0 ? t('timer_done') :
+            t('timer_ready')
+        );
     });
 
     console.log('Timer tayyor!');

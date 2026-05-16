@@ -4,6 +4,7 @@ import logger from '../../assets/js/core/logger.js';
 import { initAuth, getCurrentUser, getUserId } from '../../assets/js/firebase-helper.js';
 import { db } from '../../assets/js/core/firebase-init.js';
 import { initMiniDropdown } from '../../assets/js/dropdown.js';
+import { t, initI18n } from '../../assets/js/core/i18n.js';
 import { doc, setDoc, onSnapshot, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
 // ==================== DOM ====================
@@ -174,13 +175,13 @@ $('saveBoardBtn').addEventListener('click', async function() {
     if (uid && db) {
         try {
             await setDoc(doc(db, 'users', uid, 'board', 'current'), { data: data, elementsCount: state.elements.length, updatedAt: serverTimestamp() });
-            showToast('Bulutga saqlandi! ☁️', 'success');
+            showToast(t('board_saved_cloud'), 'success');
         } catch(e) {
             logger.board.cloudSaveError(e);
-            showToast('Faqat lokalga saqlandi', 'error');
+            showToast(t('board_saved_local_only'), 'error');
         }
     } else {
-        showToast('Lokalga saqlandi', 'success');
+        showToast(t('board_saved_local'), 'success');
     }
 });
 
@@ -218,7 +219,7 @@ function loadCloudBoard() {
 
 // ==================== CLEAR ====================
 $('clearBoardBtn').addEventListener('click', function() {
-    if (!confirm('Doskani tozalash?')) return;
+    if (!confirm(t('board_clear_confirm'))) return;
     state.elements = []; addHistory(); render();
 });
 
@@ -244,7 +245,7 @@ function updateUserUI(user) {
         }
         logger.board.ui(dn);
     } else {
-        if (triggerName) triggerName.textContent = 'Mehmon';
+        if (triggerName) triggerName.textContent = t('guest');
         if (triggerAvatar) triggerAvatar.textContent = '?';
         logger.board.guest();
     }
@@ -253,6 +254,7 @@ function updateUserUI(user) {
 // ==================== INIT ====================
 async function init() {
     logger.board.init();
+    initI18n();
     initTheme(); resize(); addHistory(); loadLocalBoard(); render();
 
     try {
@@ -276,6 +278,11 @@ async function init() {
             loadCloudBoard();
             try { initMiniDropdown(user); } catch(e) { logger.board.dropdownError(e); }
         }
+    });
+
+    document.addEventListener('languageChanged', function() {
+        initI18n();
+        updateUserUI(currentUser);
     });
 
     logger.board.ready(getUserId());

@@ -2,6 +2,7 @@
 import { initAuth, getCurrentUser, getUserId } from '../../assets/js/firebase-helper.js';
 import { initMiniDropdown } from '../../assets/js/dropdown.js';
 import { getFirebase } from '../../assets/js/firebase-helper.js';
+import { t, initI18n } from '../../assets/js/core/i18n.js';
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
 // Firebase
@@ -132,7 +133,7 @@ async function loadAudioList(isNext) {
                 }
             });
             if (!list.children.length) {
-                list.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-3);">Hali musiqalar yo\'q</div>';
+                list.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-3);">' + t('music_empty') + '</div>';
             }
         }
     } catch(e) { console.error('Load error:', e); }
@@ -172,7 +173,7 @@ function renderCard(id, data) {
 
 // ==================== DELETE ====================
 async function deleteAudio(id, data) {
-    if (!confirm('"' + (data.name || 'Audio') + '" ni o\'chirish?')) return;
+    if (!confirm('"' + (data.name || 'Audio') + '" ' + t('music_delete_confirm'))) return;
     try {
         if (data.storagePath) {
             await supabase.storage.from('videos').remove([data.storagePath]);
@@ -185,10 +186,10 @@ async function deleteAudio(id, data) {
         var card = $('card-' + id);
         if (card) card.remove();
         allAudioIds = allAudioIds.filter(function(a) { return a !== id; });
-        showToast('O\'chirildi', 'success');
+        showToast(t('music_deleted'), 'success');
     } catch(e) {
         console.error('Delete error:', e);
-        showToast('O\'chirishda xatolik', 'error');
+        showToast(t('music_delete_error'), 'error');
     }
 }
 
@@ -264,7 +265,7 @@ async function playAudio(id, btn, cardData) {
         console.error('Play error:', err);
         spinner.remove();
         icon.style.display = 'block';
-        showToast('Yuklashda xatolik', 'error');
+        showToast(t('music_load_error'), 'error');
     }
 }
 
@@ -390,7 +391,7 @@ $('rec-trigger').addEventListener('click', async function() {
             drawStudio();
             btn.innerHTML = '<svg class="svg-icon" style="fill:var(--red);color:var(--red);" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>';
         } catch(e) {
-            showToast('Mikrofon ruxsati kerak!', 'error');
+            showToast(t('music_mic_required'), 'error');
         }
     } else {
         mediaRecorder.stop();
@@ -410,8 +411,8 @@ document.getElementById('file-in').addEventListener('change', function() {
 
 // ==================== SAVE TO SUPABASE ====================
 $('save-cloud').addEventListener('click', async function() {
-    if (!currentUser) { showToast('Avval hisobga kiring', 'error'); return; }
-    if (!activeBlob) { showToast('Avval audio yozing yoki yuklang', 'error'); return; }
+    if (!currentUser) { showToast(t('music_login_save'), 'error'); return; }
+    if (!activeBlob) { showToast(t('music_record_first'), 'error'); return; }
 
     var name = $('rec-name').value || 'Audio';
     var upTxt = $('up-txt');
@@ -449,11 +450,11 @@ $('save-cloud').addEventListener('click', async function() {
         }
 
         upBar.style.width = '100%';
-        showToast('Musiqa saqlandi!', 'success');
+        showToast(t('music_saved'), 'success');
         setTimeout(function() { location.reload(); }, 500);
     } catch(e) {
         console.error('Upload error:', e);
-        showToast('Yuklashda xatolik: ' + e.message, 'error');
+        showToast(t('music_load_error') + ': ' + e.message, 'error');
     }
 });
 
@@ -491,7 +492,7 @@ function updateUserUI(user) {
             }
         }
     } else {
-        if (triggerName) triggerName.textContent = 'Mehmon';
+        if (triggerName) triggerName.textContent = t('guest');
         if (triggerAvatar) triggerAvatar.textContent = '?';
     }
 }
@@ -499,6 +500,7 @@ function updateUserUI(user) {
 // ==================== INIT ====================
 async function init() {
     console.log('MRDEV Music v2.0 ishga tushmoqda...');
+    initI18n();
     initTheme();
 
     initAuth(async function(user) {
@@ -508,12 +510,20 @@ async function init() {
             await loadAllAudioIds();
             loadAudioList(false);
         } else {
-            $('audio-list').innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-3);">Musiqalarni yuklash uchun hisobga kiring</div>';
+            $('audio-list').innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-3);">' + t('music_login_load') + '</div>';
         }
         try {
             initMiniDropdown(user);
         } catch(e) {
             console.warn('Dropdown init failed:', e.message);
+        }
+    });
+
+    document.addEventListener('languageChanged', function() {
+        initI18n();
+        updateUserUI(currentUser);
+        if (!currentUser) {
+            $('audio-list').innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-3);">' + t('music_login_load') + '</div>';
         }
     });
 

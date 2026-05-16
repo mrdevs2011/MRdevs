@@ -21,6 +21,7 @@ import {
 } from './features/pass-notifications.js';
 import { showToast } from './core/toast.js';
 import { initI18n } from './core/i18n.js';
+import { autoDetectLanguage } from './core/geo-lang.js';
 
 // ==================== WINDOW EXPORTS ====================
 window.toggleTheme          = toggleTheme;
@@ -67,6 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
     logger.platformStart();
 
     initI18n();   // Saqlangan tilni bir marta qo'llash — auth dan oldin
+    autoDetectLanguage().catch(() => {}); // Barcha foydalanuvchilar uchun GPS/browser-lang detection
     initTheme();
     initAuth();
     initSidebar();

@@ -101,15 +101,10 @@ function detectFromBrowserLang() {
  * @returns {string|null} O'rnatilgan til kodi yoki null
  */
 export async function autoDetectLanguage() {
-    // 1. Qo'lda tanlangan bo'lsa — tegma
+    // 1. Foydalanuvchi qo'lda til tanlagan bo'lsa — tegma
     if (isLangManual()) return null;
 
-    // 1b. localStorage da saqlangan til mavjud bo'lsa — GPS bilan ustib yozma.
-    //     setLanguage() to'g'ridan-to'g'ri chaqirilgan bo'lsa ham (settings tashqarisidan)
-    //     foydalanuvchining avvalgi tanlovi saqlanib qoladi.
-    if (localStorage.getItem('mrdev_lang')) return null;
-
-    // 2. Bu seans ichida allaqachon aniqlangan bo'lsa — qayta qilma
+    // 2. Bu seans ichida allaqachon GPS detection bajarilgan bo'lsa — qayta qilma
     if (sessionStorage.getItem(GEO_DONE_KEY)) return null;
 
     let detectedLang = null;
