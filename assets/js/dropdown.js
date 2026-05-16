@@ -368,7 +368,25 @@ function renderRootAppsGrid(category) {
 
 function setupRootTrigger(user) {
     const trigger = document.getElementById('mrdevUserTrigger') || document.getElementById('headerUserTrigger');
-    if (!trigger || !user) return;
+    if (!trigger) return;
+
+    if (!user) {
+        // Guest holatida: is-loading olib tashlanadi, "Mehmon" ko'rsatiladi
+        const hAvatar = trigger.querySelector('.header-user-avatar');
+        const hName   = trigger.querySelector('.header-user-name');
+        const hRole   = trigger.querySelector('.header-user-role');
+        if (hAvatar) hAvatar.textContent = '?';
+        if (hName)   hName.textContent   = t('guest');
+        if (hRole)   hRole.textContent   = t('user_role') || 'Foydalanuvchi';
+
+        const tAvatar = trigger.querySelector('.trigger-avatar');
+        const tName   = trigger.querySelector('.trigger-name');
+        if (tAvatar) tAvatar.textContent = '?';
+        if (tName)   tName.textContent   = t('guest');
+
+        setTriggerLoading(trigger, false);
+        return;
+    }
 
     const displayName = user.displayName || user.email?.split('@')[0] || 'User';
     const photoHTML   = user.photoURL

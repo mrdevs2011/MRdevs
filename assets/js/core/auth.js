@@ -204,6 +204,9 @@ export function initAuth() {
             } else {
                 currentUser = null;
                 updateUIForUser(null);
+                try { initDropdown(null); } catch (e) {
+                    logger.error.dropdown(e.message);
+                }
             }
         }
     });
