@@ -38,7 +38,8 @@ function saveLocalAuth(userData) {
 }
 
 function showLoading() {
-    document.getElementById('mrdevLoadingOverlay')?.classList.add('show');
+    const modalBody = document.querySelector('#mrdevLoginModal .modal-body');
+    if (modalBody && window.MrdevLoading) window.MrdevLoading.show(modalBody);
 }
 
 function hideLoading() {

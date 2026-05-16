@@ -18,9 +18,24 @@ googleProvider.setCustomParameters({ prompt: 'select_account' });
 
 export async function signInWithGoogle() {
     logger.google.start();
+
+    // Google tugmasi va modal body uchun loading
+    const googleBtn = document.querySelector('.google-auth-btn');
+    const modalBody = document.querySelector('#authModal .modal-body');
+
+    if (window.MrdevLoading && googleBtn) {
+        window.MrdevLoading.showBtn(googleBtn, 'Google...');
+    }
+
     try {
         const result = await signInWithPopup(auth, googleProvider);
         const user = result.user;
+
+        // Popup muvaffaqiyatli → modal body loading ko'rsatish
+        if (window.MrdevLoading) {
+            if (googleBtn) window.MrdevLoading.hideBtn(googleBtn);
+            if (modalBody) window.MrdevLoading.show(modalBody);
+        }
 
         logger.google.success(user.uid, user.email);
 
@@ -83,6 +98,12 @@ export async function signInWithGoogle() {
 
     } catch (error) {
         logger.google.error(error.code, error.message);
+
+        // Xatolikda loading to'xtatish
+        if (window.MrdevLoading) {
+            if (googleBtn) window.MrdevLoading.hideBtn(googleBtn);
+            if (modalBody) window.MrdevLoading.hide(modalBody);
+        }
 
         if (error.code === 'auth/popup-closed-by-user') {
             showToast(t('login') + ' oynasi yopildi', 'error');

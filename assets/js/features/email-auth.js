@@ -31,10 +31,22 @@ function clearErr() { setErr(''); }
 function setBtnLoading(on) {
     const btn = $('authSubmitBtn');
     if (!btn) return;
-    btn.disabled = on;
-    btn.textContent = on
-        ? (_mode === 'register' ? t('register') + '...' : t('login') + '...')
-        : (_mode === 'register' ? t('register') : t('login'));
+    if (on) {
+        const label = _mode === 'register' ? t('register') + '...' : t('login') + '...';
+        if (window.MrdevLoading) {
+            window.MrdevLoading.showBtn(btn, label);
+        } else {
+            btn.disabled = true;
+            btn.textContent = label;
+        }
+    } else {
+        if (window.MrdevLoading) {
+            window.MrdevLoading.hideBtn(btn);
+        } else {
+            btn.disabled = false;
+            btn.textContent = _mode === 'register' ? t('register') : t('login');
+        }
+    }
 }
 
 function toEmail(raw) {

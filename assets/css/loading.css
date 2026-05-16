@@ -1,9 +1,11 @@
-/* ==================== MRDEV LOADING ==================== */
+/* ==================== MRDEV LOADING v2.0 ==================== */
+/* Logo asosida cheksiz loop animatsiyasi                        */
 
+/* ─── Konteyner ichidagi overlay loading ─── */
 .mrdev-loading {
     position: absolute;
     inset: 0;
-    background: rgba(250, 249, 247, 0.75);
+    background: rgba(247, 246, 243, 0.82);
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
     border-radius: inherit;
@@ -13,11 +15,12 @@
     z-index: 20;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.25s var(--ease-out), visibility 0.25s;
+    transition: opacity 0.22s cubic-bezier(0.2, 0, 0, 1),
+                visibility 0.22s;
 }
 
 body.dark .mrdev-loading {
-    background: rgba(26, 25, 22, 0.75);
+    background: rgba(26, 25, 22, 0.82);
 }
 
 .mrdev-loading.show {
@@ -25,37 +28,86 @@ body.dark .mrdev-loading {
     visibility: visible;
 }
 
-/* Triangle icon loader */
-.mrdev-loading-icon {
-    display: flex;
+/* ─── Logo SVG o'lchami ─── */
+.mrdev-loading-logo {
+    width: 52px;
+    height: 52px;
+    display: block;
+    overflow: visible;
+}
+
+/* ─── Loop stroke animatsiyasi ─── */
+.ld-stroke {
+    stroke-dasharray: 101;
+    stroke-dashoffset: 101;
+    animation: ldStrokeLoop 2.8s linear infinite;
+}
+
+@keyframes ldStrokeLoop {
+    0%   { stroke-dashoffset: 101; opacity: 1;
+           animation-timing-function: ease-out; }
+    38%  { stroke-dashoffset: 0;   opacity: 1;
+           animation-timing-function: ease; }
+    52%  { stroke-dashoffset: 0;   opacity: 0; }
+    78%  { stroke-dashoffset: 0;   opacity: 0; }
+    79%  { stroke-dashoffset: 101; opacity: 0; }
+    100% { stroke-dashoffset: 101; opacity: 0; }
+}
+
+/* ─── Loop fill mask animatsiyasi ─── */
+.ld-mask-rect {
+    transform: translateY(52px);
+    animation: ldMaskLoop 2.8s linear infinite;
+}
+
+@keyframes ldMaskLoop {
+    0%   { transform: translateY(52px);
+           animation-timing-function: linear; }
+    38%  { transform: translateY(52px);
+           animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
+    52%  { transform: translateY(0px);
+           animation-timing-function: cubic-bezier(0.4, 0, 0.6, 1); }
+    78%  { transform: translateY(52px);
+           animation-timing-function: linear; }
+    100% { transform: translateY(52px); }
+}
+
+/* ─── Button ichidagi mini spinner ─── */
+.mrdev-btn-spinner {
+    display: inline-flex;
     align-items: center;
     justify-content: center;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
 }
 
-.mrdev-loading-icon svg {
-    width: 36px;
-    height: 36px;
+.mrdev-btn-spinner svg {
+    width: 20px;
+    height: 20px;
+    display: block;
+    overflow: visible;
 }
 
-.mrdev-loading-icon .loading-tri {
-    transform-box: view-box;
-    transform-origin: 20px 20px;
-    animation: loadingTriSpin 1.2s linear infinite;
+.ld-stroke-sm {
+    stroke-dasharray: 39;
+    stroke-dashoffset: 39;
+    animation: ldStrokeLoop 2.8s linear infinite;
 }
 
-@keyframes loadingTriSpin {
-    from { transform: rotate(0deg); }
-    to   { transform: rotate(360deg); }
+.ld-mask-rect-sm {
+    transform: translateY(20px);
+    animation: ldMaskLoopSm 2.8s linear infinite;
 }
 
-.mrdev-loading-text {
-    position: absolute;
-    bottom: 28%;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 11px;
-    color: var(--text-3);
-    font-weight: 500;
-    white-space: nowrap;
-    letter-spacing: 0.2px;
+@keyframes ldMaskLoopSm {
+    0%   { transform: translateY(20px);
+           animation-timing-function: linear; }
+    38%  { transform: translateY(20px);
+           animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
+    52%  { transform: translateY(0px);
+           animation-timing-function: cubic-bezier(0.4, 0, 0.6, 1); }
+    78%  { transform: translateY(20px);
+           animation-timing-function: linear; }
+    100% { transform: translateY(20px); }
 }
