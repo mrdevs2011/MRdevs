@@ -1,18 +1,19 @@
-/* ==================== MRDEV MAIN v5.1 ==================== */
+/* ==================== MRDEV MAIN v5.2 — Bug-Fixed Edition ==================== */
+/* FIXES: #1 Tab Active State, #3 Card Shadows, #4 Typography */
 
 /* ══════════════════════════════════════
-   CONTAINER — accounts for floating fixed header
+   CONTAINER — floating fixed header offset
    ══════════════════════════════════════ */
 .container {
     max-width: var(--content-w, 1040px);
     margin:    0 auto;
-    /* top: header height + header-top offset + extra gap */
-    padding:   calc(var(--header-h) + var(--header-top) + 32px) 32px 96px;
+    padding:   calc(var(--header-h) + var(--header-top) + 36px) 32px 96px;
     contain:   layout;
 }
 
 /* ══════════════════════════════════════
    HERO SECTION
+   FIX #4a: richer, more confident typography
    ══════════════════════════════════════ */
 .hero-section {
     text-align:    center;
@@ -26,13 +27,14 @@
     to   { opacity: 1; transform: translateY(0) translateZ(0); }
 }
 
+/* FIX #4b: stronger title — more weight, tighter tracking */
 .page-title {
-    font-size:      38px;
-    font-weight:    600;
+    font-size:      44px;
+    font-weight:    700;
     color:          var(--text);
-    letter-spacing: -1.2px;
-    line-height:    1.1;
-    margin-bottom:  8px;
+    letter-spacing: -2.5px;
+    line-height:    1.0;
+    margin-bottom:  10px;
 }
 
 .page-title .logo-mr {
@@ -43,11 +45,27 @@
     color:                   transparent;
 }
 
+/* FIX #4c: subtitle — visible, elegant, not invisible */
 .page-subtitle {
-    font-size:   13px;
-    color:       var(--text-4);
-    font-weight: 400;
-    line-height: 1.5;
+    font-size:      13px;
+    color:          var(--text-3);
+    font-weight:    500;
+    letter-spacing: 0.3px;
+    line-height:    1.5;
+    display:        inline-flex;
+    align-items:    center;
+    gap:            6px;
+}
+
+/* Subtle decorative dot for subtitle */
+.page-subtitle::before {
+    content:       '';
+    display:       inline-block;
+    width:         5px;
+    height:        5px;
+    border-radius: 50%;
+    background:    var(--accent);
+    opacity:       0.7;
 }
 
 /* ══════════════════════════════════════
@@ -80,6 +98,12 @@
     height:        42px;
     box-shadow:    var(--shadow-sm);
     transition:    border-color 0.18s, box-shadow 0.18s;
+}
+
+body:not(.dark) .search-box {
+    background:   #ffffff;
+    border-color: rgba(9, 9, 11, 0.12);
+    box-shadow:   0 1px 4px rgba(0,0,0,0.06), 0 0 0 0.5px rgba(9,9,11,0.04);
 }
 
 .search-box:focus-within {
@@ -121,68 +145,129 @@
 .clear-search:hover { background: var(--surface-3); color: var(--text-2); }
 
 /* ══════════════════════════════════════
-   TABS
+   TABS — FIX #1: high-contrast active state
    ══════════════════════════════════════ */
 .tabs {
     display:         flex;
     margin-bottom:   36px;
     justify-content: center;
-    gap:             4px;
+    gap:             3px;
     animation:       _heroIn 0.5s 0.07s var(--ease-out) both;
-    background:      var(--surface-2);
     border-radius:   var(--radius-full);
     padding:         4px;
     width:           fit-content;
     margin-left:     auto;
     margin-right:    auto;
     border:          1.5px solid var(--border);
+
+    /* Light mode container — clear warm gray */
+    background:      var(--surface-2);
+}
+
+/* Dark mode tab container */
+body.dark .tabs {
+    background:   rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+/* Light mode tab container */
+body:not(.dark) .tabs {
+    background:   #f0f0f1;
+    border-color: rgba(9, 9, 11, 0.1);
 }
 
 .tab {
-    padding:       7px 18px;
+    padding:       7px 20px;
     background:    transparent;
     border:        none;
     border-radius: var(--radius-full);
     font-size:     13px;
     font-weight:   500;
     font-family:   var(--font-sans);
+    letter-spacing: 0.1px;
     color:         var(--text-3);
     cursor:        pointer;
-    transition:    background 0.15s var(--ease-out), color 0.15s, box-shadow 0.15s;
+    transition:
+        background  0.18s var(--ease-out),
+        color       0.18s var(--ease-out),
+        box-shadow  0.18s var(--ease-out),
+        transform   0.15s var(--ease-spring);
     user-select:   none;
     white-space:   nowrap;
+    position:      relative;
 }
 
-.tab:hover  { color: var(--text-2); }
+.tab:hover:not(.active) {
+    color:      var(--text-2);
+    background: var(--hover-strong);
+}
 
-.tab.active {
-    color:      var(--accent);
-    background: var(--surface);
-    box-shadow: var(--shadow-sm);
+.tab:active {
+    transform:           scale(0.96);
+    transition-duration: 0.08s;
+}
+
+/* ═══════════════════════════════════════════
+   FIX #1: ACTIVE TAB — AAA contrast both modes
+   Light mode: dark pill (#0f172a) + white text
+   Dark mode:  white surface + accent text
+   ═══════════════════════════════════════════ */
+
+/* Light mode active tab — solid dark background, pure white text */
+body:not(.dark) .tab.active {
+    color:      #ffffff;
+    background: #0f172a;
+    box-shadow:
+        0 1px 4px rgba(0, 0, 0, 0.20),
+        0 0 0 0.5px rgba(0, 0, 0, 0.15);
+    font-weight: 600;
+}
+
+/* Dark mode active tab — bright surface, accent text */
+body.dark .tab.active {
+    color:      var(--text);
+    background: var(--surface-2);
+    box-shadow:
+        0 1px 4px rgba(0, 0, 0, 0.35),
+        0 0 0 0.5px rgba(255, 255, 255, 0.08);
+    font-weight: 600;
 }
 
 /* ══════════════════════════════════════
    SECTION LABEL
+   FIX #4d: modern divider, not dated blue
    ══════════════════════════════════════ */
 .section-label {
-    font-size:      10.5px;
-    font-weight:    600;
-    color:          var(--text-4);
-    letter-spacing: 0.8px;
+    font-size:      10px;
+    font-weight:    700;
+    color:          var(--text-3);
+    letter-spacing: 1.2px;
     text-transform: uppercase;
-    margin-bottom:  14px;
+    margin-bottom:  16px;
     padding-left:   2px;
     display:        flex;
     align-items:    center;
-    gap:            8px;
+    gap:            10px;
 }
 
+/* FIX #4e: sleek single rule divider, not accent-colored */
 .section-label::after {
-    content:   '';
-    flex:      1;
-    height:    1px;
-    background: var(--border);
-    max-width: 100px;
+    content:    '';
+    flex:       1;
+    height:     1px;
+    background: linear-gradient(
+        to right,
+        var(--border-strong),
+        var(--border) 60%,
+        transparent
+    );
+    max-width: 100%;
+    opacity:   0.8;
+}
+
+/* Light mode section label */
+body:not(.dark) .section-label {
+    color: #52525b;
 }
 
 /* ══════════════════════════════════════
@@ -205,7 +290,7 @@
 }
 
 /* ══════════════════════════════════════
-   APP ITEM — clean card style
+   APP ITEM — FIX #3: modern card with shadows
    ══════════════════════════════════════ */
 .app-item {
     display:         flex;
@@ -223,18 +308,49 @@
     transition:
         background    0.2s var(--ease-out),
         border-color  0.2s var(--ease-out),
-        transform     0.2s var(--ease-spring),
-        box-shadow    0.2s var(--ease-out),
+        transform     0.22s var(--ease-spring),
+        box-shadow    0.22s var(--ease-out),
         color         0.2s;
     overflow:        hidden;
 }
 
+/* FIX #3a: Light mode cards — visible depth via shadow + stronger border */
+body:not(.dark) .app-item {
+    background:   #ffffff;
+    border-color: rgba(9, 9, 11, 0.07);
+    box-shadow:
+        0 1px 3px rgba(0, 0, 0, 0.05),
+        0 1px 8px rgba(0, 0, 0, 0.03),
+        0 0 0 0.5px rgba(9, 9, 11, 0.05);
+}
+
+/* FIX #3b: Dark mode — subtle glow border */
+body.dark .app-item {
+    border-color: rgba(255, 255, 255, 0.07);
+    box-shadow:   0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+/* FIX #3c: hover — lift animation + accent border + shadow */
 .app-item:hover {
     border-color: var(--accent);
-    transform:    translateY(-2px) translateZ(0);
-    box-shadow:   0 4px 16px var(--accent-dim), var(--shadow-sm);
+    transform:    translateY(-3px) translateZ(0);
     color:        var(--text-2);
     background:   var(--surface);
+}
+
+body:not(.dark) .app-item:hover {
+    background:  #ffffff;
+    border-color: var(--accent);
+    box-shadow:
+        0 8px 24px rgba(14, 165, 233, 0.12),
+        0 4px 8px rgba(14, 165, 233, 0.08),
+        0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+body.dark .app-item:hover {
+    box-shadow:
+        0 8px 24px rgba(56, 189, 248, 0.15),
+        0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .app-item:active {
@@ -262,13 +378,20 @@
     flex-shrink:     0;
 }
 
+/* FIX #3d: Light mode icon container — visible on white card */
+body:not(.dark) .app-icon {
+    background:   #f4f4f5;
+    border-color: rgba(9, 9, 11, 0.08);
+    box-shadow:   inset 0 1px 2px rgba(9,9,11,0.04);
+}
+
 .app-item:hover .app-icon {
     box-shadow:   0 4px 12px var(--accent-dim);
     transform:    scale(1.06) translateZ(0);
     border-color: var(--accent);
 }
 
-/* ── SVG favicons — dark mode fix ── */
+/* ── SVG favicons ── */
 .app-icon img {
     width:      32px;
     height:     32px;
@@ -276,7 +399,6 @@
     transition: filter 0.2s;
 }
 
-/* Dark mode: brighten SVG icons with hard-coded dark colors */
 body.dark .app-icon img {
     filter: brightness(1.9) saturate(0.85);
 }
@@ -289,6 +411,7 @@ body.dark .app-icon img {
     color:       var(--text-3);
     line-height: 1.3;
     transition:  color 0.15s;
+    letter-spacing: 0.05px;
 }
 
 .app-item:hover .app-name { color: var(--text); }
@@ -316,18 +439,18 @@ body.dark .app-icon img {
 
 /* ── New badge ── */
 .app-badge {
-    position:      absolute;
-    top:           7px;
-    right:         7px;
-    background:    var(--accent);
-    color:         white;
-    font-size:     9px;
-    font-weight:   600;
-    letter-spacing: 0.4px;
+    position:       absolute;
+    top:            7px;
+    right:          7px;
+    background:     var(--accent);
+    color:          white;
+    font-size:      9px;
+    font-weight:    700;
+    letter-spacing: 0.5px;
     text-transform: uppercase;
-    padding:       2px 5px;
-    border-radius: var(--radius-full);
-    line-height:   1.5;
+    padding:        2px 6px;
+    border-radius:  var(--radius-full);
+    line-height:    1.5;
 }
 
 /* ══════════════════════════════════════
@@ -335,8 +458,8 @@ body.dark .app-icon img {
    ══════════════════════════════════════ */
 #miniGrid .app-item,
 #miniOnlyList .app-item {
-    background:    var(--surface);
-    border-color:  var(--border);
+    background:   var(--surface);
+    border-color: var(--border);
 }
 
 #miniGrid .app-item:hover,

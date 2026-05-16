@@ -1,7 +1,8 @@
-/* ==================== MRDEV HEADER v5.1 — Floating Edition ==================== */
+/* ==================== MRDEV HEADER v5.2 — Bug-Fixed Edition ==================== */
+/* FIXES: #2 Header & Search Contrast (Light + Dark Mode) */
 
 /* ══════════════════════════════════════
-   HEADER — floating, fixed, no border-radius
+   HEADER — floating, fixed, blur glass
    ══════════════════════════════════════ */
 header {
     height:          var(--header-h);
@@ -14,8 +15,9 @@ header {
     left:            var(--header-side);
     right:           var(--header-side);
     z-index:         100;
-    border-radius:   0;
+    border-radius:   var(--radius-sm);
 
+    /* FIX #2a: explicit solid fallback so header is never pitch-black in light mode */
     background:      var(--glass);
     border:          1px solid var(--border);
     box-shadow:      var(--shadow-md);
@@ -24,15 +26,35 @@ header {
     transform:       translateZ(0);
 
     transition:
-        background   0.3s var(--ease-smooth),
-        border-color 0.3s,
-        box-shadow   0.3s;
+        background   0.25s var(--ease-smooth),
+        border-color 0.25s var(--ease-smooth),
+        box-shadow   0.25s var(--ease-smooth);
+}
+
+/* FIX #2b: Light mode — bright white header, not black */
+body:not(.dark) header {
+    background:   rgba(255, 255, 255, 0.92);
+    border-color: rgba(9, 9, 11, 0.09);
+    box-shadow:
+        0 1px 0 rgba(9, 9, 11, 0.06),
+        0 4px 16px rgba(9, 9, 11, 0.06),
+        0 1px 4px rgba(9, 9, 11, 0.04);
+}
+
+/* FIX #2c: Dark mode — keep existing glass but ensure search stands out */
+body.dark header {
+    background:   rgba(9, 9, 11, 0.88);
+    border-color: rgba(255, 255, 255, 0.09);
+    box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.04),
+        0 4px 20px rgba(0, 0, 0, 0.5),
+        0 2px 8px rgba(0, 0, 0, 0.35);
 }
 
 @supports (backdrop-filter: blur(1px)) {
     header {
-        backdrop-filter:         saturate(1.8) blur(20px);
-        -webkit-backdrop-filter: saturate(1.8) blur(20px);
+        backdrop-filter:         saturate(1.8) blur(24px);
+        -webkit-backdrop-filter: saturate(1.8) blur(24px);
     }
 }
 
@@ -79,8 +101,8 @@ header.scrolled {
 .logo {
     font-family:     var(--font-sans);
     font-size:       15px;
-    font-weight:     600;
-    letter-spacing:  -0.5px;
+    font-weight:     700;
+    letter-spacing:  -0.6px;
     text-decoration: none;
     display:         flex;
     align-items:     baseline;
@@ -107,6 +129,7 @@ header.scrolled {
 
 /* ══════════════════════════════════════
    HEADER SEARCH
+   FIX #2d: improved visibility both modes
    ══════════════════════════════════════ */
 .header-center {
     flex:            1;
@@ -119,8 +142,6 @@ header.scrolled {
 .header-search {
     display:       flex;
     align-items:   center;
-    background:    var(--surface-2);
-    border:        1.5px solid var(--border);
     border-radius: var(--radius-full);
     padding:       0 14px;
     width:         100%;
@@ -131,13 +152,36 @@ header.scrolled {
         box-shadow   0.18s var(--ease-out);
 }
 
-.header-search:focus-within {
+/* FIX #2e: Light mode — clearly defined search box on white header */
+body:not(.dark) .header-search {
+    background:  #f1f1f3;
+    border:      1.5px solid rgba(9, 9, 11, 0.12);
+    box-shadow:  inset 0 1px 2px rgba(9, 9, 11, 0.04);
+}
+
+body:not(.dark) .header-search:focus-within {
+    background:   #ffffff;
     border-color: var(--accent);
-    background:   var(--surface);
+    box-shadow:   0 0 0 3px var(--accent-dim),
+                  inset 0 1px 2px rgba(9, 9, 11, 0.03);
+}
+
+/* FIX #2f: Dark mode — search must pop against near-black header */
+body.dark .header-search {
+    background:  rgba(255, 255, 255, 0.07);
+    border:      1.5px solid rgba(255, 255, 255, 0.13);
+}
+
+body.dark .header-search:focus-within {
+    background:   rgba(255, 255, 255, 0.10);
+    border-color: var(--accent);
     box-shadow:   0 0 0 3px var(--accent-dim);
 }
 
 .search-icon-small { color: var(--text-4); flex-shrink: 0; }
+
+/* FIX: ensure icon is visible in light mode too */
+body:not(.dark) .search-icon-small { color: #71717a; }
 
 .header-search-input {
     flex:        1;
@@ -152,6 +196,8 @@ header.scrolled {
 }
 
 .header-search-input::placeholder { color: var(--text-4); }
+
+body:not(.dark) .header-search-input::placeholder { color: #9ca3af; }
 
 .mobile-search-btn { display: none; }
 
@@ -175,6 +221,13 @@ header.scrolled {
         background   0.14s var(--ease-out),
         box-shadow   0.14s var(--ease-out);
     box-shadow:    var(--shadow-xs);
+}
+
+/* Light mode pill contrast */
+body:not(.dark) .header-user-trigger {
+    background:   #ffffff;
+    border-color: rgba(9, 9, 11, 0.12);
+    box-shadow:   0 1px 3px rgba(0,0,0,0.06), 0 0 0 0.5px rgba(9,9,11,0.04);
 }
 
 .header-user-trigger:hover {
@@ -247,7 +300,7 @@ header.scrolled {
 .theme-icon-sun,
 .theme-icon-moon { transition: opacity 0.2s, transform 0.25s var(--ease-spring); }
 
-body.dark .theme-icon-sun   { display: none; }
+body.dark .theme-icon-sun       { display: none; }
 body:not(.dark) .theme-icon-moon { display: none; }
 
 /* ══════════════════════════════════════
@@ -279,9 +332,7 @@ body:not(.dark) .theme-icon-moon { display: none; }
         --header-side: 8px;
     }
 
-    header {
-        padding: 0 12px;
-    }
+    header { padding: 0 12px; }
 
     .header-center     { display: none !important; }
     .mobile-search-btn { display: flex; }
