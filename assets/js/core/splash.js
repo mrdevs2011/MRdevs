@@ -1,102 +1,100 @@
-// ==================== MRDEV SPLASH SCREEN v2.0 ====================
-// Ilovaga kirganda 2 soniya davomida chiziluvchi logo animatsiyasi
-// Theme (light/dark) avtomatik aniqlanadi
+// ==================== MRDEV SPLASH v2.1 ====================
+// Yumshoq: stroke draw → crossfade → fill rise → overlay fade
 
 (function () {
     'use strict';
 
-    // ─── helpers ───────────────────────────────────────────────────
-    function waitAnim(el) {
-        return new Promise(function (resolve) {
-            el.addEventListener('animationend', resolve, { once: true });
+    function sleep(ms) {
+        return new Promise(function (r) { setTimeout(r, ms); });
+    }
+    function onAnimEnd(el) {
+        return new Promise(function (r) {
+            el.addEventListener('animationend', r, { once: true });
         });
     }
-    function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
 
-    // ─── SVG yaratish ───────────────────────────────────────────────
+    /* ─── SVG: optik markaz uchun logo 2px yuqoriga ko'chirilgan ─── */
     function buildSplash() {
-        var uid = 'sp' + Math.random().toString(36).slice(2, 8);
+        var uid = 'sp' + Math.random().toString(36).slice(2, 7);
 
-        var wrapper = document.createElement('div');
-        wrapper.className = 'mrdev-splash';
-        wrapper.id = 'mrdevSplashScreen';
+        var el = document.createElement('div');
+        el.className = 'mrdev-splash';
+        el.id = 'mrdevSplash';
 
-        wrapper.innerHTML =
+        el.innerHTML = (
             '<div class="mrdev-splash-logo">' +
-                '<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">' +
-                    '<defs>' +
-                        '<linearGradient id="spBg_' + uid + '" x1="0%" y1="0%" x2="100%" y2="100%">' +
-                            '<stop offset="0%" stop-color="#64d2ff"/>' +
-                            '<stop offset="100%" stop-color="#1a8fe8"/>' +
-                        '</linearGradient>' +
-                        '<mask id="spMask_' + uid + '">' +
-                            '<rect class="sp-mask-rect" x="0" y="0" width="80" height="80" fill="white"/>' +
-                        '</mask>' +
-                    '</defs>' +
-                    '<circle cx="40" cy="40" r="38" fill="url(#spBg_' + uid + ')"/>' +
-                    '<path class="sp-stroke"' +
-                        ' fill="none" stroke="white" stroke-width="3.5"' +
-                        ' stroke-linejoin="round" stroke-linecap="round"' +
-                        ' d="M40,16 L64,62 L52,62 L40,44 L28,62 L16,62 Z"/>' +
-                    '<path fill="white" mask="url(#spMask_' + uid + ')"' +
-                        ' d="M40,16 L64,62 L52,62 L40,44 L28,62 L16,62 Z"/>' +
-                '</svg>' +
-            '</div>';
-
-        return wrapper;
+            '<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">' +
+            '<defs>' +
+              '<linearGradient id="spG_' + uid + '" x1="0%" y1="0%" x2="100%" y2="100%">' +
+                '<stop offset="0%" stop-color="#64d2ff"/>' +
+                '<stop offset="100%" stop-color="#1a8fe8"/>' +
+              '</linearGradient>' +
+              '<mask id="spM_' + uid + '">' +
+                '<rect class="sp-mask-rect" x="0" y="0" width="80" height="80" fill="white"/>' +
+              '</mask>' +
+            '</defs>' +
+            /* Nozik border: doira ustida yarim shaffof qatlam */
+            '<circle cx="40" cy="40" r="38" fill="url(#spG_' + uid + ')"/>' +
+            '<circle cx="40" cy="40" r="38" fill="none"' +
+              ' stroke="rgba(255,255,255,0.15)" stroke-width="1"/>' +
+            /* Optik markaz: logo 2px yuqorida — ko'zga markazda ko'rinadi */
+            '<path class="sp-stroke"' +
+              ' fill="none" stroke="white" stroke-width="3.5"' +
+              ' stroke-linejoin="round" stroke-linecap="round"' +
+              ' d="M40,14 L64,60 L52,60 L40,42 L28,60 L16,60 Z"/>' +
+            '<path fill="white" mask="url(#spM_' + uid + ')"' +
+              ' d="M40,14 L64,60 L52,60 L40,42 L28,60 L16,60 Z"/>' +
+            '</svg>' +
+            '</div>'
+        );
+        return el;
     }
 
-    // ─── Animatsiya ketma-ketligi ───────────────────────────────────
-    async function runSplash(el) {
+    async function run(el) {
         var stroke   = el.querySelector('.sp-stroke');
         var maskRect = el.querySelector('.sp-mask-rect');
 
-        // 1) Kichik pauza (logo pop-in tugasin)
-        await sleep(350);
+        /* 1. Logo pop-in tugashini kut */
+        await sleep(380);
 
-        // 2) Stroke chiziladi
+        /* 2. Stroke chiziladi */
         stroke.classList.add('anim-draw');
-        await waitAnim(stroke);
+        await onAnimEnd(stroke);
 
-        // 3) Stroke yo'qoladi + fill pastdan ko'tariladi
+        /* 3. Crossfade: stroke yo'qoladi + fill ko'tariladi — parallel,
+              lekin fill birozdan keyin boshlanadi (100ms overlap) */
         stroke.classList.remove('anim-draw');
-        stroke.style.strokeDashoffset = '0';
-        stroke.style.opacity = '1';
-        void stroke.getBoundingClientRect(); // reflow
+        stroke.style.cssText += ';stroke-dashoffset:0;opacity:1;';
+        void el.offsetHeight; /* reflow — animatsiya qayta boshlansin */
+
         stroke.classList.add('anim-fade');
+
+        /* fill rise 100ms keyin — chiziq hali ko'rinib turgan paytda */
+        await sleep(100);
         maskRect.classList.add('anim-rise');
-        await waitAnim(maskRect);
+        await onAnimEnd(maskRect);
 
-        // 4) Splash yashiriladi
-        await sleep(120);
-        hide(el);
-    }
-
-    function hide(el) {
-        if (!el) return;
+        /* 4. Qisqa pauza, keyin overlay yumshoq yo'qoladi */
+        await sleep(80);
         el.classList.add('hidden');
         setTimeout(function () {
-            if (el && el.parentNode) el.remove();
-        }, 500);
+            if (el.parentNode) el.remove();
+        }, 600);
     }
 
-    // ─── Asosiy ishga tushirish ─────────────────────────────────────
     function init() {
         var splash = buildSplash();
         document.body.prepend(splash);
+        run(splash);
 
-        // Animatsiyani boshlash
-        runSplash(splash);
-
-        // Xavfsizlik: 4 soniyada majburiy yashirish
+        /* Xavfsizlik: 5s dan keyin majburiy yashirish */
         setTimeout(function () {
             if (splash && !splash.classList.contains('hidden')) {
-                hide(splash);
+                splash.classList.add('hidden');
             }
-        }, 4000);
+        }, 5000);
     }
 
-    // DOMContentLoaded kutish
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);
     } else {

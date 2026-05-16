@@ -1,13 +1,13 @@
-/* ==================== MRDEV LOADING v2.0 ==================== */
-/* Logo asosida cheksiz loop animatsiyasi                        */
+/* ==================== MRDEV LOADING v2.1 ==================== */
+/* Yumshoq cheksiz loop: fade-in → draw → crossfade → fill rise/fall */
 
-/* ─── Konteyner ichidagi overlay loading ─── */
+/* ─── Konteyner overlay ─── */
 .mrdev-loading {
     position: absolute;
     inset: 0;
-    background: rgba(247, 246, 243, 0.82);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
+    background: rgba(247, 246, 243, 0.84);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     border-radius: inherit;
     display: flex;
     align-items: center;
@@ -15,12 +15,12 @@
     z-index: 20;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.22s cubic-bezier(0.2, 0, 0, 1),
-                visibility 0.22s;
+    transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                visibility 0.25s;
 }
 
 body.dark .mrdev-loading {
-    background: rgba(26, 25, 22, 0.82);
+    background: rgba(26, 25, 22, 0.84);
 }
 
 .mrdev-loading.show {
@@ -28,47 +28,58 @@ body.dark .mrdev-loading {
     visibility: visible;
 }
 
-/* ─── Logo SVG o'lchami ─── */
+/* ─── Logo SVG ─── */
 .mrdev-loading-logo {
     width: 52px;
     height: 52px;
     display: block;
     overflow: visible;
+    filter: drop-shadow(0 2px 6px rgba(26, 143, 232, 0.2))
+            drop-shadow(0 0 0 0.6px rgba(0, 0, 0, 0.06));
 }
 
-/* ─── Loop stroke animatsiyasi ─── */
+/* ─── Loop: stroke
+   Ketma-ketlik (3.2s siklida):
+   0–8%   : stroke ko'rinmas (reset holati)
+   8–14%  : yumshoq fade-in
+   14–48% : stroke chiziladi (ease-out)
+   48–58% : stroke tugagan, yumshoq fade-out
+   58–100%: stroke ko'rinmas (fill shu paytda ishlaydi)
+─── */
 .ld-stroke {
     stroke-dasharray: 101;
     stroke-dashoffset: 101;
-    animation: ldStrokeLoop 2.8s linear infinite;
+    opacity: 0;
+    animation: ldStroke 3.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
-@keyframes ldStrokeLoop {
-    0%   { stroke-dashoffset: 101; opacity: 1;
-           animation-timing-function: ease-out; }
-    38%  { stroke-dashoffset: 0;   opacity: 1;
-           animation-timing-function: ease; }
-    52%  { stroke-dashoffset: 0;   opacity: 0; }
-    78%  { stroke-dashoffset: 0;   opacity: 0; }
-    79%  { stroke-dashoffset: 101; opacity: 0; }
+@keyframes ldStroke {
+    0%   { stroke-dashoffset: 101; opacity: 0; }
+    8%   { stroke-dashoffset: 101; opacity: 0; animation-timing-function: ease-out; }
+    12%  { opacity: 1; }
+    46%  { stroke-dashoffset: 0; opacity: 1; animation-timing-function: ease-in; }
+    56%  { stroke-dashoffset: 0; opacity: 0; }
     100% { stroke-dashoffset: 101; opacity: 0; }
 }
 
-/* ─── Loop fill mask animatsiyasi ─── */
+/* ─── Loop: fill mask
+   0–46%  : fill pastda (stroke chizilayapti)
+   46–62% : fill ko'tariladi (stroke fade-out bilan parallel)
+   62–84% : fill tepada tuadi
+   84–96% : fill pastga tushadi (ease-in)
+   96–100%: fill pastda, pauza
+─── */
 .ld-mask-rect {
     transform: translateY(52px);
-    animation: ldMaskLoop 2.8s linear infinite;
+    animation: ldMask 3.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
-@keyframes ldMaskLoop {
-    0%   { transform: translateY(52px);
-           animation-timing-function: linear; }
-    38%  { transform: translateY(52px);
-           animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
-    52%  { transform: translateY(0px);
-           animation-timing-function: cubic-bezier(0.4, 0, 0.6, 1); }
-    78%  { transform: translateY(52px);
-           animation-timing-function: linear; }
+@keyframes ldMask {
+    0%   { transform: translateY(52px); }
+    46%  { transform: translateY(52px); animation-timing-function: cubic-bezier(0.2, 0, 0.1, 1); }
+    62%  { transform: translateY(0px);  animation-timing-function: cubic-bezier(0.0, 0, 0.8, 1); }
+    84%  { transform: translateY(0px);  animation-timing-function: cubic-bezier(0.6, 0, 1, 1); }
+    96%  { transform: translateY(52px); }
     100% { transform: translateY(52px); }
 }
 
@@ -80,6 +91,7 @@ body.dark .mrdev-loading {
     width: 20px;
     height: 20px;
     flex-shrink: 0;
+    vertical-align: middle;
 }
 
 .mrdev-btn-spinner svg {
@@ -87,27 +99,36 @@ body.dark .mrdev-loading {
     height: 20px;
     display: block;
     overflow: visible;
+    filter: drop-shadow(0 1px 3px rgba(26, 143, 232, 0.25));
 }
 
+/* Mini loop — xuddi asosiy, lekin kichikroq dasharray */
 .ld-stroke-sm {
     stroke-dasharray: 39;
     stroke-dashoffset: 39;
-    animation: ldStrokeLoop 2.8s linear infinite;
+    opacity: 0;
+    animation: ldStrokeSm 3.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes ldStrokeSm {
+    0%   { stroke-dashoffset: 39; opacity: 0; }
+    8%   { stroke-dashoffset: 39; opacity: 0; animation-timing-function: ease-out; }
+    12%  { opacity: 1; }
+    46%  { stroke-dashoffset: 0; opacity: 1; animation-timing-function: ease-in; }
+    56%  { stroke-dashoffset: 0; opacity: 0; }
+    100% { stroke-dashoffset: 39; opacity: 0; }
 }
 
 .ld-mask-rect-sm {
     transform: translateY(20px);
-    animation: ldMaskLoopSm 2.8s linear infinite;
+    animation: ldMaskSm 3.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
-@keyframes ldMaskLoopSm {
-    0%   { transform: translateY(20px);
-           animation-timing-function: linear; }
-    38%  { transform: translateY(20px);
-           animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
-    52%  { transform: translateY(0px);
-           animation-timing-function: cubic-bezier(0.4, 0, 0.6, 1); }
-    78%  { transform: translateY(20px);
-           animation-timing-function: linear; }
+@keyframes ldMaskSm {
+    0%   { transform: translateY(20px); }
+    46%  { transform: translateY(20px); animation-timing-function: cubic-bezier(0.2, 0, 0.1, 1); }
+    62%  { transform: translateY(0px);  animation-timing-function: cubic-bezier(0.0, 0, 0.8, 1); }
+    84%  { transform: translateY(0px);  animation-timing-function: cubic-bezier(0.6, 0, 1, 1); }
+    96%  { transform: translateY(20px); }
     100% { transform: translateY(20px); }
 }
