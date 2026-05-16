@@ -666,26 +666,20 @@
 
 <script>
 // ==================== FIREBASE KONFIGURATSIYASI ====================
-const firebaseConfig = {
-    apiKey: "window.__ENV__?.MAIN_API_KEY || """,
-    authDomain: "mrtube-4ebaf.firebaseapp.com",
-    projectId: "mrtube-4ebaf",
-    storageBucket: "mrtube-4ebaf.firebasestorage.app",
-    messagingSenderId: "765811105706",
-    appId: "1:765811105706:web:c0e9a91573ba49612895d3",
-    measurementId: "G-EDXQSF5QFV"
-};
+// Firebase config /api/config dan yuklanadi — HTML da ko'rinmaydi
+let firebaseConfig = {};
 
 // ==================== PROVIDERLAR ====================
+// Barcha Groq so'rovlari /api/groq proxy orqali — kalitlar frontendda yo'q
 const PROVIDERS = {
     chat: {
         name: "Groq",
-        url: "https://api.groq.com/openai/v1/chat/completions",
+        url: "/api/groq",
         model: "llama-3.3-70b-versatile"
     },
     summary: {
         name: "Groq",
-        url: "https://api.groq.com/openai/v1/chat/completions",
+        url: "/api/groq",
         model: "llama-3.3-70b-versatile"
     }
 };
@@ -730,9 +724,16 @@ const MODES = {
 };
 
 // ==================== FIREBASE INIT ====================
-if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
+// Config /api/config dan keladi
+let auth, db;
+async function initFirebase() {
+    if (db) return;
+    const res = await fetch('/api/config');
+    firebaseConfig = (await res.json()).main;
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    auth = firebase.auth();
+    db   = firebase.firestore();
+}
 
 // ==================== GLOBAL O'ZGARUVCHILAR ====================
 let currentUser = null;
@@ -835,6 +836,7 @@ let currentText = '';
 let currentSpeakerBtn = null;
 
 // ==================== AUTH OBSERVER ====================
+initFirebase().then(() => {
 auth.onAuthStateChanged(async user => {
     if (user) {
         currentUser = user;
@@ -858,27 +860,11 @@ auth.onAuthStateChanged(async user => {
 });
 
 // ==================== API KALITLARNI YUKLASH ====================
+// Kalitlar endi /api/groq proxy da — frontend ko'rmaydi
 async function loadAPIKeys() {
-    try {
-        const keysDoc = await db.collection('configs').doc('api_keys').get();
-        if (keysDoc.exists) {
-            const data = keysDoc.data();
-            chatKeys = data;
-            apiKeyManager.loadKeys(data);
-            console.log("✅ API kalitlar yuklandi");
-        } else {
-            console.error("❌ API kalitlar topilmadi!");
-            chatKeys = {
-                gk_chat_1: "window.__ENV__?.GROQ_API_KEY || ""_chat_1",
-                gk_sum_1: "window.__ENV__?.GROQ_API_KEY || ""_sum_1",
-                last_index: 1,
-                total_pairs: 1
-            };
-            apiKeyManager.loadKeys(chatKeys);
-        }
-    } catch (e) {
-        console.error("Kalitlarni yuklashda xato:", e);
-    }
+    console.log("✅ Groq proxy (/api/groq) tayyor — kalitlar serverda");
+    chatKeys = { total_pairs: 1 };
+    apiKeyManager.keyPairs = [{ index: 1, chat: 'proxy', summary: 'proxy', isActive: true, failCount: 0 }];
 }
 
 // ==================== FOYDALANUVCHI XOTIRASINI YARATISH ====================
@@ -1004,8 +990,7 @@ async function compressSummary(longSummary, apiKey) {
         const response = await fetch(PROVIDERS.summary.url, {
             method: "POST",
             headers: {
-                "Authorization": `Bearer ${apiKey}`,
-                "Content-Type": "application/json"
+                                "Content-Type": "application/json"
             },
             body: JSON.stringify({
                 model: PROVIDERS.summary.model,
@@ -1034,8 +1019,7 @@ async function detectTopic(message, summaryKey) {
         const response = await fetch(PROVIDERS.summary.url, {
             method: "POST",
             headers: {
-                "Authorization": `Bearer ${summaryKey}`,
-                "Content-Type": "application/json"
+                                "Content-Type": "application/json"
             },
             body: JSON.stringify({
                 model: "llama-3.3-70b-versatile",
@@ -1089,8 +1073,7 @@ Quyidagi formatda JAVOB bering (JSON):
         const response = await fetch(PROVIDERS.summary.url, {
             method: "POST",
             headers: {
-                "Authorization": `Bearer ${summaryKey}`,
-                "Content-Type": "application/json"
+                                "Content-Type": "application/json"
             },
             body: JSON.stringify({
                 model: PROVIDERS.summary.model,
@@ -1190,8 +1173,7 @@ Format (JSON):
         const response = await fetch(PROVIDERS.summary.url, {
             method: "POST",
             headers: {
-                "Authorization": `Bearer ${summaryKey}`,
-                "Content-Type": "application/json"
+                                "Content-Type": "application/json"
             },
             body: JSON.stringify({
                 model: PROVIDERS.summary.model,
@@ -1598,8 +1580,7 @@ async function sendMessage() {
             const response = await fetch(PROVIDERS.chat.url, {
                 method: "POST",
                 headers: {
-                    "Authorization": `Bearer ${keyPair.chat}`,
-                    "Content-Type": "application/json"
+                                        "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
                     model: activeMode.model,
@@ -1700,8 +1681,7 @@ async function autoRenameChat(apiKey) {
         const response = await fetch(PROVIDERS.chat.url, {
             method: "POST",
             headers: {
-                "Authorization": `Bearer ${apiKey}`,
-                "Content-Type": "application/json"
+                                "Content-Type": "application/json"
             },
             body: JSON.stringify({
                 model: "llama-3.3-70b-versatile",
@@ -1921,6 +1901,7 @@ function logout() {
     auth.signOut(); 
     location.reload(); 
 }
+}); // initFirebase then
 
 async function deleteChat(id, event) { 
     event.stopPropagation();
@@ -1954,7 +1935,6 @@ async function generateChatTitle(chatId, contextText) {
         const response = await fetch(PROVIDERS.chat.url, {
             method: 'POST',
             headers: {
-                'Authorization': `Bearer ${keyPair.chat}`,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({

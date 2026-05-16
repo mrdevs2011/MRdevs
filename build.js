@@ -1,37 +1,12 @@
-// build.js
+// build.js — env.js yaratmaydi, HTML ga ham inject qilmaydi
+// Barcha kalitlar /api/config orqali server tomonidan beriladi
+
 const fs = require('fs');
 
-const env = {
-    VITE_MAIN_API_KEY: process.env.VITE_MAIN_API_KEY || "",
-    VITE_MAIN_AUTH_DOMAIN: process.env.VITE_MAIN_AUTH_DOMAIN || "",
-    VITE_MAIN_DATABASE_URL: process.env.VITE_MAIN_DATABASE_URL || "",
-    VITE_MAIN_PROJECT_ID: process.env.VITE_MAIN_PROJECT_ID || "",
-    VITE_MAIN_STORAGE_BUCKET: process.env.VITE_MAIN_STORAGE_BUCKET || "",
-    VITE_MAIN_MESSAGING_SENDER_ID: process.env.VITE_MAIN_MESSAGING_SENDER_ID || "",
-    VITE_MAIN_APP_ID: process.env.VITE_MAIN_APP_ID || "",
-    VITE_MAIN_MEASUREMENT_ID: process.env.VITE_MAIN_MEASUREMENT_ID || "",
-    VITE_SECONDARY_API_KEY: process.env.VITE_SECONDARY_API_KEY || "",
-    VITE_SECONDARY_AUTH_DOMAIN: process.env.VITE_SECONDARY_AUTH_DOMAIN || "",
-    VITE_SECONDARY_DATABASE_URL: process.env.VITE_SECONDARY_DATABASE_URL || "",
-    VITE_SECONDARY_PROJECT_ID: process.env.VITE_SECONDARY_PROJECT_ID || "",
-    VITE_SECONDARY_STORAGE_BUCKET: process.env.VITE_SECONDARY_STORAGE_BUCKET || "",
-    VITE_SECONDARY_MESSAGING_SENDER_ID: process.env.VITE_SECONDARY_MESSAGING_SENDER_ID || "",
-    VITE_SECONDARY_APP_ID: process.env.VITE_SECONDARY_APP_ID || "",
-    VITE_SECONDARY_MEASUREMENT_ID: process.env.VITE_SECONDARY_MEASUREMENT_ID || "",
-    VITE_GROUPBOARD_API_KEY: process.env.VITE_GROUPBOARD_API_KEY || "",
-    VITE_GROUPBOARD_AUTH_DOMAIN: process.env.VITE_GROUPBOARD_AUTH_DOMAIN || "",
-    VITE_GROUPBOARD_DATABASE_URL: process.env.VITE_GROUPBOARD_DATABASE_URL || "",
-    VITE_GROUPBOARD_PROJECT_ID: process.env.VITE_GROUPBOARD_PROJECT_ID || "",
-    VITE_GROUPBOARD_STORAGE_BUCKET: process.env.VITE_GROUPBOARD_STORAGE_BUCKET || "",
-    VITE_GROUPBOARD_MESSAGING_SENDER_ID: process.env.VITE_GROUPBOARD_MESSAGING_SENDER_ID || "",
-    VITE_GROUPBOARD_APP_ID: process.env.VITE_GROUPBOARD_APP_ID || "",
-    VITE_GROUPBOARD_MEASUREMENT_ID: process.env.VITE_GROUPBOARD_MEASUREMENT_ID || "",
-    VITE_SUPABASE_URL: process.env.VITE_SUPABASE_URL || "",
-    VITE_SUPABASE_KEY: process.env.VITE_SUPABASE_KEY || "",
-    VITE_APP_NAME: process.env.VITE_APP_NAME || "MRDEV",
-    VITE_APP_VERSION: process.env.VITE_APP_VERSION || "7.0",
-    VITE_APP_DEFAULT_THEME: process.env.VITE_APP_DEFAULT_THEME || "dark"
-};
+// Eski env.js ni o'chirib tashla
+if (fs.existsSync('env.js')) {
+    fs.unlinkSync('env.js');
+    console.log('🗑️  Eski env.js o\'chirildi');
+}
 
-fs.writeFileSync('env.js', `window.__ENV__ = ${JSON.stringify(env)};`);
-console.log('✅ env.js created');
+console.log('✅ Build tugadi. Kalitlar /api/config orqali beriladi.');

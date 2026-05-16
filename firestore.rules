@@ -3,198 +3,72 @@ service cloud.firestore {
   match /databases/{database}/documents {
 
     // ==========================================
-    // FOYDALANUVCHILAR
+    // YORDAMCHI FUNKSIYA
+    // ==========================================
+    function isOwner(userId) {
+      return request.auth != null && request.auth.uid == userId;
+    }
+
+    // ==========================================
+    // FOYDALANUVCHILAR + BARCHA SUBCOLLECTION LAR
+    // match /users/{userId}  faqat document ni yopar
+    // {document=**} esa BARCHA ichki collectionlarni yopadi
     // ==========================================
     match /users/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+      allow read, write: if isOwner(userId);
       allow delete: if false;
+
+      match /{subcollection}/{docId} {
+        allow read, write: if isOwner(userId);
+        allow delete: if isOwner(userId);
+      }
+
+      // Chuqur subcollection lar uchun (chats/messages kabi)
+      match /{path=**} {
+        allow read, write: if isOwner(userId);
+      }
     }
 
     // ==========================================
     // VAULT
     // ==========================================
     match /vault_files/{userId}/{fileId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+      allow read, write: if isOwner(userId);
     }
 
     // ==========================================
     // EXAMER
     // ==========================================
     match /exams/{userId}/{examId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+      allow read, write: if isOwner(userId);
     }
     match /exam_results/{userId}/{resultId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+      allow read, write: if isOwner(userId);
     }
 
     // ==========================================
-    // BOARD
+    // TYPING LEADERBOARD — faqat o'qish hammaga
     // ==========================================
-    match /board_data/{userId}/{boardId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+    match /typing_leaderboard/{userId} {
+      allow read: if true;
+      allow write: if isOwner(userId);
     }
 
     // ==========================================
-    // MRGRAM
-    // ==========================================
-    match /messages/{userId}/{msgId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
-    }
-    match /posts/{userId}/{postId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
-    }
-    match /comments/{userId}/{commentId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
-    }
-
-    // ==========================================
-    // NOTES
-    // ==========================================
-    match /notes/{userId}/{noteId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
-    }
-
-    // ==========================================
-    // TODO
-    // ==========================================
-    match /todos/{userId}/{taskId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
-    }
-
-    // ==========================================
-    // NOTIFYHUB
+    // SYSTEM CONFIG — faqat admin yozadi
     // ==========================================
     match /system/{configId} {
       allow read: if true;
       allow write: if request.auth != null && request.auth.token.admin == true;
     }
-
-    // ==========================================
-    // WEATHER
-    // ==========================================
-    match /weather_cache/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
-    }
-
-    // ==========================================
-    // AI ASSISTANT
-    // ==========================================
-    match /ai_conversations/{userId}/{convId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
-    }
-
-    // ==========================================
-    // CODE STUDIO
-    // ==========================================
-    match /code_projects/{userId}/{projectId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
-    }
-
-    // ==========================================
-    // LEARN CODE
-    // ==========================================
-    match /user_progress/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
-    }
-
-    // ==========================================
-    // GROUP BOARD
-    // ==========================================
-    match /group_boards/{userId}/{boardId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
-    }
-
-    // ==========================================
-    // SECURITY
-    // ==========================================
-    match /user_security/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
-    }
-
-    // ==========================================
-    // TYPING TEST
-    // ==========================================
-    match /typing_results/{userId}/{resultId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
-    }
-    match /typing_leaderboard/{userId} {
-      allow read: if true;
-      allow write: if request.auth != null && request.auth.uid == userId;
-    }
-
-    // ==========================================
-    // VIDEO HUB
-    // ==========================================
-    match /videos/{userId}/{videoId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
-    }
-
-    // ==========================================
-    // CALCULATOR
-    // ==========================================
-    match /calc_history/{userId}/{histId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
-    }
-
-    // ==========================================
-    // CLOCK
-    // ==========================================
-    match /clock_settings/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
-    }
-
-    // ==========================================
-    // TIMER
-    // ==========================================
-    match /timer_presets/{userId}/{id} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
-    }
-
-    // ==========================================
-    // STOPWATCH
-    // ==========================================
-    match /stopwatch_laps/{userId}/{sessionId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
-    }
-
-    // ==========================================
-    // QR GENERATOR
-    // ==========================================
-    match /qr_history/{userId}/{id} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
-    }
-
-    // ==========================================
-    // SPLIT VIEW
-    // ==========================================
-    match /splitview_layouts/{userId}/{id} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
-    }
-
-    // ==========================================
-    // MUSIC
-    // ==========================================
-    match /music_playlists/{userId}/{id} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
-    }
-
-    // ==========================================
-    // BINGO
-    // ==========================================
-    match /bingo_scores/{userId}/{id} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
-    }
-
-    // ==========================================
-    // ADMIN CONFIG
-    // ==========================================
     match /admin_config/{configId} {
       allow read: if true;
       allow write: if request.auth != null && request.auth.token.admin == true;
     }
 
     // ==========================================
-    // DEFAULT — boshqa hech narsa yozilmasin
+    // DEFAULT — boshqa HAMMA NARSA BLOKLANGAN
+    // Hacker apiKey ni bilsa ham bu qoida ishga tushadi
     // ==========================================
     match /{document=**} {
       allow read, write: if false;

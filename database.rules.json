@@ -1,18 +1,18 @@
 {
   "rules": {
-    ".read": "auth != null",
-    ".write": "auth != null",
-    
     "users": {
       "$uid": {
-        ".read": "$uid === auth.uid",
+        ".read":  "$uid === auth.uid",
         ".write": "$uid === auth.uid"
       }
     },
-    
     "system": {
       ".read": true,
       ".write": "auth != null && auth.token.admin === true"
+    },
+    "$other": {
+      ".read":  false,
+      ".write": false
     }
   }
 }

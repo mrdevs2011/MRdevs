@@ -30,26 +30,28 @@ import {
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
 // ==================== FIREBASE CONFIG ====================
-const ENV = window.__ENV__ || {};
-const firebaseConfig = {
-    apiKey:            ENV.MAIN_API_KEY            || '',
-    authDomain:        ENV.MAIN_AUTH_DOMAIN        || '',
-    projectId:         ENV.MAIN_PROJECT_ID         || '',
-    storageBucket:     ENV.MAIN_STORAGE_BUCKET     || '',
-    messagingSenderId: ENV.MAIN_MESSAGING_SENDER_ID || '',
-    appId:             ENV.MAIN_APP_ID             || ''
-};
+// Kalitlar /api/config dan asinxron yuklanadi — HTML da ko'rinmaydi
+let firebaseConfig = {};
+
+async function loadFirebaseConfig() {
+    if (Object.keys(firebaseConfig).length > 0) return firebaseConfig;
+    const res = await fetch('/api/config');
+    const data = await res.json();
+    firebaseConfig = data.main;
+    return firebaseConfig;
+}
 
 // ==================== SINGLETON ====================
 let _app  = null;
 let _auth = null;
 let _db   = null;
 
-function getFirebase() {
+async function getFirebase() {
     if (_app) return { app: _app, auth: _auth, db: _db };
     try {
+        const cfg = await loadFirebaseConfig();
         const existing = getApps().find(a => a.name === 'mrdev_main');
-        _app  = existing || initializeApp(firebaseConfig, 'mrdev_main');
+        _app  = existing || initializeApp(cfg, 'mrdev_main');
         _auth = getAuth(_app);
         _db   = getFirestore(_app);
         setPersistence(_auth, browserLocalPersistence).catch(err => {
