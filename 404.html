@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 | MRDEV</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+    <!-- MRDEV theme flash fix (flicker bo'lmasin) -->
+    <script>
+        (function () {
+            const theme = localStorage.getItem('theme') || 'dark';
+            if (theme === 'dark') document.body && document.body.classList.add('dark');
+            // body hali yo'q bo'lsa DOMContentLoaded da qo'shiladi — quyida
+            window.__404_theme = theme;
+        })();
+    </script>
+
+    <!-- MRDEV CSS o'zgaruvchilari -->
+    <link rel="stylesheet" href="/assets/css/variables.css">
+
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: var(--font-sans, 'Instrument Sans', sans-serif);
+            background: var(--bg, #f7f6f3);
+            color: var(--text, #1c1a17);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        /* ===== 404 RAQAM ===== */
+        .err-code {
+            font-size: clamp(120px, 22vw, 220px);
+            font-weight: 700;
+            line-height: 1;
+            letter-spacing: -6px;
+            color: var(--accent, #2a7de1);
+            font-variant-numeric: tabular-nums;
+            user-select: none;
+        }
+
+        .err-divider {
+            width: 60px;
+            height: 3px;
+            background: var(--border-strong, rgba(0,0,0,0.12));
+            border-radius: 999px;
+            margin: 24px auto;
+        }
+
+        /* ===== MATN ===== */
+        .err-title {
+            font-size: clamp(20px, 4vw, 28px);
+            font-weight: 600;
+            color: var(--text, #1c1a17);
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .err-desc {
+            font-size: clamp(14px, 2.5vw, 16px);
+            color: var(--text-3, #7d7a74);
+            text-align: center;
+            max-width: 300px;
+            line-height: 1.6;
+        }
+
+        /* ===== TUGMA ===== */
+        .err-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 36px;
+            padding: 12px 28px;
+            background: var(--accent, #2a7de1);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-full, 9999px);
+            font-size: 15px;
+            font-weight: 500;
+            font-family: inherit;
+            cursor: pointer;
+            text-decoration: none;
+            transition: opacity 0.15s, transform 0.15s;
+        }
+        .err-btn:hover  { opacity: 0.88; transform: translateY(-1px); }
+        .err-btn:active { opacity: 1;    transform: translateY(0); }
+
+        /* ===== MRDEV BRAND ===== */
+        .err-brand {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            color: var(--text-4, #a8a49d);
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="err-code">404</div>
+    <div class="err-divider"></div>
+
+    <h1 class="err-title" id="err-title">Sahifa topilmadi</h1>
+    <p  class="err-desc"  id="err-desc">URL ni tekshiring</p>
+
+    <a href="/" class="err-btn" id="err-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <polyline points="15 18 9 12 15 6"/>
+        </svg>
+        <span id="err-btn-text">Bosh sahifaga</span>
+    </a>
+
+    <span class="err-brand">MRDEV</span>
+
+    <script>
+        // ============ TEMA ============
+        const theme = window.__404_theme || localStorage.getItem('theme') || 'dark';
+        if (theme === 'dark') {
+            document.body.classList.add('dark');
+        } else {
+            document.body.classList.remove('dark');
+        }
+
+        // ============ TIL ============
+        const i18n = {
+            uz: {
+                title:    'Sahifa topilmadi',
+                desc:     'URL ni tekshiring',
+                btn:      'Bosh sahifaga',
+                htmlLang: 'uz'
+            },
+            ru: {
+                title:    'Страница не найдена',
+                desc:     'Проверьте URL адрес',
+                btn:      'На главную',
+                htmlLang: 'ru'
+            },
+            en: {
+                title:    'Page not found',
+                desc:     'Check the URL',
+                btn:      'Go to home',
+                htmlLang: 'en'
+            }
+        };
+
+        const lang   = localStorage.getItem('mrdev_lang') || 'uz';
+        const t      = i18n[lang] || i18n.uz;
+
+        document.getElementById('err-title').textContent    = t.title;
+        document.getElementById('err-desc').textContent     = t.desc;
+        document.getElementById('err-btn-text').textContent = t.btn;
+        document.documentElement.lang                       = t.htmlLang;
+        document.title = '404 | MRDEV';
+    </script>
+</body>
+</html>
