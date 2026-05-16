@@ -977,3 +977,17 @@ body:not(.dark) .leaflet-popup-content-wrapper {
 
 body.dark .leaflet-popup-tip { background: var(--sec-surface); }
 body:not(.dark) .leaflet-popup-tip { background: #fff; }
+
+/* ==================== NO COPY ==================== */
+*, *::before, *::after {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+input, textarea, [contenteditable="true"] {
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+}
