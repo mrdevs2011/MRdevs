@@ -36,34 +36,18 @@
     height: 72px;
 }
 
-/* Circle draw animation */
-.mrdev-splash-logo .splash-circle {
-    fill: none;
-    stroke: var(--accent, #cc785c);
-    stroke-width: 2.5;
-    stroke-linecap: round;
-    stroke-dasharray: 220;
-    stroke-dashoffset: 220;
-    animation: splashCircleDraw 1s var(--ease-out) 0.15s forwards;
+/* Triangle spin animation */
+.mrdev-splash-logo .splash-triangle {
+    transform-box: view-box;
+    transform-origin: 40px 40px;
+    animation: splashTriSpin 1.6s linear infinite;
+    animation-delay: 0.4s;
+    animation-fill-mode: both;
 }
 
-@keyframes splashCircleDraw {
-    to { stroke-dashoffset: 0; }
-}
-
-/* Logo text */
-.mrdev-splash-logo .splash-text {
-    fill: var(--accent, #cc785c);
-    font-family: var(--font-sans, sans-serif);
-    font-size: 20px;
-    font-weight: 600;
-    opacity: 0;
-    animation: splashTextIn 0.4s var(--ease-out) 0.85s forwards;
-}
-
-@keyframes splashTextIn {
-    from { opacity: 0; transform: translateY(5px); }
-    to   { opacity: 1; transform: translateY(0); }
+@keyframes splashTriSpin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
 }
 
 /* Subtle dot indicator below logo */

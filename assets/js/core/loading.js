@@ -20,7 +20,20 @@ class MrdevLoading {
         // Loading yaratish
         const loading = document.createElement('div');
         loading.className = 'mrdev-loading';
-        loading.innerHTML = '<div class="mrdev-loading-bars"></div>';
+        loading.innerHTML = `
+            <div class="mrdev-loading-icon">
+                <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="loadingBg" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#24A1DE"/>
+                            <stop offset="100%" stop-color="#70C7FF"/>
+                        </linearGradient>
+                    </defs>
+                    <circle cx="20" cy="20" r="20" fill="url(#loadingBg)"/>
+                    <path class="loading-tri" d="M20,7 L34,31 L6,31 Z" fill="white" fill-opacity="0.93"/>
+                </svg>
+            </div>
+        `;
         
         // Container position relative bo'lishi kerak
         const computed = getComputedStyle(el);
