@@ -1,10 +1,6 @@
 // ==================== MRDEV FIREBASE HELPER v7.0 ====================
-// FIX v7.0:
-//   1. getUserId — local auth (mrdev_local_auth) dan uid to'g'ri o'qiladi
-//   2. getLocalAuthUser — isLoggedIn tekshiruvi mustahkamlandi
-//   3. initAuth — local auth user uchun callback to'g'ri chaqiriladi
-//   4. Debug loglar muhim operatsiyalarda
 
+import logger from './core/logger.js';
 import { initializeApp, getApps } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import {
     getAuth,
@@ -30,12 +26,11 @@ import {
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
 // ==================== FIREBASE CONFIG ====================
-// Kalitlar /api/config dan asinxron yuklanadi — HTML da ko'rinmaydi
 let firebaseConfig = {};
 
 async function loadFirebaseConfig() {
     if (Object.keys(firebaseConfig).length > 0) return firebaseConfig;
-    const res = await fetch('/api/config');
+    const res  = await fetch('/api/config');
     const data = await res.json();
     firebaseConfig = data.main;
     return firebaseConfig;
@@ -49,47 +44,41 @@ let _db   = null;
 async function getFirebase() {
     if (_app) return { app: _app, auth: _auth, db: _db };
     try {
-        const cfg = await loadFirebaseConfig();
+        const cfg      = await loadFirebaseConfig();
         const existing = getApps().find(a => a.name === 'mrdev_main');
         _app  = existing || initializeApp(cfg, 'mrdev_main');
         _auth = getAuth(_app);
         _db   = getFirestore(_app);
         setPersistence(_auth, browserLocalPersistence).catch(err => {
-            console.warn('[FirebaseHelper] Persistence error:', err.message);
+            logger.error.firebase(err.message);
         });
     } catch (e) {
-        console.error('[FirebaseHelper] init error:', e);
+        logger.error.firebase(e.message);
     }
     return { app: _app, auth: _auth, db: _db };
 }
 
 // ==================== LOCAL AUTH ====================
 
-/**
- * FIX: mrdev_local_auth dan foydalanuvchini o'qish.
- * isLoggedIn === true MAJBURIY (mrdev-login.js va email-auth.js shunday saqlaydi).
- */
 function getLocalAuthUser() {
     try {
         const local = JSON.parse(localStorage.getItem('mrdev_local_auth') || 'null');
 
         if (!local) return null;
 
-        // FIX: isLoggedIn tekshiruvi
         if (!local.isLoggedIn) {
-            console.warn('[FirebaseHelper] local auth: isLoggedIn false');
+            logger.localAuth.check(false);
             return null;
         }
 
         if (!local.uid) {
-            console.warn('[FirebaseHelper] local auth: uid yo\'q');
+            logger.error.auth('local auth: uid yo\'q');
             return null;
         }
 
-        // Muddatni tekshirish (7 kun)
         const days = (Date.now() - (local.loginTime || 0)) / (1000 * 60 * 60 * 24);
         if (days > 7) {
-            console.warn('[FirebaseHelper] local auth muddati tugagan');
+            logger.error.auth('local auth muddati tugagan');
             localStorage.removeItem('mrdev_local_auth');
             return null;
         }
@@ -104,7 +93,7 @@ function getLocalAuthUser() {
             authType:        local.authType        || 'mrdev'
         };
     } catch (e) {
-        console.warn('[FirebaseHelper] getLocalAuthUser xatolik:', e.message);
+        logger.error.auth(e.message);
         return null;
     }
 }
@@ -129,7 +118,6 @@ function initAuth(callback) {
 
                 localStorage.setItem('mrdev_auth_user', JSON.stringify(userData));
 
-                // Cloud sync (30 soniyada bir marta)
                 const lastSync = localStorage.getItem('mrdev_last_sync');
                 const now      = Date.now();
                 if (!lastSync || (now - parseInt(lastSync, 10)) > 30000) {
@@ -140,12 +128,10 @@ function initAuth(callback) {
                 if (callback) callback(userData);
 
             } else {
-                // Firebase user yo'q — local auth tekshirish
                 const localUser = getLocalAuthUser();
                 if (localUser) {
-                    console.log('[FirebaseHelper] Local auth user topildi:', localUser.uid);
+                    logger.localAuth.found(localUser.uid);
 
-                    // Cloud sync local auth uchun ham
                     const lastSync = localStorage.getItem('mrdev_last_sync');
                     const now      = Date.now();
                     if (!lastSync || (now - parseInt(lastSync, 10)) > 30000) {
@@ -163,7 +149,6 @@ function initAuth(callback) {
         });
     }
 
-    // Auth mavjud emas — local auth tekshirish
     const localUser = getLocalAuthUser();
     if (callback) callback(localUser);
     return () => {};
@@ -188,24 +173,16 @@ function getCurrentUser() {
     return getLocalAuthUser();
 }
 
-/**
- * FIX: getUserId — Firebase Auth va local auth ikkalasini tekshiradi.
- * Mini-applar (board, notes, calculator, etc.) bu funksiyani ishlatadi.
- */
 function getUserId() {
-    // 1. Firebase Auth (Google yoki Email firebase login)
     const { auth } = getFirebase();
     const fbUser   = auth ? auth.currentUser : null;
     if (fbUser) return fbUser.uid;
 
-    // 2. Local auth (MRDEV Login yoki Email login localStorage'da)
     try {
         const local = JSON.parse(localStorage.getItem('mrdev_local_auth') || 'null');
-        if (local && local.isLoggedIn && local.uid) {
-            return local.uid;
-        }
+        if (local && local.isLoggedIn && local.uid) return local.uid;
     } catch (e) {
-        console.warn('[FirebaseHelper] getUserId local parse xatolik:', e.message);
+        logger.error.auth(e.message);
     }
 
     return null;
@@ -225,14 +202,14 @@ async function logoutUser() {
 
 function clearAllLocalData() {
     const keys = [
-        'mr_clock_alarms',   'mr_calc_history',   'mr_timer_history',
-        'mr_stopwatch_history', 'mr_board_data',  'mr_bingo_history',
-        'mr_qr_history',     'mr_notes_data',     'mr_exam_questions',
-        'mr_timer_state',    'mr_stopwatch_state', 'mr_music_history',
-        'mr_splitview_urls', 'mr_todo_tasks',     'mr_weather_cities',
-        'bingo_winstreak',   'bingo_xp',          'bingo_level',
-        'bingo_scoreX',      'bingo_scoreO',      'bingo_stats',
-        'bingo_history',     'splitview_cloud_urls', 'mrdev_last_sync'
+        'mr_clock_alarms',   'mr_calc_history',      'mr_timer_history',
+        'mr_stopwatch_history', 'mr_board_data',      'mr_bingo_history',
+        'mr_qr_history',     'mr_notes_data',         'mr_exam_questions',
+        'mr_timer_state',    'mr_stopwatch_state',    'mr_music_history',
+        'mr_splitview_urls', 'mr_todo_tasks',         'mr_weather_cities',
+        'bingo_winstreak',   'bingo_xp',              'bingo_level',
+        'bingo_scoreX',      'bingo_scoreO',          'bingo_stats',
+        'bingo_history',     'splitview_cloud_urls',  'mrdev_last_sync'
     ];
     keys.forEach(key => { try { localStorage.removeItem(key); } catch (e) {} });
 }
@@ -286,7 +263,6 @@ async function syncCloudToLocal(uid) {
 async function smartSave(collectionName, localKey, data) {
     const uid = getUserId();
 
-    // 1. Local saqlash
     try {
         const local = JSON.parse(localStorage.getItem(localKey) || '[]');
         local.unshift({
@@ -296,10 +272,9 @@ async function smartSave(collectionName, localKey, data) {
         });
         localStorage.setItem(localKey, JSON.stringify(local.slice(0, 50)));
     } catch (e) {
-        console.warn('[FirebaseHelper] Local save failed:', e.message);
+        logger.error.cloud(e.message);
     }
 
-    // 2. Cloud saqlash
     if (uid) {
         try {
             const { db } = getFirebase();
@@ -310,7 +285,7 @@ async function smartSave(collectionName, localKey, data) {
                 });
             }
         } catch (e) {
-            console.warn('[FirebaseHelper] Cloud save failed:', e.message);
+            logger.error.cloud(e.message);
         }
     }
 }
@@ -321,12 +296,9 @@ function smartLoad(collectionName, localKey, callback) {
     const uid    = getUserId();
     const { db } = getFirebase();
 
-    // Avval local ko'rsatish
     try {
         const localItems = JSON.parse(localStorage.getItem(localKey) || '[]');
-        if (callback && localItems.length > 0) {
-            callback(localItems);
-        }
+        if (callback && localItems.length > 0) callback(localItems);
     } catch (e) {}
 
     if (uid && db) {
@@ -352,14 +324,14 @@ function smartLoad(collectionName, localKey, callback) {
             }, (error) => {
                 if (resolved) return;
                 resolved = true;
-                console.warn('[FirebaseHelper] Cloud load failed:', error.message);
+                logger.error.cloud(error.message);
                 try {
                     const localItems = JSON.parse(localStorage.getItem(localKey) || '[]');
                     if (callback) callback(localItems);
                 } catch (e) {}
             });
         } catch (e) {
-            console.warn('[FirebaseHelper] Cloud listener error:', e.message);
+            logger.error.cloud(e.message);
             try {
                 const localItems = JSON.parse(localStorage.getItem(localKey) || '[]');
                 if (callback) callback(localItems);
@@ -384,11 +356,9 @@ async function smartDelete(collectionName, localKey, itemId, isCloud) {
     if (uid && isCloud) {
         try {
             const { db } = getFirebase();
-            if (db) {
-                await deleteDoc(doc(db, 'users', uid, collectionName, itemId));
-            }
+            if (db) await deleteDoc(doc(db, 'users', uid, collectionName, itemId));
         } catch (e) {
-            console.warn('[FirebaseHelper] Delete error:', e.message);
+            logger.error.cloud(e.message);
         }
     }
 }
@@ -411,7 +381,7 @@ async function clearAll(collectionName, localKey) {
                 }
             }
         } catch (e) {
-            console.warn('[FirebaseHelper] Clear error:', e.message);
+            logger.error.cloud(e.message);
         }
     }
 }

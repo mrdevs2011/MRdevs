@@ -1,5 +1,6 @@
 // ==================== MRDEV APP v7.3 ====================
 
+import logger from './core/logger.js';
 import { initTheme, toggleTheme } from './core/theme.js';
 import { initAuth, logout } from './core/auth.js';
 import { initSidebar, toggleSidebar, closeSidebar } from './ui/sidebar.js';
@@ -21,22 +22,21 @@ import {
 import { showToast } from './core/toast.js';
 
 // ==================== WINDOW EXPORTS ====================
-window.toggleTheme        = toggleTheme;
-window.toggleSidebar      = toggleSidebar;
-window.closeSidebar       = closeSidebar;
-window.switchTab          = switchTab;
-window.signInWithGoogle   = signInWithGoogle;
-window.logout             = logout;
-window.showAuthModal      = () => showModal('authModal');
-window.closeAuthModal     = () => closeModal('authModal');
-window.showMrdevLogin     = showMrdevLogin;
+window.toggleTheme          = toggleTheme;
+window.toggleSidebar        = toggleSidebar;
+window.closeSidebar         = closeSidebar;
+window.switchTab            = switchTab;
+window.signInWithGoogle     = signInWithGoogle;
+window.logout               = logout;
+window.showAuthModal        = () => showModal('authModal');
+window.closeAuthModal       = () => closeModal('authModal');
+window.showMrdevLogin       = showMrdevLogin;
 window.closeMrdevLoginModal = closeMrdevLoginModal;
-window.submitMrdevId      = submitMrdevId;
-window.verifyMrdevPass    = verifyMrdevPass;
+window.submitMrdevId        = submitMrdevId;
+window.verifyMrdevPass      = verifyMrdevPass;
 window.showPassNotifications = showPassNotifications;
 window.closePassNotifModal  = closePassNotifModal;
 
-// toggleUserMenu va closeUserMenu
 window.toggleUserMenu = function () {
     document.getElementById('userMenu')?.classList.toggle('show');
 };
@@ -44,7 +44,6 @@ window.closeUserMenu = function () {
     document.getElementById('userMenu')?.classList.remove('show');
 };
 
-// Mobil qidiruv toggle
 window.toggleMobileSearch = function () {
     const searchSection = document.getElementById('mobileSearchSection');
     const searchInput   = document.getElementById('searchInput');
@@ -53,10 +52,7 @@ window.toggleMobileSearch = function () {
     const isOpen = searchSection.classList.contains('show');
     if (isOpen) {
         searchSection.classList.remove('show');
-        if (searchInput) {
-            searchInput.blur();
-            searchInput.value = '';
-        }
+        if (searchInput) { searchInput.blur(); searchInput.value = ''; }
         const clearSearch = document.getElementById('clearSearch');
         if (clearSearch) clearSearch.style.display = 'none';
     } else {
@@ -67,7 +63,7 @@ window.toggleMobileSearch = function () {
 
 // ==================== INIT ====================
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('🚀 MRDEV v7.3 ishga tushmoqda...');
+    logger.platformStart();
 
     initTheme();
     initAuth();
@@ -77,7 +73,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initModals();
     initUserMenu();
 
-    // Click outside — user menu yopilishi
     document.addEventListener('click', (e) => {
         const userMenu    = document.getElementById('userMenu');
         const userTrigger = document.getElementById('headerUserTrigger');
@@ -90,5 +85,5 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    console.log('✅ MRDEV Platform tayyor');
+    logger.platformReady();
 });

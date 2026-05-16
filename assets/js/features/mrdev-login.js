@@ -371,7 +371,7 @@ async function autoVerify() {
             try {
                 await signInWithEmailAndPassword(auth, currentStepData.email, currentStepData.mrdevPassword);
             } catch (e) {
-                console.warn('[MRDev] signInWithEmailAndPassword xatolik:', e.message);
+                logger.error.auth(e.message);
             }
         }
 

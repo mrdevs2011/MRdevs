@@ -1,8 +1,6 @@
 // ==================== MRDEV MULTI-ACCOUNT MANAGER v2.0 ====================
-// FIX v2.0:
-//   1. addOrUpdateAccount — mrdevId har doim saqlanadi
-//   2. getActiveAccount — mrdevId qaytaradi
-//   3. localStorage debug loglar
+
+import logger from './logger.js';
 
 const STORAGE_KEY  = 'mrdev_accounts';
 const ACTIVE_KEY   = 'mrdev_active_account';
@@ -20,8 +18,7 @@ export function getAllAccounts() {
 
 export function getActiveAccount() {
     try {
-        const data = JSON.parse(localStorage.getItem(ACTIVE_KEY) || 'null');
-        return data;
+        return JSON.parse(localStorage.getItem(ACTIVE_KEY) || 'null');
     } catch (e) {
         return null;
     }
@@ -51,25 +48,20 @@ function saveActiveAccount(account) {
 
 // ==================== ASOSIY OPERATSIYALAR ====================
 
-/**
- * Yangi akkaunt qo'shish yoki mavjudini yangilash.
- * FIX: mrdevId har doim saqlanadi — user.mrdevId yoki extra.mrdevId.
- */
 export function addOrUpdateAccount(user, extra = {}) {
     if (!user || !user.uid) {
-        console.warn('[MultiAccount] addOrUpdateAccount: user.uid yo\'q');
+        logger.error.auth('addOrUpdateAccount: user.uid yo\'q');
         return null;
     }
 
     const accounts      = getAllAccounts();
     const existingIndex = accounts.findIndex(a => a.uid === user.uid);
 
-    // mrdevId: user.mrdevId > extra.mrdevId > mavjud account.mrdevId > localStorage
     const existingMrdevId = existingIndex >= 0 ? accounts[existingIndex].mrdevId : '';
     const mrdevId = (
-        user.mrdevId        ||
-        extra.mrdevId       ||
-        existingMrdevId     ||
+        user.mrdevId                          ||
+        extra.mrdevId                         ||
+        existingMrdevId                       ||
         localStorage.getItem('mrdev_user_id') ||
         ''
     );
@@ -89,7 +81,6 @@ export function addOrUpdateAccount(user, extra = {}) {
         accounts[existingIndex] = accountData;
     } else {
         if (accounts.length >= MAX_ACCOUNTS) {
-            // Eng eski akkauntni olib tashlaymiz
             accounts.sort((a, b) => (a.lastActive || 0) - (b.lastActive || 0));
             accounts.shift();
         }
@@ -99,7 +90,7 @@ export function addOrUpdateAccount(user, extra = {}) {
     saveAccounts(accounts);
     setActiveAccount(user.uid);
 
-    console.log('💾 [MultiAccount] Saqlandi:', accountData.uid, '| mrdevId:', accountData.mrdevId || '(yo\'q)');
+    logger.localAuth.saved(accountData.uid);
     return accountData;
 }
 
@@ -151,5 +142,5 @@ export function getMaxAccounts() {
 export function clearAllAccounts() {
     localStorage.removeItem(STORAGE_KEY);
     localStorage.removeItem(ACTIVE_KEY);
-    console.log('[MultiAccount] Barcha akkauntlar tozalandi');
+    logger.auth.logout();
 }

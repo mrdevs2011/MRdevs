@@ -1,6 +1,7 @@
 // ==================== MRDEV PASS NOTIFICATIONS v4.0 ====================
 // Global notifications bilan integratsiyalashgan
 
+import logger from '../core/logger.js';
 import { auth, rtdb } from '../core/firebase-init.js';
 import { ref, get } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 import { showToast } from '../core/toast.js';
@@ -9,33 +10,32 @@ import { getNotificationsEnabled } from '../core/global-settings.js';
 import { t } from '../core/i18n.js';
 
 export function showPassNotifications() {
-    // Notifications sozlamasini tekshirish
     if (!getNotificationsEnabled()) {
         showToast(t('notifications_disabled') || "Bildirishnomalar o'chirilgan", 'info');
         return;
     }
-    
-    let uid = null;
+
+    let uid   = null;
     let email = null;
 
-    // 1. Firebase Auth user tekshirish
+    // 1. Firebase Auth user
     if (auth && auth.currentUser) {
-        uid = auth.currentUser.uid;
+        uid   = auth.currentUser.uid;
         email = auth.currentUser.email;
-        console.log('🔥 [PassNotif] Firebase Auth user:', uid);
+        logger.notif.firebaseUser(uid);
     }
 
-    // 2. Local auth user tekshirish
+    // 2. Local auth user
     if (!uid) {
         try {
             const local = JSON.parse(localStorage.getItem('mrdev_local_auth') || 'null');
             if (local && local.isLoggedIn && local.uid) {
-                uid = local.uid;
+                uid   = local.uid;
                 email = local.email;
-                console.log('📦 [PassNotif] Local auth user:', uid);
+                logger.notif.localUser(uid);
             }
         } catch (e) {
-            console.warn('[PassNotif] Local auth parse xatolik:', e.message);
+            logger.error.auth(e.message);
         }
     }
 
@@ -64,13 +64,13 @@ async function loadPassNotifications(uid, email) {
             return;
         }
 
-        console.log('🔍 [PassNotif] Xabarlar qidirilmoqda... uid:', uid, 'email:', email);
+        logger.notif.searching(uid, email);
 
         const notifRef = ref(rtdb, 'pass_notifications');
         const snapshot = await get(notifRef);
 
         if (!snapshot.exists()) {
-            container.innerHTML = `<div style="text-align:center;padding:30px;color:var(--text-3);">📭 ${t('no_notifications') || 'Xabarlar yo\'q'}</div>`;
+            container.innerHTML = `<div style="text-align:center;padding:30px;color:var(--text-3);">📭 ${t('no_notifications') || "Xabarlar yo'q"}</div>`;
             return;
         }
 
@@ -79,41 +79,35 @@ async function loadPassNotifications(uid, email) {
             const data = child.val();
             if (!data) return;
 
-            const matchesUid = (uid && (data.uid === uid || data.firestoreUid === uid));
+            const matchesUid   = (uid   && (data.uid === uid || data.firestoreUid === uid));
             const matchesEmail = (email && data.email === email);
 
             if (matchesUid || matchesEmail) {
-                items.push({
-                    id: child.key,
-                    ...data,
-                    createdAt: data.createdAt || Date.now()
-                });
+                items.push({ id: child.key, ...data, createdAt: data.createdAt || Date.now() });
             }
         });
 
         items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
 
-        console.log('📋 [PassNotif]', items.length, 'ta xabar topildi');
+        logger.notif.found(items.length);
 
         if (!items.length) {
-            container.innerHTML = `<div style="text-align:center;padding:30px;color:var(--text-3);">📭 ${t('no_notifications') || 'Xabarlar yo\'q'}</div>`;
+            container.innerHTML = `<div style="text-align:center;padding:30px;color:var(--text-3);">📭 ${t('no_notifications') || "Xabarlar yo'q"}</div>`;
             return;
         }
 
         container.innerHTML = items.map(data => {
-            const date = new Date(data.createdAt || Date.now());
+            const date      = new Date(data.createdAt || Date.now());
             const isExpired = Date.now() > (data.expiresAt || 0);
-            const isUsed = data.used === true;
+            const isUsed    = data.used === true;
 
-            let status = 'active';
+            let status     = 'active';
             let statusText = '✅ Faol';
 
             if (isUsed) {
-                status = 'used';
-                statusText = '✓ Ishlatilgan';
+                status = 'used'; statusText = '✓ Ishlatilgan';
             } else if (isExpired) {
-                status = 'expired';
-                statusText = '⏰ Muddati tugagan';
+                status = 'expired'; statusText = '⏰ Muddati tugagan';
             }
 
             return `
@@ -130,7 +124,7 @@ async function loadPassNotifications(uid, email) {
         }).join('');
 
     } catch (error) {
-        console.error('❌ [PassNotif] Load xatolik:', error.message);
+        logger.notif.error(error.message);
         container.innerHTML = `
             <div style="text-align:center;padding:20px;color:var(--red);">
                 ⚠️ ${t('error') || 'Xatolik'}: ${error.message}
@@ -145,5 +139,5 @@ async function loadPassNotifications(uid, email) {
 
 // Notifications o'zgarishini kuzatish
 document.addEventListener('notificationsChanged', (e) => {
-    console.log('[PassNotif] Notifications enabled:', e.detail.enabled);
+    logger.settings.notificationsSaved(e.detail.enabled);
 });

@@ -1,12 +1,4 @@
 // ==================== MRDEV UNIVERSAL AUTH HELPER v4.0 ====================
-// FIX v4.0:
-//   1. Firestore writes Firebase UID ishlatadi (email-based centerId emas!)
-//      Sabab: Firestore rule — request.auth.uid == userId
-//             email-based ID auth.uid bilan mos kelmaydi → permission denied
-//   2. getOrCreateCenterDoc olib tashlandi (rules bilan mos emas)
-//   3. addMrdevIdToCenter — Firebase UID bilan to'g'ri ishlaydi
-//   4. onAuthChange — mrdevId ham uzatadi
-//   5. getCenterUserId helper sifatida saqlab qolindi (eski kod uchun backward compat)
 
 import logger from './logger.js';
 import { auth, db } from './firebase-init.js';
@@ -17,17 +9,10 @@ import {
 
 // ==================== YORDAMCHILAR ====================
 
-/**
- * Email asosidagi ID (backward compatibility uchun saqlab qolindi).
- * MUHIM: Bu ID Firestore doc ID sifatida ISHLATILMAYDI.
- * Faqat eski kod bilan moslik uchun eksport qilinadi.
- */
 export function getCenterUserId(email) {
     if (!email) return null;
     return email.replace(/[.@]/g, '_');
 }
-
-// ==================== AUTH TURINI ANIQLASH ====================
 
 function getAuthType(firebaseUser) {
     if (!firebaseUser) return 'none';
@@ -38,13 +23,11 @@ function getAuthType(firebaseUser) {
 // ==================== ASOSIY FUNKSIYALAR ====================
 
 export async function getCurrentUser() {
-    // 1. Firebase Auth (Google yoki Email login)
+    // 1. Firebase Auth
     if (auth?.currentUser) {
         const u        = auth.currentUser;
         const authType = getAuthType(u);
-
-        // mrdevId ni localStorage'dan olish (Firestore o'qishsiz — tez)
-        const mrdevId = localStorage.getItem('mrdev_user_id') || '';
+        const mrdevId  = localStorage.getItem('mrdev_user_id') || '';
 
         return {
             uid:             u.uid,
@@ -58,7 +41,7 @@ export async function getCurrentUser() {
         };
     }
 
-    // 2. MRDEV Local Auth (MRDEV ID yoki Email login localStorage'da)
+    // 2. MRDEV Local Auth
     try {
         const local = JSON.parse(localStorage.getItem('mrdev_local_auth'));
         if (local?.isLoggedIn && local?.uid && local?.email) {
@@ -77,7 +60,7 @@ export async function getCurrentUser() {
             }
         }
     } catch (e) {
-        console.warn('[AuthHelper] getCurrentUser local parse xatolik:', e.message);
+        logger.error.auth(e.message);
     }
 
     // 3. Auth yo'q
@@ -93,11 +76,9 @@ export async function getCurrentUser() {
 }
 
 export function getUserId() {
-    // 1. Firebase Auth
     const fbUser = auth?.currentUser;
     if (fbUser) return fbUser.uid;
 
-    // 2. Local auth
     try {
         const local = JSON.parse(localStorage.getItem('mrdev_local_auth'));
         if (local?.isLoggedIn && local?.uid) return local.uid;
@@ -159,29 +140,21 @@ export function onAuthChange(callback) {
 
 // ==================== MRDEV ID YORDAMCHILARI ====================
 
-/**
- * Foydalanuvchining mrdevId'sini Firestore'dan oladi.
- * Firebase UID bilan ishlaydi (rules bilan mos).
- */
 export async function getMrdevId(uid) {
     if (!uid) return null;
     try {
         const snap = await getDoc(doc(db, 'users', uid));
         return snap.exists() ? snap.data().mrdevId || null : null;
     } catch (e) {
-        console.warn('[AuthHelper] getMrdevId xatolik:', e.message);
+        logger.error.firebase(e.message);
         return null;
     }
 }
 
 /**
- * addMrdevIdToCenter — eski nom saqlab qolindi (mrdev-login.js import qiladi).
- * Aslida: Firebase UID asosidagi user doc'ga mrdevId qo'shadi.
- * Hozir saveUserMrdevId bu ishni qiladi, bu funksiya ortiqcha.
- * Xatoliksiz davom etish uchun stub sifatida qoldirildi.
+ * Deprecated — backward compatibility uchun saqlab qolindi.
+ * saveUserMrdevId (notif-pass.js) bu ishni qiladi.
  */
 export async function addMrdevIdToCenter(email, mrdevId) {
-    // Bu funksiya endi ishlatilmaydi — saveUserMrdevId (notif-pass.js) buni qiladi.
-    // Backward compatibility uchun saqlab qolindi.
-    console.log('[AuthHelper] addMrdevIdToCenter chaqirildi (deprecated):', email, mrdevId);
+    logger.debug.warn('[AuthHelper] addMrdevIdToCenter deprecated:', email, mrdevId);
 }
