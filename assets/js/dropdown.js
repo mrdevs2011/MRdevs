@@ -272,11 +272,10 @@ function buildRootHTML(user) {
                 <span class="cfg-item-badge" id="cfg-notif-badge" style="display:none;"></span>
             </button>
 
-            <button class="cfg-item" id="cfg-about-btn">
-                <span class="cfg-item-icon cfg-icon-info">${Icons.info}</span>
-                <span class="cfg-item-text">Loyiha haqida</span>
-            </button>
-
+           <a href="./about" class="cfg-item" id="cfg-about-btn" style="text-decoration: none; color: inherit; display: flex; align-items: center;">
+    <span class="cfg-item-icon cfg-icon-info">${Icons.info}</span>
+    <span class="cfg-item-text">Loyiha haqida</span>
+</a>
             <a href="${BASE}/settings/" class="cfg-item">
                 <span class="cfg-item-icon cfg-icon-settings">${Icons.settings}</span>
                 <span class="cfg-item-text">Sozlamalar</span>
