@@ -1,597 +1,584 @@
-// ==================== MRDEV DROPDOWN SYSTEM v6.0 ====================
-// i18n, global settings, skeleton loading, 2-step logout modal, settings link
+// ==================== MRDEV DROPDOWN SYSTEM v8.0 ====================
+// Har bir bo'lim (root / mini / settings) uchun alohida dropdown kontenti.
+// Header vizuali o'zgarmaydi — faqat dropdown ichidagi kontent o'zgaradi.
+// Yagona trigger: #headerUserTrigger
+// Avtomatik bo'lim aniqlash: detectSection() → URL ga qarab
 
-import { showPassNotifications } from './features/pass-notifications.js';
-import { logout } from './core/auth.js';
-import { t } from './core/i18n.js';
-import { getNotificationsEnabled } from './core/global-settings.js';
+import { showPassNotifications }           from './features/pass-notifications.js';
+import { logout }                           from './core/auth.js';
+import { getAllAccounts }                   from './core/multi-account.js';
+import {
+    detectSection,
+    getBasePath,
+    getAppsConfig,
+    getProviderInfo,
+    getDeviceDisplay,
+    Icons,
+} from './dropdownConfig.js';
 
-// ==================== YO'L ANIQLASH ====================
-function getBasePath() {
-    const path = window.location.pathname;
-    if (path.includes('/mini/') || path.includes('/popular/')) return '../..';
-    return '.';
-}
+// =====================================================================
+// INTERNAL STATE
+// =====================================================================
 
-const BASE   = getBasePath();
-const ASSETS = getBasePath();
+const BASE    = getBasePath();
+const APPS    = getAppsConfig(BASE);
+const SECTION = detectSection();
 
-const APPS_LIST = {
-    popular: [
-        { name: 'AI',        icon: 'ai',         path: `${BASE}/popular/ai/` },
-        { name: 'GroupBoard',icon: 'groupboard',  path: `${BASE}/popular/groupboard/` },
-        { name: 'LearnCode', icon: 'learncode',   path: `${BASE}/popular/learncode/` },
-        { name: 'MrGram',    icon: 'mrgram',      path: `${BASE}/popular/mrgram/` },
-        { name: 'NotifyHub', icon: 'notifyhub',   path: `${BASE}/popular/notifyhub/` },
-        { name: 'Typing',    icon: 'typing',      path: `${BASE}/popular/typing/` },
-        { name: 'Security',  icon: 'security',    path: `${BASE}/popular/security/` },
-        { name: 'CodeStudio',icon: 'codestudio',  path: `${BASE}/popular/codestudio/` },
-        { name: 'VideoHub',  icon: 'videohub',    path: `${BASE}/popular/videohub/` },
-        { name: 'Weather',   icon: 'weather',     path: `${BASE}/popular/weather/` },
-        { name: 'Notes',     icon: 'notes',       path: `${BASE}/popular/notes/` },
-        { name: 'Todo',      icon: 'todo',        path: `${BASE}/popular/todo/` }
-    ],
-    mini: [
-        { name: 'Calculator',icon: 'calculator',  path: `${BASE}/mini/calculator/` },
-        { name: 'Bingo',     icon: 'bingo',       path: `${BASE}/mini/bingo/` },
-        { name: 'Board',     icon: 'board',       path: `${BASE}/mini/board/` },
-        { name: 'Music',     icon: 'music',       path: `${BASE}/mini/music/` },
-        { name: 'SplitView', icon: 'splitview',   path: `${BASE}/mini/splitview/` },
-        { name: 'Examer',    icon: 'examer',      path: `${BASE}/mini/examer/` },
-        { name: 'Clock',     icon: 'clock',       path: `${BASE}/mini/clock/` },
-        { name: 'Stopwatch', icon: 'stopwatch',   path: `${BASE}/mini/stopwatch/` },
-        { name: 'Timer',     icon: 'timer',       path: `${BASE}/mini/timer/` },
-        { name: 'QR Code',   icon: 'qr',          path: `${BASE}/mini/qr/` }
-    ]
-};
+let _dropdownId  = null;   // Joriy dropdown element ID
+let _overlayId   = null;   // Joriy overlay ID
+let _isOpen      = false;
+let _logoutState = 'idle'; // 'idle' | 'confirm'
+let _logoutTimer = null;
 
-// ==================== IKONKA ====================
-function getAppIconHTML(app, size) {
-    const isLarge  = size === 'large';
-    const prefix   = isLarge ? '-mini' : '';
-    const iconSize = isLarge ? '48px' : '36px';
-    const imgSize  = isLarge ? '26px' : '20px';
-    return `
-        <div class="dropdown-app-icon-grid${prefix}" style="width:${iconSize};height:${iconSize};">
-            <img
-                src="${ASSETS}/assets/favicons/${app.icon}.svg"
-                alt="${app.name}"
-                data-fallback="${app.name.substring(0, 2).toUpperCase()}"
-                class="dropdown-icon-img-grid${prefix}"
-                style="width:${imgSize};height:${imgSize};"
-            >
-        </div>
-    `;
-}
+// =====================================================================
+// TRIGGER UTILS — HEADER O'ZGARMAYDI
+// =====================================================================
 
-function attachIconFallbacks(container) {
-    container.querySelectorAll('img[data-fallback]').forEach(img => {
-        img.addEventListener('error', function () {
-            const fallback = this.getAttribute('data-fallback') || '??';
-            const parent   = this.parentElement;
-            parent.innerHTML = `<span style="font-size:12px;font-weight:600;color:var(--text-3);">${fallback}</span>`;
-            parent.style.display = 'flex';
-            parent.style.alignItems = 'center';
-            parent.style.justifyContent = 'center';
-        });
-    });
-}
-
-// ====================================================================
-//  SKELETON / LOADING
-// ====================================================================
-export function setTriggerLoading(triggerElOrId, isLoading) {
-    const el = typeof triggerElOrId === 'string'
-        ? document.getElementById(triggerElOrId)
-        : triggerElOrId;
-    if (!el) return;
+export function setTriggerLoading(el, isLoading) {
+    const t = typeof el === 'string' ? document.getElementById(el) : el;
+    if (!t) return;
     if (isLoading) {
-        el.classList.add('is-loading');
+        t.classList.add('is-loading');
+        return;
+    }
+    t.classList.remove('is-loading');
+    const av   = t.querySelector('.header-user-avatar');
+    const info = t.querySelector('.header-user-info');
+    if (av)   { av.classList.add('auth-reveal');   setTimeout(() => av.classList.remove('auth-reveal'),   600); }
+    if (info) { info.classList.add('auth-reveal'); setTimeout(() => info.classList.remove('auth-reveal'), 600); }
+}
+
+export function setDropdownLoading(id, v) {
+    document.getElementById(id)?.classList.toggle('is-loading', v);
+}
+
+function updateTrigger(user) {
+    const trigger = document.getElementById('headerUserTrigger');
+    if (!trigger) return;
+    const av = trigger.querySelector('.header-user-avatar');
+    const nm = trigger.querySelector('.header-user-name');
+    if (!user || !user.isAuthenticated) {
+        if (av) av.textContent = '?';
+        if (nm) nm.textContent = 'Mehmon';
     } else {
-        el.classList.remove('is-loading');
-        const avatar = el.querySelector('.trigger-avatar, .header-user-avatar, .settings-user-avatar');
-        const info   = el.querySelector('.trigger-info, .header-user-info');
-        if (avatar) { avatar.classList.add('auth-reveal'); setTimeout(() => avatar.classList.remove('auth-reveal'), 600); }
-        if (info)   { info.classList.add('auth-reveal');   setTimeout(() => info.classList.remove('auth-reveal'),   600); }
+        const dn = user.displayName || user.email?.split('@')[0] || 'User';
+        if (av) av.innerHTML = user.photoURL
+            ? `<img src="${user.photoURL}" alt="${dn}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`
+            : dn.charAt(0).toUpperCase();
+        if (nm) nm.textContent = dn;
     }
+    setTriggerLoading(trigger, false);
 }
 
-export function setDropdownLoading(dropdownId, isLoading) {
-    const el = document.getElementById(dropdownId);
-    if (!el) return;
-    el.classList.toggle('is-loading', isLoading);
+// =====================================================================
+// OPEN / CLOSE
+// =====================================================================
+
+function openDropdown() {
+    if (!_dropdownId) return;
+    document.getElementById(_overlayId)?.classList.add('show');
+    document.getElementById(_dropdownId)?.classList.add('show');
+    _isOpen = true;
+    resetLogout();
 }
 
-// ====================================================================
-//  LOGOUT MODAL — 2 bosqichli tasdiqlash
-// ====================================================================
-function injectLogoutModals() {
-    if (document.getElementById('logoutModalStep1')) return;
+function closeDropdown() {
+    if (!_dropdownId) return;
+    document.getElementById(_overlayId)?.classList.remove('show');
+    document.getElementById(_dropdownId)?.classList.remove('show');
+    _isOpen = false;
+    resetLogout();
+}
 
-    const html = `
-        <div class="logout-modal-overlay" id="logoutModalStep1">
-            <div class="logout-modal" id="logoutModalBox1">
-                <div class="logout-modal-icon">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-                        <polyline points="16 17 21 12 16 7"/>
-                        <line x1="21" y1="12" x2="9" y2="12"/>
-                    </svg>
-                </div>
-                <h3 class="logout-modal-title">Hisobingizdan chiqmoqchimisiz?</h3>
-                <p class="logout-modal-desc">Tizimdan chiqsangiz barcha sessiyalar yopiladi.</p>
-                <div class="logout-modal-actions">
-                    <button class="logout-modal-btn cancel" id="logoutStep1No">Yo'q</button>
-                    <button class="logout-modal-btn confirm" id="logoutStep1Yes">Ha, chiqaman</button>
-                </div>
-            </div>
-        </div>
+function toggleDropdown() {
+    _isOpen ? closeDropdown() : openDropdown();
+}
 
-        <div class="logout-modal-overlay" id="logoutModalStep2">
-            <div class="logout-modal" id="logoutModalBox2">
-                <div class="logout-modal-icon warning">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
-                        <line x1="12" y1="9" x2="12" y2="13"/>
-                        <line x1="12" y1="17" x2="12.01" y2="17"/>
-                    </svg>
-                </div>
-                <h3 class="logout-modal-title">Hisobdan chiqishni tasdiqlang</h3>
-                <p class="logout-modal-desc">Bu amalni bekor qilib bo'lmaydi. Davom etasizmi?</p>
-                <div class="logout-modal-actions">
-                    <button class="logout-modal-btn cancel" id="logoutStep2Back">Orqaga</button>
-                    <button class="logout-modal-btn danger" id="logoutStep2Confirm">Tasdiqlash</button>
-                </div>
-            </div>
-        </div>
-    `;
-    document.body.insertAdjacentHTML('beforeend', html);
+function bindTrigger() {
+    const oldTrigger = document.getElementById('headerUserTrigger');
+    if (!oldTrigger) return;
 
-    document.getElementById('logoutStep1No')?.addEventListener('click', closeAllLogoutModals);
-    document.getElementById('logoutModalStep1')?.addEventListener('click', function (e) {
-        if (e.target === this) closeAllLogoutModals();
+    // Eski listener'larni tozalash uchun klonlash
+    const trigger = oldTrigger.cloneNode(true);
+    oldTrigger.parentNode.replaceChild(trigger, oldTrigger);
+
+    trigger.addEventListener('click', e => {
+        e.stopPropagation();
+        toggleDropdown();
     });
-    document.getElementById('logoutStep1Yes')?.addEventListener('click', () => showLogoutModal(2));
 
-    document.getElementById('logoutStep2Back')?.addEventListener('click', () => showLogoutModal(1));
-    document.getElementById('logoutModalStep2')?.addEventListener('click', function (e) {
-        if (e.target === this) closeAllLogoutModals();
+    document.getElementById(_overlayId)?.addEventListener('click', closeDropdown);
+
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && _isOpen) closeDropdown();
     });
-    document.getElementById('logoutStep2Confirm')?.addEventListener('click', async function () {
-        closeAllLogoutModals();
-        // Faqat trigger chetida ko'k chiziq aylansin
-        const trigger = document.getElementById('mrdevUserTrigger')
-                     || document.getElementById('headerUserTrigger')
-                     || document.getElementById('mrdevUserTriggerMini');
-        if (trigger) trigger.classList.add('is-loading');
-        await logout();
+
+    document.addEventListener('click', e => {
+        const dd = document.getElementById(_dropdownId);
+        const tr = document.getElementById('headerUserTrigger');
+        if (_isOpen && dd && tr && !dd.contains(e.target) && !tr.contains(e.target)) {
+            closeDropdown();
+        }
     });
 }
 
-function showLogoutModal(step) {
-    document.getElementById('logoutModalStep1')?.classList.toggle('show', step === 1);
-    document.getElementById('logoutModalStep2')?.classList.toggle('show', step === 2);
-    // pop animatsiyasi
-    const box = document.getElementById(`logoutModalBox${step}`);
-    if (box) {
-        box.classList.remove('pop');
-        void box.offsetWidth;
-        box.classList.add('pop');
+// =====================================================================
+// AVATAR HTML HELPER
+// =====================================================================
+
+function avatarHTML(user, size = 44) {
+    if (!user) return `<span style="font-size:${Math.round(size*0.45)}px;">?</span>`;
+    const dn = user.displayName || user.email?.split('@')[0] || 'U';
+    if (user.photoURL) {
+        return `<img src="${user.photoURL}" alt="${dn}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" loading="lazy">`;
     }
+    return `<span style="font-size:${Math.round(size*0.42)}px;font-weight:700;">${dn.charAt(0).toUpperCase()}</span>`;
 }
 
-function closeAllLogoutModals() {
-    document.getElementById('logoutModalStep1')?.classList.remove('show');
-    document.getElementById('logoutModalStep2')?.classList.remove('show');
+// =====================================================================
+// APP ICON HELPER
+// =====================================================================
+
+function appIconHTML(app, size = 44) {
+    const imgSize = Math.round(size * 0.54);
+    return `<div class="cfg-app-icon" style="width:${size}px;height:${size}px;">
+        <img src="${BASE}/assets/favicons/${app.icon}.svg"
+             alt="${app.name}"
+             data-fb="${app.name.substring(0, 2).toUpperCase()}"
+             style="width:${imgSize}px;height:${imgSize}px;">
+    </div>`;
 }
 
-// ====================================================================
-//  ROOT DROPDOWN
-// ====================================================================
-export function initDropdown(user) {
-    injectLogoutModals();
-
-    if (!document.getElementById('mrdevDropdown')) {
-        const settingsPath = `${BASE}/settings/`;
-        const html = `
-            <div class="mrdev-dropdown-overlay" id="mrdevDropdownOverlay"></div>
-            <div class="mrdev-dropdown" id="mrdevDropdown">
-                <div class="dropdown-profile">
-                    <div class="dropdown-avatar" id="dropdownAvatar"></div>
-                    <div class="dropdown-name"    id="dropdownName"></div>
-                    <div class="dropdown-email"   id="dropdownEmail"></div>
-                    <div class="dropdown-mrdev-id" id="dropdownMrdevId"></div>
-                </div>
-                <div class="dropdown-tabs">
-                    <button class="dropdown-tab active" data-tab="all">${t('all_apps')}</button>
-                    <button class="dropdown-tab" data-tab="popular">${t('popular_apps')}</button>
-                    <button class="dropdown-tab" data-tab="mini">${t('mini_apps')}</button>
-                </div>
-                <div class="dropdown-apps" id="dropdownApps"></div>
-                <div class="dropdown-menu-items">
-                    <a href="#" class="dropdown-menu-item" id="notifMenuItem">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-                            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-                        </svg>
-                        <span class="menu-item-text">${t('pass_notifications')}</span>
-                        <span class="dropdown-notif-badge" id="notifBadge"></span>
-                    </a>
-                    <a href="${settingsPath}" class="dropdown-menu-item" id="settingsMenuItem">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="3"/>
-                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
-                        </svg>
-                        <span class="menu-item-text">Sozlamalar</span>
-                    </a>
-                    <button class="dropdown-menu-item danger" id="logoutMenuItem">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-                            <polyline points="16 17 21 12 16 7"/>
-                            <line x1="21" y1="12" x2="9" y2="12"/>
-                        </svg>
-                        <span class="menu-item-text">${t('logout')}</span>
-                    </button>
-                </div>
-            </div>
-        `;
-        document.body.insertAdjacentHTML('beforeend', html);
-    }
-
-    updateRootUserInfo(user);
-
-    document.querySelectorAll('#mrdevDropdown .dropdown-tab').forEach(tab => {
-        tab.addEventListener('click', function () {
-            document.querySelectorAll('#mrdevDropdown .dropdown-tab').forEach(t => t.classList.remove('active'));
-            this.classList.add('active');
-            renderRootAppsGrid(this.dataset.tab);
+function attachFallbacks(el) {
+    el.querySelectorAll('img[data-fb]').forEach(img => {
+        img.addEventListener('error', function () {
+            const fb = this.getAttribute('data-fb') || '??';
+            const p  = this.parentElement;
+            p.innerHTML = `<span style="font-size:11px;font-weight:700;color:var(--text-3);">${fb}</span>`;
+            p.style.cssText += ';display:flex;align-items:center;justify-content:center;';
         });
     });
+}
 
-    renderRootAppsGrid('all');
-    setupRootTrigger(user);
+// =====================================================================
+// LOGOUT — INLINE DOUBLE CONFIRMATION
+// =====================================================================
 
-    document.getElementById('notifMenuItem')?.addEventListener('click', function (e) {
-        e.preventDefault();
-        closeRootDropdown();
+function resetLogout() {
+    _logoutState = 'idle';
+    clearTimeout(_logoutTimer);
+    const btn = document.getElementById('cfg-logout-btn');
+    if (btn) {
+        btn.classList.remove('confirm-state');
+        btn.querySelector('.cfg-btn-label').textContent = 'Chiqish';
+    }
+}
+
+function handleLogoutClick() {
+    if (_logoutState === 'idle') {
+        _logoutState = 'confirm';
+        const btn = document.getElementById('cfg-logout-btn');
+        if (btn) {
+            btn.classList.add('confirm-state');
+            btn.querySelector('.cfg-btn-label').textContent = 'Ishonchingiz komilmi?';
+        }
+        // 4 sekunddan keyin avtomatik reset
+        _logoutTimer = setTimeout(() => resetLogout(), 4000);
+    } else if (_logoutState === 'confirm') {
+        clearTimeout(_logoutTimer);
+        _logoutState = 'idle';
+        closeDropdown();
+        const trigger = document.getElementById('headerUserTrigger');
+        if (trigger) trigger.classList.add('is-loading');
+        logout();
+    }
+}
+
+// =====================================================================
+// ─── 1. ROOT DROPDOWN ────────────────────────────────────────────────
+// Foydalanuvchi ma'lumotlari + Bildirishnomalar + Haqida + Sozlamalar + Logout
+// =====================================================================
+
+function buildRootHTML(user) {
+    const dn  = user?.displayName || user?.email?.split('@')[0] || 'Mehmon';
+    const uid = user?.mrdevId || localStorage.getItem('mrdev_user_id') || '';
+    const isAuth = user?.isAuthenticated;
+
+    return `
+    <div class="cfg-overlay" id="cfg-overlay"></div>
+    <div class="cfg-dropdown cfg-root" id="cfg-dropdown" role="dialog" aria-modal="true">
+
+        <!-- Profile block -->
+        <div class="cfg-profile-block">
+            <div class="cfg-avatar cfg-avatar-md" id="cfg-root-avatar">
+                ${avatarHTML(user, 48)}
+            </div>
+            <div class="cfg-profile-meta">
+                <div class="cfg-profile-name" id="cfg-root-name">${dn}</div>
+                ${uid ? `<div class="cfg-profile-id">MRDEV <span>#${uid}</span></div>` : ''}
+                ${user?.email ? `<div class="cfg-profile-email">${user.email}</div>` : ''}
+            </div>
+        </div>
+
+        <!-- Menu items -->
+        <div class="cfg-menu">
+
+            <button class="cfg-item" id="cfg-notif-btn">
+                <span class="cfg-item-icon cfg-icon-bell">${Icons.bell}</span>
+                <span class="cfg-item-text">Bildirishnomalar</span>
+                <span class="cfg-item-badge" id="cfg-notif-badge" style="display:none;"></span>
+            </button>
+
+            <button class="cfg-item" id="cfg-about-btn">
+                <span class="cfg-item-icon cfg-icon-info">${Icons.info}</span>
+                <span class="cfg-item-text">Loyiha haqida</span>
+            </button>
+
+            <a href="${BASE}/settings/" class="cfg-item">
+                <span class="cfg-item-icon cfg-icon-settings">${Icons.settings}</span>
+                <span class="cfg-item-text">Sozlamalar</span>
+                <span class="cfg-item-chevron">${Icons.chevronRight}</span>
+            </a>
+
+            ${isAuth ? `
+            <div class="cfg-divider"></div>
+            <button class="cfg-item cfg-item-danger" id="cfg-logout-btn">
+                <span class="cfg-item-icon">${Icons.logout}</span>
+                <span class="cfg-btn-label">Chiqish</span>
+            </button>` : ''}
+
+        </div>
+    </div>`;
+}
+
+function fillRootDynamic(user) {
+    const av = document.getElementById('cfg-root-avatar');
+    const nm = document.getElementById('cfg-root-name');
+    if (av) av.innerHTML = avatarHTML(user, 48);
+    if (nm) nm.textContent = user?.displayName || user?.email?.split('@')[0] || 'Mehmon';
+}
+
+// =====================================================================
+// ─── 2. MINI APPS DROPDOWN ───────────────────────────────────────────
+// Foydalanuvchi ma'lumotlari ko'rinmaydi. Faqat ilovalar gridi.
+// =====================================================================
+
+function buildMiniHTML() {
+    const allApps = [...APPS.popular, ...APPS.mini];
+
+    const popularSection = `
+        <div class="cfg-apps-section">
+            <div class="cfg-apps-section-label">Asosiy ilovalar</div>
+            <div class="cfg-apps-grid">
+                ${APPS.popular.map(app => `
+                    <a href="${app.path}" class="cfg-app-link" title="${app.name}">
+                        ${appIconHTML(app, 44)}
+                        <span class="cfg-app-name">${app.name}</span>
+                    </a>`).join('')}
+            </div>
+        </div>`;
+
+    const miniSection = `
+        <div class="cfg-apps-section">
+            <div class="cfg-apps-section-label">Yordamchi ilovalar</div>
+            <div class="cfg-apps-grid cfg-apps-grid-compact">
+                ${APPS.mini.map(app => `
+                    <a href="${app.path}" class="cfg-app-link" title="${app.name}">
+                        ${appIconHTML(app, 40)}
+                        <span class="cfg-app-name">${app.name}</span>
+                    </a>`).join('')}
+            </div>
+        </div>`;
+
+    return `
+    <div class="cfg-overlay" id="cfg-overlay"></div>
+    <div class="cfg-dropdown cfg-mini" id="cfg-dropdown" role="dialog" aria-modal="true">
+
+        <div class="cfg-mini-header">
+            <span class="cfg-mini-title">Ilovalar</span>
+            <a href="${BASE}/" class="cfg-mini-all-link">
+                Barchasi
+                ${Icons.chevronRight}
+            </a>
+        </div>
+
+        <div class="cfg-mini-body" id="cfg-mini-body">
+            ${popularSection}
+            ${miniSection}
+        </div>
+
+    </div>`;
+}
+
+// =====================================================================
+// ─── 3. SETTINGS DROPDOWN ────────────────────────────────────────────
+// Katta avatar + Name → Email → MRDEV ID + Qurilmalar + Notif + Logout
+// =====================================================================
+
+function buildSettingsHTML(user) {
+    const dn    = user?.displayName || user?.email?.split('@')[0] || 'Mehmon';
+    const uid   = user?.mrdevId || localStorage.getItem('mrdev_user_id') || '';
+    const isAuth = user?.isAuthenticated;
+
+    // Ulangan hisoblar ro'yxati
+    const accounts = getAllAccounts();
+    let accountsHTML = '';
+    if (!accounts.length) {
+        accountsHTML = `<div class="cfg-devices-empty">Ulangan hisob topilmadi</div>`;
+    } else {
+        accountsHTML = accounts.map(acc => {
+            const accDn    = acc.displayName || acc.email?.split('@')[0] || 'Foydalanuvchi';
+            const pInfo    = getProviderInfo(acc.provider);
+            const isActive = acc.uid === user?.uid;
+            const accAv    = acc.photoURL
+                ? `<img src="${acc.photoURL}" alt="${accDn}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`
+                : `<span>${accDn.charAt(0).toUpperCase()}</span>`;
+
+            return `<div class="cfg-device-item${isActive ? ' cfg-device-active' : ''}">
+                <div class="cfg-device-av">${accAv}</div>
+                <div class="cfg-device-info">
+                    <div class="cfg-device-name">${accDn}</div>
+                    <div class="cfg-device-meta">
+                        <span class="cfg-provider-tag" style="--p-color:${pInfo.color};">
+                            ${pInfo.icon}${pInfo.label}
+                        </span>
+                    </div>
+                </div>
+                ${isActive ? `<span class="cfg-device-check">${Icons.check}</span>` : ''}
+            </div>`;
+        }).join('');
+    }
+
+    return `
+    <div class="cfg-overlay" id="cfg-overlay"></div>
+    <div class="cfg-dropdown cfg-settings" id="cfg-dropdown" role="dialog" aria-modal="true">
+
+        <!-- Katta profil avatar + info -->
+        <div class="cfg-settings-profile">
+            <div class="cfg-settings-avatar-wrap">
+                <div class="cfg-avatar cfg-avatar-lg" id="cfg-settings-avatar">
+                    ${avatarHTML(user, 68)}
+                </div>
+                <div class="cfg-settings-avatar-ring"></div>
+            </div>
+            <div class="cfg-settings-name"   id="cfg-settings-name">${dn}</div>
+            ${user?.email ? `<div class="cfg-settings-email" id="cfg-settings-email">${user.email}</div>` : ''}
+            ${uid ? `<div class="cfg-settings-id">MRDEV <span class="cfg-settings-id-num">#${uid}</span></div>` : ''}
+        </div>
+
+        <!-- Ulangan qurilmalar / hisoblar -->
+        <div class="cfg-section">
+            <div class="cfg-section-title">
+                ${Icons.shield}
+                Ulangan hisoblar
+            </div>
+            <div class="cfg-devices-list" id="cfg-devices-list">
+                ${accountsHTML}
+            </div>
+        </div>
+
+        <div class="cfg-divider"></div>
+
+        <!-- Bildirishnomalar + Logout -->
+        <div class="cfg-menu">
+
+            <button class="cfg-item" id="cfg-notif-btn">
+                <span class="cfg-item-icon cfg-icon-bell">${Icons.bell}</span>
+                <span class="cfg-item-text">Bildirishnomalar</span>
+            </button>
+
+            ${isAuth ? `
+            <div class="cfg-divider"></div>
+            <button class="cfg-item cfg-item-danger" id="cfg-logout-btn">
+                <span class="cfg-item-icon">${Icons.logout}</span>
+                <span class="cfg-btn-label">Chiqish</span>
+            </button>` : ''}
+
+        </div>
+    </div>`;
+}
+
+function fillSettingsDynamic(user) {
+    const av = document.getElementById('cfg-settings-avatar');
+    const nm = document.getElementById('cfg-settings-name');
+    const em = document.getElementById('cfg-settings-email');
+    if (av) av.innerHTML = avatarHTML(user, 68);
+    if (nm) nm.textContent = user?.displayName || user?.email?.split('@')[0] || 'Mehmon';
+    if (em && user?.email) em.textContent = user.email;
+
+    // Hisoblarni yangilash
+    const list = document.getElementById('cfg-devices-list');
+    if (!list) return;
+    const accounts = getAllAccounts();
+    if (!accounts.length) {
+        list.innerHTML = `<div class="cfg-devices-empty">Ulangan hisob topilmadi</div>`;
+        return;
+    }
+    list.innerHTML = accounts.map(acc => {
+        const accDn    = acc.displayName || acc.email?.split('@')[0] || 'Foydalanuvchi';
+        const pInfo    = getProviderInfo(acc.provider);
+        const isActive = acc.uid === user?.uid;
+        const accAv    = acc.photoURL
+            ? `<img src="${acc.photoURL}" alt="${accDn}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`
+            : `<span>${accDn.charAt(0).toUpperCase()}</span>`;
+        return `<div class="cfg-device-item${isActive ? ' cfg-device-active' : ''}">
+            <div class="cfg-device-av">${accAv}</div>
+            <div class="cfg-device-info">
+                <div class="cfg-device-name">${accDn}</div>
+                <div class="cfg-device-meta">
+                    <span class="cfg-provider-tag" style="--p-color:${pInfo.color};">
+                        ${pInfo.icon}${pInfo.label}
+                    </span>
+                </div>
+            </div>
+            ${isActive ? `<span class="cfg-device-check">${Icons.check}</span>` : ''}
+        </div>`;
+    }).join('');
+}
+
+// =====================================================================
+// EVENT LISTENERS — SECTION QA QARAB
+// =====================================================================
+
+function attachEvents(section) {
+    const notifBtn  = document.getElementById('cfg-notif-btn');
+    const logoutBtn = document.getElementById('cfg-logout-btn');
+    const aboutBtn  = document.getElementById('cfg-about-btn');
+
+    notifBtn?.addEventListener('click', () => {
+        closeDropdown();
         showPassNotifications();
     });
 
-    document.getElementById('logoutMenuItem')?.addEventListener('click', function () {
-        closeRootDropdown();
-        showLogoutModal(1);
+    aboutBtn?.addEventListener('click', () => {
+        closeDropdown();
+        if (window.showAboutModal) window.showAboutModal();
     });
 
-    const overlay  = document.getElementById('mrdevDropdownOverlay');
-    const dropdown = document.getElementById('mrdevDropdown');
-    const trigger  = document.getElementById('mrdevUserTrigger') || document.getElementById('headerUserTrigger');
-
-    trigger?.addEventListener('click', function (e) {
-        e.stopPropagation();
-        dropdown.classList.contains('show') ? closeRootDropdown() : openRootDropdown();
-        updateDropdownTexts();
-    });
-
-    overlay?.addEventListener('click', closeRootDropdown);
-
-    document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape') {
-            closeRootDropdown();
-            closeAllLogoutModals();
-        }
-    });
-
-    document.addEventListener('click', function (e) {
-        if (dropdown?.classList.contains('show') && !dropdown.contains(e.target) && trigger && !trigger.contains(e.target)) {
-            closeRootDropdown();
-        }
-    });
-
-    document.addEventListener('languageChanged', () => {
-        updateDropdownTexts();
-        updateRootUserInfo(window.currentUser || null);
-    });
+    logoutBtn?.addEventListener('click', handleLogoutClick);
 }
 
-function updateDropdownTexts() {
-    const tabs = document.querySelectorAll('#mrdevDropdown .dropdown-tab');
-    if (tabs[0]) tabs[0].textContent = t('all_apps');
-    if (tabs[1]) tabs[1].textContent = t('popular_apps');
-    if (tabs[2]) tabs[2].textContent = t('mini_apps');
+// =====================================================================
+// INJECT — DOM'ga bir marta qo'shiladi
+// =====================================================================
 
-    const notifItem = document.getElementById('notifMenuItem');
-    if (notifItem) {
-        const textEl = notifItem.querySelector('.menu-item-text');
-        if (textEl) textEl.textContent = t('pass_notifications');
-    }
-    const logoutItem = document.getElementById('logoutMenuItem');
-    if (logoutItem) {
-        const textEl = logoutItem.querySelector('.menu-item-text');
-        if (textEl) textEl.textContent = t('logout');
-    }
-}
+function injectDropdown(user) {
+    // Mavjud elementlarni tozalash
+    document.getElementById('cfg-dropdown')?.remove();
+    document.getElementById('cfg-overlay')?.remove();
 
-function updateRootUserInfo(user) {
-    const avatar       = document.getElementById('dropdownAvatar');
-    const name         = document.getElementById('dropdownName');
-    const email        = document.getElementById('dropdownEmail');
-    const mrdevId      = document.getElementById('dropdownMrdevId');
-    const notifItem    = document.getElementById('notifMenuItem');
-    const settingsItem = document.getElementById('settingsMenuItem');
-    const logoutItem   = document.getElementById('logoutMenuItem');
-
-    if (user) {
-        const displayName = user.displayName || user.email?.split('@')[0] || 'User';
-        const userEmail   = user.email || '';
-        const userId      = user.mrdevId || localStorage.getItem('mrdev_user_id') || '';
-
-        if (avatar) {
-            avatar.innerHTML = user.photoURL
-                ? `<img src="${user.photoURL}" alt="${displayName}">`
-                : displayName.charAt(0).toUpperCase();
-        }
-        if (name)  name.textContent  = displayName;
-        if (email) email.textContent = userEmail;
-        if (mrdevId) { mrdevId.textContent = userId; mrdevId.style.display = userId ? 'block' : 'none'; }
-        if (notifItem)    notifItem.style.display    = 'flex';
-        if (settingsItem) settingsItem.style.display = 'flex';
-        if (logoutItem)   logoutItem.style.display   = 'flex';
+    let html = '';
+    if (SECTION === 'mini') {
+        html = buildMiniHTML();
+    } else if (SECTION === 'settings') {
+        html = buildSettingsHTML(user);
     } else {
-        if (avatar)  avatar.textContent = '?';
-        if (name)    name.textContent   = t('guest');
-        if (email)   email.textContent  = t('login');
-        if (mrdevId) mrdevId.style.display = 'none';
-        if (notifItem)    notifItem.style.display    = 'none';
-        if (settingsItem) settingsItem.style.display = 'none';
-        if (logoutItem)   logoutItem.style.display   = 'none';
-    }
-}
-
-function renderRootAppsGrid(category) {
-    const container = document.getElementById('dropdownApps');
-    if (!container) return;
-    const apps = category === 'all'
-        ? [...APPS_LIST.popular, ...APPS_LIST.mini]
-        : (APPS_LIST[category] || []);
-    container.innerHTML = `
-        <div class="dropdown-apps-grid">
-            ${apps.map(app => `
-                <a href="${app.path}" class="dropdown-app-grid-item" title="${app.name}">
-                    ${getAppIconHTML(app, 'small')}
-                    <span class="dropdown-app-grid-name">${app.name}</span>
-                </a>
-            `).join('')}
-        </div>
-    `;
-    attachIconFallbacks(container);
-}
-
-function setupRootTrigger(user) {
-    const trigger = document.getElementById('mrdevUserTrigger') || document.getElementById('headerUserTrigger');
-    if (!trigger) return;
-
-    if (!user) {
-        // Guest holatida: is-loading olib tashlanadi, "Mehmon" ko'rsatiladi
-        const hAvatar = trigger.querySelector('.header-user-avatar');
-        const hName   = trigger.querySelector('.header-user-name');
-        const hRole   = trigger.querySelector('.header-user-role');
-        if (hAvatar) hAvatar.textContent = '?';
-        if (hName)   hName.textContent   = t('guest');
-        if (hRole)   hRole.textContent   = t('user_role') || 'Foydalanuvchi';
-
-        const tAvatar = trigger.querySelector('.trigger-avatar');
-        const tName   = trigger.querySelector('.trigger-name');
-        if (tAvatar) tAvatar.textContent = '?';
-        if (tName)   tName.textContent   = t('guest');
-
-        setTriggerLoading(trigger, false);
-        return;
+        html = buildRootHTML(user);
     }
 
-    const displayName = user.displayName || user.email?.split('@')[0] || 'User';
-    const photoHTML   = user.photoURL
-        ? `<img src="${user.photoURL}" alt="${displayName}">`
-        : displayName.charAt(0).toUpperCase();
+    document.body.insertAdjacentHTML('beforeend', html);
+    _dropdownId = 'cfg-dropdown';
+    _overlayId  = 'cfg-overlay';
 
-    const hAvatar = trigger.querySelector('.header-user-avatar');
-    const hName   = trigger.querySelector('.header-user-name');
-    if (hAvatar) hAvatar.innerHTML = photoHTML;
-    if (hName)   hName.textContent = displayName;
+    // Mini apps uchun fallback rasmlar
+    if (SECTION === 'mini') {
+        const body = document.getElementById('cfg-mini-body');
+        if (body) attachFallbacks(body);
+    }
 
-    const tAvatar = trigger.querySelector('.trigger-avatar');
-    const tName   = trigger.querySelector('.trigger-name');
-    if (tAvatar) tAvatar.innerHTML = photoHTML;
-    if (tName)   tName.textContent = displayName;
-
-    setTriggerLoading(trigger, false);
+    attachEvents(SECTION);
+    bindTrigger();
 }
 
-function openRootDropdown() {
-    document.getElementById('mrdevDropdownOverlay')?.classList.add('show');
-    document.getElementById('mrdevDropdown')?.classList.add('show');
+// =====================================================================
+// ASOSIY EXPORT FUNKSIYALARI
+// =====================================================================
+
+/**
+ * Root bo'limi uchun dropdown
+ */
+export function initRootDropdown(user) {
+    injectDropdown(user);
+    updateTrigger(user);
 }
 
-function closeRootDropdown() {
-    document.getElementById('mrdevDropdownOverlay')?.classList.remove('show');
-    document.getElementById('mrdevDropdown')?.classList.remove('show');
-}
-
-// ====================================================================
-//  MINI APPS DROPDOWN
-// ====================================================================
+/**
+ * Mini apps bo'limi uchun dropdown
+ */
 export function initMiniDropdown(user) {
-    injectLogoutModals();
-
-    if (!document.getElementById('mrdevDropdownMini')) {
-        const html = `
-            <div class="mrdev-dropdown-overlay" id="mrdevDropdownOverlayMini"></div>
-            <div class="mrdev-dropdown-mini" id="mrdevDropdownMini">
-                <div class="dropdown-profile-mini">
-                    <div class="dropdown-avatar" id="dropdownAvatarMini"></div>
-                    <div>
-                        <div class="dropdown-name"  id="dropdownNameMini"></div>
-                        <div class="dropdown-email" id="dropdownEmailMini"></div>
-                    </div>
-                </div>
-                <div class="dropdown-apps" id="dropdownAppsMini"></div>
-                <div class="dropdown-menu-items mini-menu-items">
-                    <button class="dropdown-menu-item danger" id="logoutMenuItemMini">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-                            <polyline points="16 17 21 12 16 7"/>
-                            <line x1="21" y1="12" x2="9" y2="12"/>
-                        </svg>
-                        <span class="menu-item-text">${t('logout')}</span>
-                    </button>
-                </div>
-            </div>
-        `;
-        document.body.insertAdjacentHTML('beforeend', html);
-    }
-
-    updateMiniUserInfo(user);
-    renderMiniAppsGrid();
-    setupMiniTrigger(user);
-
-    const overlay  = document.getElementById('mrdevDropdownOverlayMini');
-    const dropdown = document.getElementById('mrdevDropdownMini');
-    const trigger  = document.getElementById('mrdevUserTriggerMini');
-
-    trigger?.addEventListener('click', function (e) {
-        e.stopPropagation();
-        dropdown.classList.contains('show') ? closeMiniDropdown() : openMiniDropdown();
-        updateMiniDropdownTexts();
-    });
-
-    overlay?.addEventListener('click', closeMiniDropdown);
-
-    document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape' && dropdown?.classList.contains('show')) closeMiniDropdown();
-    });
-
-    document.addEventListener('click', function (e) {
-        if (dropdown?.classList.contains('show') && !dropdown.contains(e.target) && trigger && !trigger.contains(e.target)) {
-            closeMiniDropdown();
-        }
-    });
-
-    document.getElementById('logoutMenuItemMini')?.addEventListener('click', function () {
-        closeMiniDropdown();
-        showLogoutModal(1);
-    });
-
-    document.addEventListener('languageChanged', () => {
-        updateMiniUserInfo(window.currentUser || null);
-    });
+    injectDropdown(user);
+    updateTrigger(user);
 }
 
-function updateMiniDropdownTexts() {
-    const nameEl  = document.getElementById('dropdownNameMini');
-    const emailEl = document.getElementById('dropdownEmailMini');
-    if (nameEl  && window.currentUser) nameEl.textContent  = window.currentUser.displayName || window.currentUser.email?.split('@')[0] || 'User';
-    if (emailEl && window.currentUser) emailEl.textContent = window.currentUser.email || '';
+/**
+ * Settings bo'limi uchun dropdown
+ */
+export function initSettingsDropdown(user) {
+    injectDropdown(user);
+    updateTrigger(user);
 }
 
-function updateMiniUserInfo(user) {
-    const avatar     = document.getElementById('dropdownAvatarMini');
-    const name       = document.getElementById('dropdownNameMini');
-    const email      = document.getElementById('dropdownEmailMini');
-    const logoutMini = document.getElementById('logoutMenuItemMini');
-
-    if (user) {
-        const displayName = user.displayName || user.email?.split('@')[0] || 'User';
-        if (avatar) {
-            avatar.innerHTML = user.photoURL
-                ? `<img src="${user.photoURL}" alt="${displayName}">`
-                : displayName.charAt(0).toUpperCase();
-        }
-        if (name)  name.textContent  = displayName;
-        if (email) email.textContent = user.email || '';
-        if (logoutMini) logoutMini.style.display = 'flex';
-    } else {
-        if (avatar) avatar.textContent = '?';
-        if (name)   name.textContent   = t('guest');
-        if (email)  email.textContent  = t('login');
-        if (logoutMini) logoutMini.style.display = 'none';
-    }
+/**
+ * Avtomatik bo'lim aniqlash va dropdown init
+ * Eng qulay usul — barcha sahifalarda shu bitta funksiyani chaqirish yetarli.
+ */
+export function initDropdownAuto(user) {
+    if (SECTION === 'mini')     return initMiniDropdown(user);
+    if (SECTION === 'settings') return initSettingsDropdown(user);
+    return initRootDropdown(user);
 }
 
-function renderMiniAppsGrid() {
-    const container = document.getElementById('dropdownAppsMini');
-    if (!container) return;
-    const allApps = [...APPS_LIST.popular, ...APPS_LIST.mini];
-    container.innerHTML = `
-        <div class="dropdown-apps-grid-mini">
-            ${allApps.map(app => `
-                <a href="${app.path}" class="dropdown-app-grid-item-mini" title="${app.name}">
-                    ${getAppIconHTML(app, 'large')}
-                    <span class="dropdown-app-grid-name-mini">${app.name}</span>
-                </a>
-            `).join('')}
-        </div>
-    `;
-    attachIconFallbacks(container);
-}
+/**
+ * Foydalanuvchi ma'lumotlari yangilanganda (auth state o'zgarganda) chaqiriladi.
+ */
+export function updateDropdown(user) {
+    updateTrigger(user);
 
-function setupMiniTrigger(user) {
-    const trigger = document.getElementById('mrdevUserTriggerMini');
-    if (!trigger) return;
-
-    if (!user) {
-        setTriggerLoading(trigger, false);
-        const tName = trigger.querySelector('.trigger-name');
-        if (tName) tName.textContent = t('guest');
+    // Agar dropdown allaqachon ochiq bo'lsa, dinamik yangilash
+    if (!document.getElementById('cfg-dropdown')) {
+        injectDropdown(user);
         return;
     }
 
-    const displayName = user.displayName || user.email?.split('@')[0] || 'User';
-    const photoHTML   = user.photoURL
-        ? `<img src="${user.photoURL}" alt="${displayName}">`
-        : displayName.charAt(0).toUpperCase();
-
-    const tAvatar = trigger.querySelector('.trigger-avatar, .header-user-avatar');
-    const tName   = trigger.querySelector('.trigger-name, .header-user-name');
-    const tRole   = trigger.querySelector('.trigger-role, .header-user-role');
-
-    if (tAvatar) tAvatar.innerHTML = photoHTML;
-    if (tName)   tName.textContent = displayName;
-    if (tRole)   tRole.textContent = 'MRDEV';
-
-    setTriggerLoading(trigger, false);
+    if (SECTION === 'settings') {
+        fillSettingsDynamic(user);
+    } else if (SECTION === 'root') {
+        fillRootDynamic(user);
+    }
+    // mini uchun user ma'lumoti ko'rinmaydi, yangilash shart emas
 }
 
-function openMiniDropdown() {
-    document.getElementById('mrdevDropdownOverlayMini')?.classList.add('show');
-    document.getElementById('mrdevDropdownMini')?.classList.add('show');
+// =====================================================================
+// BACKWARD COMPAT EXPORTS
+// =====================================================================
+
+export { initRootDropdown as initDropdown };
+
+export function showLogoutModal() {
+    // Eski modal o'rniga inline double-confirm ishlatilmoqda
+    handleLogoutClick();
 }
 
-function closeMiniDropdown() {
-    document.getElementById('mrdevDropdownOverlayMini')?.classList.remove('show');
-    document.getElementById('mrdevDropdownMini')?.classList.remove('show');
+export function closeAllLogoutModals() {
+    resetLogout();
 }
 
-// ====================================================================
-//  MINI APPS AUTH HELPER — localStorage fallback
-// ====================================================================
 export function getMiniUserFromLocalStorage() {
     try {
         const raw = localStorage.getItem('mrdev_local_auth');
         if (!raw) return null;
-        const data = JSON.parse(raw);
-        if (!data?.isLoggedIn || !data?.uid || !data?.email) return null;
-        const ageDays = (Date.now() - (data.loginTime || 0)) / (1000 * 60 * 60 * 24);
-        if (ageDays > 7) return null;
+        const d = JSON.parse(raw);
+        if (!d?.isLoggedIn || !d?.uid || !d?.email) return null;
+        if ((Date.now() - (d.loginTime || 0)) / 86400000 > 7) return null;
         return {
-            uid:         data.uid,
-            email:       data.email,
-            displayName: data.displayName || data.email.split('@')[0] || 'User',
-            photoURL:    data.photoURL || null,
-            mrdevId:     data.mrdevId || localStorage.getItem('mrdev_user_id') || '',
-            isAuthenticated: true
+            uid:             d.uid,
+            email:           d.email,
+            displayName:     d.displayName || d.email.split('@')[0] || 'User',
+            photoURL:        d.photoURL || null,
+            mrdevId:         d.mrdevId || localStorage.getItem('mrdev_user_id') || '',
+            isAuthenticated: true,
         };
     } catch (e) {
         return null;
     }
 }
-
-export { openRootDropdown as openDropdown, closeRootDropdown as closeDropdown };
