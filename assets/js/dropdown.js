@@ -1,30 +1,20 @@
-// ==================== MRDEV DROPDOWN SYSTEM v5.0 ====================
-// i18n, global settings, skeleton loading va auth bilan integratsiyalashgan
+// ==================== MRDEV DROPDOWN SYSTEM v6.0 ====================
+// i18n, global settings, skeleton loading, 2-step logout modal, settings link
 
 import { showPassNotifications } from './features/pass-notifications.js';
 import { logout } from './core/auth.js';
 import { t } from './core/i18n.js';
 import { getNotificationsEnabled } from './core/global-settings.js';
 
-// ==================== BAZA YO'L ANIQLASH ====================
+// ==================== YO'L ANIQLASH ====================
 function getBasePath() {
     const path = window.location.pathname;
-    if (path.includes('/mini/') || path.includes('/popular/')) {
-        return '../..';
-    }
-    return '.';
-}
-
-function getAssetsPath() {
-    const path = window.location.pathname;
-    if (path.includes('/mini/') || path.includes('/popular/')) {
-        return '../..';
-    }
+    if (path.includes('/mini/') || path.includes('/popular/')) return '../..';
     return '.';
 }
 
 const BASE   = getBasePath();
-const ASSETS = getAssetsPath();
+const ASSETS = getBasePath();
 
 const APPS_LIST = {
     popular: [
@@ -55,13 +45,12 @@ const APPS_LIST = {
     ]
 };
 
-// ==================== IKONKA YASASH ====================
+// ==================== IKONKA ====================
 function getAppIconHTML(app, size) {
     const isLarge  = size === 'large';
     const prefix   = isLarge ? '-mini' : '';
     const iconSize = isLarge ? '48px' : '36px';
     const imgSize  = isLarge ? '26px' : '20px';
-
     return `
         <div class="dropdown-app-icon-grid${prefix}" style="width:${iconSize};height:${iconSize};">
             <img
@@ -81,33 +70,25 @@ function attachIconFallbacks(container) {
             const fallback = this.getAttribute('data-fallback') || '??';
             const parent   = this.parentElement;
             parent.innerHTML = `<span style="font-size:12px;font-weight:600;color:var(--text-3);">${fallback}</span>`;
-            parent.style.display        = 'flex';
-            parent.style.alignItems     = 'center';
+            parent.style.display = 'flex';
+            parent.style.alignItems = 'center';
             parent.style.justifyContent = 'center';
         });
     });
 }
 
 // ====================================================================
-//  SKELETON YORDAMCHI FUNKSIYALAR (public — tashqaridan chaqiriladi)
+//  SKELETON / LOADING
 // ====================================================================
-
-/**
- * Trigger elementiga skeleton loading holatini qo'yadi yoki olib tashlaydi.
- * @param {HTMLElement|string} triggerElOrId  - element yoki uning id
- * @param {boolean}            isLoading
- */
 export function setTriggerLoading(triggerElOrId, isLoading) {
     const el = typeof triggerElOrId === 'string'
         ? document.getElementById(triggerElOrId)
         : triggerElOrId;
     if (!el) return;
-
     if (isLoading) {
         el.classList.add('is-loading');
     } else {
         el.classList.remove('is-loading');
-        // Avatar va ismga smooth reveal animatsiyasi
         const avatar = el.querySelector('.trigger-avatar, .header-user-avatar, .settings-user-avatar');
         const info   = el.querySelector('.trigger-info, .header-user-info');
         if (avatar) { avatar.classList.add('auth-reveal'); setTimeout(() => avatar.classList.remove('auth-reveal'), 600); }
@@ -115,11 +96,6 @@ export function setTriggerLoading(triggerElOrId, isLoading) {
     }
 }
 
-/**
- * Dropdown paneliga skeleton holatini qo'yadi/olib tashlaydi.
- * @param {string}  dropdownId  - dropdown element id
- * @param {boolean} isLoading
- */
 export function setDropdownLoading(dropdownId, isLoading) {
     const el = document.getElementById(dropdownId);
     if (!el) return;
@@ -127,10 +103,96 @@ export function setDropdownLoading(dropdownId, isLoading) {
 }
 
 // ====================================================================
+//  LOGOUT MODAL — 2 bosqichli tasdiqlash
+// ====================================================================
+function injectLogoutModals() {
+    if (document.getElementById('logoutModalStep1')) return;
+
+    const html = `
+        <div class="logout-modal-overlay" id="logoutModalStep1">
+            <div class="logout-modal" id="logoutModalBox1">
+                <div class="logout-modal-icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                        <polyline points="16 17 21 12 16 7"/>
+                        <line x1="21" y1="12" x2="9" y2="12"/>
+                    </svg>
+                </div>
+                <h3 class="logout-modal-title">Hisobingizdan chiqmoqchimisiz?</h3>
+                <p class="logout-modal-desc">Tizimdan chiqsangiz barcha sessiyalar yopiladi.</p>
+                <div class="logout-modal-actions">
+                    <button class="logout-modal-btn cancel" id="logoutStep1No">Yo'q</button>
+                    <button class="logout-modal-btn confirm" id="logoutStep1Yes">Ha, chiqaman</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="logout-modal-overlay" id="logoutModalStep2">
+            <div class="logout-modal" id="logoutModalBox2">
+                <div class="logout-modal-icon warning">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                        <line x1="12" y1="9" x2="12" y2="13"/>
+                        <line x1="12" y1="17" x2="12.01" y2="17"/>
+                    </svg>
+                </div>
+                <h3 class="logout-modal-title">Hisobdan chiqishni tasdiqlang</h3>
+                <p class="logout-modal-desc">Bu amalni bekor qilib bo'lmaydi. Davom etasizmi?</p>
+                <div class="logout-modal-actions">
+                    <button class="logout-modal-btn cancel" id="logoutStep2Back">Orqaga</button>
+                    <button class="logout-modal-btn danger" id="logoutStep2Confirm">Tasdiqlash</button>
+                </div>
+            </div>
+        </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', html);
+
+    document.getElementById('logoutStep1No')?.addEventListener('click', closeAllLogoutModals);
+    document.getElementById('logoutModalStep1')?.addEventListener('click', function (e) {
+        if (e.target === this) closeAllLogoutModals();
+    });
+    document.getElementById('logoutStep1Yes')?.addEventListener('click', () => showLogoutModal(2));
+
+    document.getElementById('logoutStep2Back')?.addEventListener('click', () => showLogoutModal(1));
+    document.getElementById('logoutModalStep2')?.addEventListener('click', function (e) {
+        if (e.target === this) closeAllLogoutModals();
+    });
+    document.getElementById('logoutStep2Confirm')?.addEventListener('click', async function () {
+        closeAllLogoutModals();
+        // Faqat trigger chetida ko'k chiziq aylansin
+        const trigger = document.getElementById('mrdevUserTrigger')
+                     || document.getElementById('headerUserTrigger')
+                     || document.getElementById('mrdevUserTriggerMini');
+        if (trigger) trigger.classList.add('is-loading');
+        await logout();
+    });
+}
+
+function showLogoutModal(step) {
+    document.getElementById('logoutModalStep1')?.classList.toggle('show', step === 1);
+    document.getElementById('logoutModalStep2')?.classList.toggle('show', step === 2);
+    // pop animatsiyasi
+    const box = document.getElementById(`logoutModalBox${step}`);
+    if (box) {
+        box.classList.remove('pop');
+        void box.offsetWidth;
+        box.classList.add('pop');
+    }
+}
+
+function closeAllLogoutModals() {
+    document.getElementById('logoutModalStep1')?.classList.remove('show');
+    document.getElementById('logoutModalStep2')?.classList.remove('show');
+}
+
+// ====================================================================
 //  ROOT DROPDOWN
 // ====================================================================
 export function initDropdown(user) {
+    injectLogoutModals();
+
     if (!document.getElementById('mrdevDropdown')) {
+        const settingsPath = `${BASE}/settings/`;
         const html = `
             <div class="mrdev-dropdown-overlay" id="mrdevDropdownOverlay"></div>
             <div class="mrdev-dropdown" id="mrdevDropdown">
@@ -152,7 +214,15 @@ export function initDropdown(user) {
                             <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
                             <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
                         </svg>
-                        ${t('pass_notifications')}
+                        <span class="menu-item-text">${t('pass_notifications')}</span>
+                        <span class="dropdown-notif-badge" id="notifBadge"></span>
+                    </a>
+                    <a href="${settingsPath}" class="dropdown-menu-item" id="settingsMenuItem">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="3"/>
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                        </svg>
+                        <span class="menu-item-text">Sozlamalar</span>
                     </a>
                     <button class="dropdown-menu-item danger" id="logoutMenuItem">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -160,7 +230,7 @@ export function initDropdown(user) {
                             <polyline points="16 17 21 12 16 7"/>
                             <line x1="21" y1="12" x2="9" y2="12"/>
                         </svg>
-                        ${t('logout')}
+                        <span class="menu-item-text">${t('logout')}</span>
                     </button>
                 </div>
             </div>
@@ -189,10 +259,10 @@ export function initDropdown(user) {
 
     document.getElementById('logoutMenuItem')?.addEventListener('click', function () {
         closeRootDropdown();
-        logout();
+        showLogoutModal(1);
     });
 
-    const overlay = document.getElementById('mrdevDropdownOverlay');
+    const overlay  = document.getElementById('mrdevDropdownOverlay');
     const dropdown = document.getElementById('mrdevDropdown');
     const trigger  = document.getElementById('mrdevUserTrigger') || document.getElementById('headerUserTrigger');
 
@@ -205,8 +275,9 @@ export function initDropdown(user) {
     overlay?.addEventListener('click', closeRootDropdown);
 
     document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape' && dropdown?.classList.contains('show')) {
+        if (e.key === 'Escape') {
             closeRootDropdown();
+            closeAllLogoutModals();
         }
     });
 
@@ -230,63 +301,58 @@ function updateDropdownTexts() {
 
     const notifItem = document.getElementById('notifMenuItem');
     if (notifItem) {
-        const svg = notifItem.querySelector('svg');
-        notifItem.innerHTML = '';
-        if (svg) notifItem.appendChild(svg);
-        notifItem.appendChild(document.createTextNode(' ' + t('pass_notifications')));
+        const textEl = notifItem.querySelector('.menu-item-text');
+        if (textEl) textEl.textContent = t('pass_notifications');
     }
-
     const logoutItem = document.getElementById('logoutMenuItem');
     if (logoutItem) {
-        const svg = logoutItem.querySelector('svg');
-        logoutItem.innerHTML = '';
-        if (svg) logoutItem.appendChild(svg);
-        logoutItem.appendChild(document.createTextNode(' ' + t('logout')));
+        const textEl = logoutItem.querySelector('.menu-item-text');
+        if (textEl) textEl.textContent = t('logout');
     }
 }
 
 function updateRootUserInfo(user) {
-    const avatar     = document.getElementById('dropdownAvatar');
-    const name       = document.getElementById('dropdownName');
-    const email      = document.getElementById('dropdownEmail');
-    const mrdevId    = document.getElementById('dropdownMrdevId');
-    const notifItem  = document.getElementById('notifMenuItem');
-    const logoutItem = document.getElementById('logoutMenuItem');
+    const avatar       = document.getElementById('dropdownAvatar');
+    const name         = document.getElementById('dropdownName');
+    const email        = document.getElementById('dropdownEmail');
+    const mrdevId      = document.getElementById('dropdownMrdevId');
+    const notifItem    = document.getElementById('notifMenuItem');
+    const settingsItem = document.getElementById('settingsMenuItem');
+    const logoutItem   = document.getElementById('logoutMenuItem');
 
     if (user) {
         const displayName = user.displayName || user.email?.split('@')[0] || 'User';
         const userEmail   = user.email || '';
-        const photoURL    = user.photoURL;
-        const userId      = localStorage.getItem('mrdev_user_id') || '';
+        const userId      = user.mrdevId || localStorage.getItem('mrdev_user_id') || '';
 
         if (avatar) {
-            avatar.innerHTML = photoURL
-                ? `<img src="${photoURL}" alt="${displayName}">`
+            avatar.innerHTML = user.photoURL
+                ? `<img src="${user.photoURL}" alt="${displayName}">`
                 : displayName.charAt(0).toUpperCase();
         }
         if (name)  name.textContent  = displayName;
         if (email) email.textContent = userEmail;
         if (mrdevId) { mrdevId.textContent = userId; mrdevId.style.display = userId ? 'block' : 'none'; }
-        if (notifItem)  notifItem.style.display  = 'flex';
-        if (logoutItem) logoutItem.style.display = 'flex';
+        if (notifItem)    notifItem.style.display    = 'flex';
+        if (settingsItem) settingsItem.style.display = 'flex';
+        if (logoutItem)   logoutItem.style.display   = 'flex';
     } else {
-        if (avatar)  avatar.textContent  = '?';
-        if (name)    name.textContent    = t('guest');
-        if (email)   email.textContent   = t('login');
+        if (avatar)  avatar.textContent = '?';
+        if (name)    name.textContent   = t('guest');
+        if (email)   email.textContent  = t('login');
         if (mrdevId) mrdevId.style.display = 'none';
-        if (notifItem)  notifItem.style.display  = 'none';
-        if (logoutItem) logoutItem.style.display = 'none';
+        if (notifItem)    notifItem.style.display    = 'none';
+        if (settingsItem) settingsItem.style.display = 'none';
+        if (logoutItem)   logoutItem.style.display   = 'none';
     }
 }
 
 function renderRootAppsGrid(category) {
     const container = document.getElementById('dropdownApps');
     if (!container) return;
-
     const apps = category === 'all'
         ? [...APPS_LIST.popular, ...APPS_LIST.mini]
         : (APPS_LIST[category] || []);
-
     container.innerHTML = `
         <div class="dropdown-apps-grid">
             ${apps.map(app => `
@@ -297,16 +363,9 @@ function renderRootAppsGrid(category) {
             `).join('')}
         </div>
     `;
-
     attachIconFallbacks(container);
 }
 
-/**
- * Root trigger-ni user ma'lumotlari bilan to'ldiradi.
- * Har ikki trigger strukturasini qo'llab-quvvatlaydi:
- *   - .header-user-avatar + .header-user-name  (root header)
- *   - .trigger-avatar     + .trigger-name       (mrdev-user-trigger)
- */
 function setupRootTrigger(user) {
     const trigger = document.getElementById('mrdevUserTrigger') || document.getElementById('headerUserTrigger');
     if (!trigger || !user) return;
@@ -316,19 +375,16 @@ function setupRootTrigger(user) {
         ? `<img src="${user.photoURL}" alt="${displayName}">`
         : displayName.charAt(0).toUpperCase();
 
-    // header-user-trigger strukturasi
     const hAvatar = trigger.querySelector('.header-user-avatar');
     const hName   = trigger.querySelector('.header-user-name');
     if (hAvatar) hAvatar.innerHTML = photoHTML;
     if (hName)   hName.textContent = displayName;
 
-    // mrdev-user-trigger strukturasi
     const tAvatar = trigger.querySelector('.trigger-avatar');
     const tName   = trigger.querySelector('.trigger-name');
     if (tAvatar) tAvatar.innerHTML = photoHTML;
     if (tName)   tName.textContent = displayName;
 
-    // Skeleton ni olib tashla va reveal animatsiya
     setTriggerLoading(trigger, false);
 }
 
@@ -346,6 +402,8 @@ function closeRootDropdown() {
 //  MINI APPS DROPDOWN
 // ====================================================================
 export function initMiniDropdown(user) {
+    injectLogoutModals();
+
     if (!document.getElementById('mrdevDropdownMini')) {
         const html = `
             <div class="mrdev-dropdown-overlay" id="mrdevDropdownOverlayMini"></div>
@@ -358,6 +416,16 @@ export function initMiniDropdown(user) {
                     </div>
                 </div>
                 <div class="dropdown-apps" id="dropdownAppsMini"></div>
+                <div class="dropdown-menu-items mini-menu-items">
+                    <button class="dropdown-menu-item danger" id="logoutMenuItemMini">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                            <polyline points="16 17 21 12 16 7"/>
+                            <line x1="21" y1="12" x2="9" y2="12"/>
+                        </svg>
+                        <span class="menu-item-text">${t('logout')}</span>
+                    </button>
+                </div>
             </div>
         `;
         document.body.insertAdjacentHTML('beforeend', html);
@@ -380,19 +448,18 @@ export function initMiniDropdown(user) {
     overlay?.addEventListener('click', closeMiniDropdown);
 
     document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape' && dropdown?.classList.contains('show')) {
+        if (e.key === 'Escape' && dropdown?.classList.contains('show')) closeMiniDropdown();
+    });
+
+    document.addEventListener('click', function (e) {
+        if (dropdown?.classList.contains('show') && !dropdown.contains(e.target) && trigger && !trigger.contains(e.target)) {
             closeMiniDropdown();
         }
     });
 
-    document.addEventListener('click', function (e) {
-        if (
-            dropdown?.classList.contains('show') &&
-            !dropdown.contains(e.target) &&
-            trigger && !trigger.contains(e.target)
-        ) {
-            closeMiniDropdown();
-        }
+    document.getElementById('logoutMenuItemMini')?.addEventListener('click', function () {
+        closeMiniDropdown();
+        showLogoutModal(1);
     });
 
     document.addEventListener('languageChanged', () => {
@@ -408,9 +475,10 @@ function updateMiniDropdownTexts() {
 }
 
 function updateMiniUserInfo(user) {
-    const avatar = document.getElementById('dropdownAvatarMini');
-    const name   = document.getElementById('dropdownNameMini');
-    const email  = document.getElementById('dropdownEmailMini');
+    const avatar     = document.getElementById('dropdownAvatarMini');
+    const name       = document.getElementById('dropdownNameMini');
+    const email      = document.getElementById('dropdownEmailMini');
+    const logoutMini = document.getElementById('logoutMenuItemMini');
 
     if (user) {
         const displayName = user.displayName || user.email?.split('@')[0] || 'User';
@@ -421,17 +489,18 @@ function updateMiniUserInfo(user) {
         }
         if (name)  name.textContent  = displayName;
         if (email) email.textContent = user.email || '';
+        if (logoutMini) logoutMini.style.display = 'flex';
     } else {
         if (avatar) avatar.textContent = '?';
         if (name)   name.textContent   = t('guest');
         if (email)  email.textContent  = t('login');
+        if (logoutMini) logoutMini.style.display = 'none';
     }
 }
 
 function renderMiniAppsGrid() {
     const container = document.getElementById('dropdownAppsMini');
     if (!container) return;
-
     const allApps = [...APPS_LIST.popular, ...APPS_LIST.mini];
     container.innerHTML = `
         <div class="dropdown-apps-grid-mini">
@@ -446,21 +515,22 @@ function renderMiniAppsGrid() {
     attachIconFallbacks(container);
 }
 
-/**
- * Mini trigger-ni to'ldiradi.
- * Yangi struktura: root header bilan aynan bir xil
- *   trigger-avatar + trigger-info > trigger-name + trigger-role
- */
 function setupMiniTrigger(user) {
     const trigger = document.getElementById('mrdevUserTriggerMini');
-    if (!trigger || !user) return;
+    if (!trigger) return;
+
+    if (!user) {
+        setTriggerLoading(trigger, false);
+        const tName = trigger.querySelector('.trigger-name');
+        if (tName) tName.textContent = t('guest');
+        return;
+    }
 
     const displayName = user.displayName || user.email?.split('@')[0] || 'User';
     const photoHTML   = user.photoURL
         ? `<img src="${user.photoURL}" alt="${displayName}">`
         : displayName.charAt(0).toUpperCase();
 
-    // Yangi root-bilan-bir-xil strukturani qo'llab-quvvatlash
     const tAvatar = trigger.querySelector('.trigger-avatar, .header-user-avatar');
     const tName   = trigger.querySelector('.trigger-name, .header-user-name');
     const tRole   = trigger.querySelector('.trigger-role, .header-user-role');
@@ -469,7 +539,6 @@ function setupMiniTrigger(user) {
     if (tName)   tName.textContent = displayName;
     if (tRole)   tRole.textContent = 'MRDEV';
 
-    // Skeleton ni olib tashla
     setTriggerLoading(trigger, false);
 }
 
@@ -481,6 +550,30 @@ function openMiniDropdown() {
 function closeMiniDropdown() {
     document.getElementById('mrdevDropdownOverlayMini')?.classList.remove('show');
     document.getElementById('mrdevDropdownMini')?.classList.remove('show');
+}
+
+// ====================================================================
+//  MINI APPS AUTH HELPER — localStorage fallback
+// ====================================================================
+export function getMiniUserFromLocalStorage() {
+    try {
+        const raw = localStorage.getItem('mrdev_local_auth');
+        if (!raw) return null;
+        const data = JSON.parse(raw);
+        if (!data?.isLoggedIn || !data?.uid || !data?.email) return null;
+        const ageDays = (Date.now() - (data.loginTime || 0)) / (1000 * 60 * 60 * 24);
+        if (ageDays > 7) return null;
+        return {
+            uid:         data.uid,
+            email:       data.email,
+            displayName: data.displayName || data.email.split('@')[0] || 'User',
+            photoURL:    data.photoURL || null,
+            mrdevId:     data.mrdevId || localStorage.getItem('mrdev_user_id') || '',
+            isAuthenticated: true
+        };
+    } catch (e) {
+        return null;
+    }
 }
 
 export { openRootDropdown as openDropdown, closeRootDropdown as closeDropdown };

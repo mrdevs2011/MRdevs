@@ -152,61 +152,9 @@
             (mehmon holati ko'rsatiladi)
     -->
     <script type="module">
-        import { auth }            from '../../assets/js/core/firebase-init.js';
-        import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-        import { initMiniDropdown, setTriggerLoading } from '../../assets/js/dropdown.js';
-
-        // Trigger hozirda is-loading (HTML da qo'yilgan).
-        // onAuthStateChanged birinchi marta chaqirilganda auth holati ma'lum bo'ladi.
-
-        let dropdownInited = false;
-
-        onAuthStateChanged(auth, (firebaseUser) => {
-            // Global currentUser ni o'rnatamiz (boshqa skriptlar uchun ham foydali)
-            window.currentUser = firebaseUser;
-
-            if (!dropdownInited) {
-                dropdownInited = true;
-
-                if (firebaseUser) {
-                    // Autentifikatsiya qilingan user
-                    const mrdevId = localStorage.getItem('mrdev_user_id') || '';
-                    const user = {
-                        uid:         firebaseUser.uid,
-                        email:       firebaseUser.email,
-                        displayName: firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'User',
-                        photoURL:    firebaseUser.photoURL || null,
-                        mrdevId:     mrdevId,
-                        isAuthenticated: true
-                    };
-                    initMiniDropdown(user);
-                } else {
-                    // Mehmon holati — localStorage da MRDEV local auth bor-yo'qligini tekshir
-                    try {
-                        const local = JSON.parse(localStorage.getItem('mrdev_local_auth') || 'null');
-                        if (local?.isLoggedIn && local?.uid && local?.email) {
-                            const days = (Date.now() - (local.loginTime || 0)) / (1000 * 60 * 60 * 24);
-                            if (days < 7) {
-                                const user = {
-                                    uid:         local.uid,
-                                    email:       local.email,
-                                    displayName: local.displayName || 'User',
-                                    photoURL:    local.photoURL || null,
-                                    mrdevId:     local.mrdevId || localStorage.getItem('mrdev_user_id') || '',
-                                    isAuthenticated: true
-                                };
-                                window.currentUser = user;
-                                initMiniDropdown(user);
-                                return;
-                            }
-                        }
-                    } catch (e) {}
-
-                    // Haqiqiy mehmon
-                    initMiniDropdown(null);
-                }
-            }
-        });
+        // ✅ Yagona mini auth helper — Firebase + localStorage fallback
+        import { initMiniAuth } from '../../assets/js/core/mini-auth.js';
+        initMiniAuth('mrdevUserTriggerMini');
     </script>
 </body>
 </html>
