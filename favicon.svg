@@ -6,5 +6,5 @@
     </linearGradient>
   </defs>
   <circle cx="256" cy="256" r="256" fill="url(#bg)"/>
-  <path d="M256,110 L420,400 L92,400 Z" fill="white" fill-opacity="0.93"/>
+  <path d="M256,110 L420,390 L320,390 L256,260 L192,390 L92,390 Z" fill="white" fill-opacity="0.95"/>
 </svg>
