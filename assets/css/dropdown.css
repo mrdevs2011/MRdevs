@@ -15,6 +15,7 @@
     background: rgba(0, 0, 0, 0);
     opacity: 0;
     visibility: hidden;
+    pointer-events: none;          /* hover rejimida kursor yo'lini bermaydi */
     transition:
         opacity     0.22s var(--ease-out),
         visibility  0.22s,
@@ -27,13 +28,18 @@
 }
 body.dark .cfg-overlay.show { background: rgba(0, 0, 0, 0.38); }
 
+/* Mobilda overlay bosilishi kerak — pointer-events qaytaramiz */
+@media (hover: none) {
+    .cfg-overlay.show { pointer-events: auto; }
+}
+
 /* =====================================================================
    BASE DROPDOWN PANEL
    ===================================================================== */
 
 .cfg-dropdown {
     position: fixed;
-    top: calc(var(--header-h) + 8px);
+    top: calc(var(--header-h) + 2px);
     right: 14px;
     z-index: 160;
 
@@ -57,6 +63,7 @@ body.dark .cfg-overlay.show { background: rgba(0, 0, 0, 0.38); }
     flex-direction: column;
     max-height: calc(100vh - var(--header-h) - 28px);
 }
+
 .cfg-dropdown.show {
     opacity:    1;
     visibility: visible;

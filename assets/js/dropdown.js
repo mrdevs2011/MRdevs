@@ -103,17 +103,53 @@ function bindTrigger() {
     const trigger = oldTrigger.cloneNode(true);
     oldTrigger.parentNode.replaceChild(trigger, oldTrigger);
 
+    // ── Hover timerlari ──────────────────────────────────────
+    let _openTimer  = null;
+    let _closeTimer = null;
+
+    function scheduleOpen() {
+        clearTimeout(_closeTimer);
+        if (_isOpen) return;
+        _openTimer = setTimeout(openDropdown, 80);
+    }
+
+    function scheduleClose() {
+        clearTimeout(_openTimer);
+        _closeTimer = setTimeout(() => {
+            const ddEl = document.getElementById(_dropdownId);
+            const trEl = document.getElementById('headerUserTrigger');
+            if (!ddEl?.matches(':hover') && !trEl?.matches(':hover')) closeDropdown();
+        }, 250);
+    }
+
+    // ── Trigger hover ────────────────────────────────────────
+    trigger.addEventListener('mouseenter', scheduleOpen);
+    trigger.addEventListener('mouseleave', scheduleClose);
+
+    // ── Dropdown hover ───────────────────────────────────────
+    const ddEl = document.getElementById(_dropdownId);
+    if (ddEl) {
+        ddEl.addEventListener('mouseenter', () => clearTimeout(_closeTimer));
+        ddEl.addEventListener('mouseleave', scheduleClose);
+    }
+
+    // ── Click (mobil + klaviatura uchun) ────────────────────
     trigger.addEventListener('click', e => {
         e.stopPropagation();
+        clearTimeout(_openTimer);
+        clearTimeout(_closeTimer);
         toggleDropdown();
     });
 
+    // ── Overlay click ────────────────────────────────────────
     document.getElementById(_overlayId)?.addEventListener('click', closeDropdown);
 
+    // ── Escape ───────────────────────────────────────────────
     document.addEventListener('keydown', e => {
         if (e.key === 'Escape' && _isOpen) closeDropdown();
     });
 
+    // ── Tashqi click (mobil / touch) ─────────────────────────
     document.addEventListener('click', e => {
         const dd = document.getElementById(_dropdownId);
         const tr = document.getElementById('headerUserTrigger');
