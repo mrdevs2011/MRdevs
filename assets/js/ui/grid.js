@@ -1,9 +1,5 @@
 // ==================== MRDEV APP GRID RENDERER ====================
-
-// i18n global window orqali (ES module emas)
-function _gt(key) {
-    return (window.mrdevI18n && window.mrdevI18n.t) ? window.mrdevI18n.t(key) : key;
-}
+import { t } from '../core/i18n.js';
 
 function getIconFallback(name) {
     const map = {
@@ -22,7 +18,7 @@ export function renderAppGrid(apps, containerId) {
     if (!container) return;
 
     if (!apps || apps.length === 0) {
-        container.innerHTML = `<div class="empty-state">${_gt('apps_not_found')}</div>`;
+        container.innerHTML = `<div class="empty-state">${t('apps_not_found')}</div>`;
         return;
     }
 

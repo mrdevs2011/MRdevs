@@ -93,17 +93,3 @@ body {
     .header-title span { display: none; }
     .task-item { padding: 12px 14px; }
 }
-
-/* ==================== NO COPY ==================== */
-*, *::before, *::after {
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-}
-input, textarea, [contenteditable="true"] {
-    -webkit-user-select: text;
-    -moz-user-select: text;
-    -ms-user-select: text;
-    user-select: text;
-}

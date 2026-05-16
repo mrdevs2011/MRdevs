@@ -24,7 +24,7 @@ async function loadDevices(user) {
     const container = document.getElementById('settingsDropDevices');
     if (!container) return;
 
-    container.innerHTML = `<div class="settings-dropdown-empty">Yuklanmoqda...</div>`;
+    container.innerHTML = `<div class="settings-dropdown-empty">${t('loading')}</div>`;
 
     try {
         // 1. localStorage dan tekshir
@@ -60,7 +60,7 @@ function renderDevices(devices) {
     if (!container) return;
 
     if (!devices || devices.length === 0) {
-        container.innerHTML = `<div class="settings-dropdown-empty">${t('device_not_found')}</div>`;
+        container.innerHTML = `<div class="settings-dropdown-empty">${t('connected_device_not_found')}</div>`;
         return;
     }
 
@@ -74,10 +74,10 @@ function renderDevices(devices) {
                     ${getDeviceIcon(device.type || 'desktop')}
                 </div>
                 <div class="settings-device-info">
-                    <div class="settings-device-name">${escapeHtml(device.name || device.type || 'Qurilma')}</div>
+                    <div class="settings-device-name">${escapeHtml(device.name || device.type || t('device_name_default'))}</div>
                     <div class="settings-device-meta">${isCurrent ? t('current_device') : (device.lastSeen ? formatDate(device.lastSeen) : '')}</div>
                 </div>
-                ${isCurrent ? `<div class="settings-device-badge">${t('active_device')}</div>` : ''}
+                ${isCurrent ? `<div class="settings-device-badge">${t('active')}</div>` : ''}
             </div>
         `;
     }).join('');

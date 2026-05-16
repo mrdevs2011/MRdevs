@@ -56,7 +56,7 @@ async function loadPassNotifications(uid, email) {
     const container = document.getElementById('passNotifList');
     if (!container) return;
 
-    container.innerHTML = `<div style="text-align:center;padding:20px;color:var(--text-3);">⏳ ${t('loading') || 'Yuklanmoqda...'}</div>`;
+    container.innerHTML = `<div style="text-align:center;padding:20px;color:var(--text-3);">⏳ ${t('loading')}</div>`;
 
     try {
         if (!rtdb) {

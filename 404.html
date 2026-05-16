@@ -20,7 +20,7 @@
     <link rel="stylesheet" href="/assets/css/variables.css">
 
     <style>
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-user-select: none; -moz-user-select: none; user-select: none; }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             font-family: var(--font-sans, 'Instrument Sans', sans-serif);
@@ -119,7 +119,9 @@
         </svg>
         <span id="err-btn-text">Bosh sahifaga</span>
     </a>
-    
+
+    <span class="err-brand">MRDEV</span>
+
     <script>
         // ============ TEMA ============
         const theme = window.__404_theme || localStorage.getItem('theme') || 'dark';
@@ -133,43 +135,25 @@
         const i18n = {
             uz: {
                 title:    'Sahifa topilmadi',
-                desc:     'URL ni tekshiring yoki bosh sahifaga qayting',
+                desc:     'URL ni tekshiring',
                 btn:      'Bosh sahifaga',
                 htmlLang: 'uz'
             },
             ru: {
                 title:    'Страница не найдена',
-                desc:     'Проверьте URL или вернитесь на главную',
+                desc:     'Проверьте URL адрес',
                 btn:      'На главную',
                 htmlLang: 'ru'
             },
             en: {
                 title:    'Page not found',
-                desc:     'Check the URL or return to home',
+                desc:     'Check the URL',
                 btn:      'Go to home',
                 htmlLang: 'en'
             }
         };
 
-        // i18n.js dagi detectInitialLang() bilan bir xil mantiq
-        function detectLang() {
-            var saved = localStorage.getItem('mrdev_lang');
-            if (saved && i18n[saved]) return saved;
-            var nav = (navigator.language || navigator.userLanguage || '').toLowerCase();
-            if (nav.startsWith('ru')) return 'ru';
-            if (nav.startsWith('en')) return 'en';
-            if (nav.startsWith('uz')) return 'uz';
-            var langs = navigator.languages || [];
-            for (var i = 0; i < langs.length; i++) {
-                var c = langs[i].toLowerCase();
-                if (c.startsWith('ru')) return 'ru';
-                if (c.startsWith('en')) return 'en';
-                if (c.startsWith('uz')) return 'uz';
-            }
-            return 'uz';
-        }
-
-        const lang   = detectLang();
+        const lang   = localStorage.getItem('mrdev_lang') || 'uz';
         const t      = i18n[lang] || i18n.uz;
 
         document.getElementById('err-title').textContent    = t.title;

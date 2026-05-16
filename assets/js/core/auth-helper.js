@@ -109,9 +109,9 @@ export function getUserDisplayName() {
 
     try {
         const local = JSON.parse(localStorage.getItem('mrdev_local_auth') || '{}');
-        return local.displayName || (window.mrdevI18n ? window.mrdevI18n.t('guest') : 'Guest');
+        return local.displayName || 'Mehmon';
     } catch (e) {
-        return window.mrdevI18n ? window.mrdevI18n.t('guest') : 'Guest';
+        return 'Mehmon';
     }
 }
 

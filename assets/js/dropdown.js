@@ -29,7 +29,6 @@ let _dropdownId  = null;   // Joriy dropdown element ID
 let _overlayId   = null;   // Joriy overlay ID
 let _isOpen      = false;
 let _logoutState = 'idle'; // 'idle' | 'confirm'
-let _lastUser    = null;   // languageChanged da qayta render uchun
 let _logoutTimer = null;
 
 // =====================================================================
@@ -61,7 +60,7 @@ function updateTrigger(user) {
     const nm = trigger.querySelector('.header-user-name');
     if (!user || !user.isAuthenticated) {
         if (av) av.textContent = '?';
-        if (nm) nm.textContent = t('guest');
+        if (nm) nm.textContent = 'Mehmon';
     } else {
         const dn = user.displayName || user.email?.split('@')[0] || 'User';
         if (av) av.innerHTML = user.photoURL
@@ -172,7 +171,7 @@ function resetLogout() {
     const btn = document.getElementById('cfg-logout-btn');
     if (btn) {
         btn.classList.remove('confirm-state');
-        btn.querySelector('.cfg-btn-label').textContent = t('logout_label');
+        btn.querySelector('.cfg-btn-label').textContent = 'Chiqish';
     }
 }
 
@@ -182,7 +181,7 @@ function handleLogoutClick() {
         const btn = document.getElementById('cfg-logout-btn');
         if (btn) {
             btn.classList.add('confirm-state');
-            btn.querySelector('.cfg-btn-label').textContent = t('logout_confirm_short');
+            btn.querySelector('.cfg-btn-label').textContent = 'Ishonchingiz komilmi?';
         }
         // 4 sekunddan keyin avtomatik reset
         _logoutTimer = setTimeout(() => resetLogout(), 4000);
@@ -202,7 +201,7 @@ function handleLogoutClick() {
 // =====================================================================
 
 function buildRootHTML(user) {
-    const dn  = user?.displayName || user?.email?.split('@')[0] || t('guest');
+    const dn  = user?.displayName || user?.email?.split('@')[0] || 'Mehmon';
     const uid = user?.mrdevId || localStorage.getItem('mrdev_user_id') || '';
     const isAuth = user?.isAuthenticated;
 
@@ -227,18 +226,18 @@ function buildRootHTML(user) {
 
             <button class="cfg-item" id="cfg-notif-btn">
                 <span class="cfg-item-icon cfg-icon-bell">${Icons.bell}</span>
-                <span class="cfg-item-text">${t('notifications_label')}</span>
+                <span class="cfg-item-text">Bildirishnomalar</span>
                 <span class="cfg-item-badge" id="cfg-notif-badge" style="display:none;"></span>
             </button>
 
             <button class="cfg-item" id="cfg-about-btn">
                 <span class="cfg-item-icon cfg-icon-info">${Icons.info}</span>
-                <span class="cfg-item-text">${t('about_label')}</span>
+                <span class="cfg-item-text">Loyiha haqida</span>
             </button>
 
             <a href="${BASE}/settings/" class="cfg-item">
                 <span class="cfg-item-icon cfg-icon-settings">${Icons.settings}</span>
-                <span class="cfg-item-text">${t('settings_label')}</span>
+                <span class="cfg-item-text">Sozlamalar</span>
                 <span class="cfg-item-chevron">${Icons.chevronRight}</span>
             </a>
 
@@ -246,7 +245,7 @@ function buildRootHTML(user) {
             <div class="cfg-divider"></div>
             <button class="cfg-item cfg-item-danger" id="cfg-logout-btn">
                 <span class="cfg-item-icon">${Icons.logout}</span>
-                <span class="cfg-btn-label">${t('logout_label')}</span>
+                <span class="cfg-btn-label">Chiqish</span>
             </button>` : ''}
 
         </div>
@@ -257,7 +256,7 @@ function fillRootDynamic(user) {
     const av = document.getElementById('cfg-root-avatar');
     const nm = document.getElementById('cfg-root-name');
     if (av) av.innerHTML = avatarHTML(user, 48);
-    if (nm) nm.textContent = user?.displayName || user?.email?.split('@')[0] || t('guest');
+    if (nm) nm.textContent = user?.displayName || user?.email?.split('@')[0] || 'Mehmon';
 }
 
 // =====================================================================
@@ -318,7 +317,7 @@ function buildMiniHTML() {
 // =====================================================================
 
 function buildSettingsHTML(user) {
-    const dn    = user?.displayName || user?.email?.split('@')[0] || t('guest');
+    const dn    = user?.displayName || user?.email?.split('@')[0] || 'Mehmon';
     const uid   = user?.mrdevId || localStorage.getItem('mrdev_user_id') || '';
     const isAuth = user?.isAuthenticated;
 
@@ -326,10 +325,10 @@ function buildSettingsHTML(user) {
     const accounts = getAllAccounts();
     let accountsHTML = '';
     if (!accounts.length) {
-        accountsHTML = `<div class="cfg-devices-empty">${t('accounts_not_found')}</div>`;
+        accountsHTML = `<div class="cfg-devices-empty">${t('no_connected_accounts')}</div>`;
     } else {
         accountsHTML = accounts.map(acc => {
-            const accDn    = acc.displayName || acc.email?.split('@')[0] || t('guest');
+            const accDn    = acc.displayName || acc.email?.split('@')[0] || t('user_role');
             const pInfo    = getProviderInfo(acc.provider);
             const isActive = acc.uid === user?.uid;
             const accAv    = acc.photoURL
@@ -386,14 +385,14 @@ function buildSettingsHTML(user) {
 
             <button class="cfg-item" id="cfg-notif-btn">
                 <span class="cfg-item-icon cfg-icon-bell">${Icons.bell}</span>
-                <span class="cfg-item-text">${t('notifications_label')}</span>
+                <span class="cfg-item-text">Bildirishnomalar</span>
             </button>
 
             ${isAuth ? `
             <div class="cfg-divider"></div>
             <button class="cfg-item cfg-item-danger" id="cfg-logout-btn">
                 <span class="cfg-item-icon">${Icons.logout}</span>
-                <span class="cfg-btn-label">${t('logout_label')}</span>
+                <span class="cfg-btn-label">Chiqish</span>
             </button>` : ''}
 
         </div>
@@ -405,7 +404,7 @@ function fillSettingsDynamic(user) {
     const nm = document.getElementById('cfg-settings-name');
     const em = document.getElementById('cfg-settings-email');
     if (av) av.innerHTML = avatarHTML(user, 68);
-    if (nm) nm.textContent = user?.displayName || user?.email?.split('@')[0] || t('guest');
+    if (nm) nm.textContent = user?.displayName || user?.email?.split('@')[0] || 'Mehmon';
     if (em && user?.email) em.textContent = user.email;
 
     // Hisoblarni yangilash
@@ -413,11 +412,11 @@ function fillSettingsDynamic(user) {
     if (!list) return;
     const accounts = getAllAccounts();
     if (!accounts.length) {
-        list.innerHTML = `<div class="cfg-devices-empty">${t('accounts_not_found')}</div>`;
+        list.innerHTML = `<div class="cfg-devices-empty">${t('no_connected_accounts')}</div>`;
         return;
     }
     list.innerHTML = accounts.map(acc => {
-        const accDn    = acc.displayName || acc.email?.split('@')[0] || t('guest');
+        const accDn    = acc.displayName || acc.email?.split('@')[0] || t('user_role');
         const pInfo    = getProviderInfo(acc.provider);
         const isActive = acc.uid === user?.uid;
         const accAv    = acc.photoURL
@@ -465,9 +464,6 @@ function attachEvents(section) {
 // =====================================================================
 
 function injectDropdown(user) {
-    // user ni saqlash (languageChanged da qayta render uchun)
-    _lastUser = user;
-
     // Mavjud elementlarni tozalash
     document.getElementById('cfg-dropdown')?.remove();
     document.getElementById('cfg-overlay')?.remove();
@@ -587,13 +583,3 @@ export function getMiniUserFromLocalStorage() {
         return null;
     }
 }
-// =====================================================================
-// TIL O'ZGARISHI: dropdown ni qayta render qilish
-// =====================================================================
-
-document.addEventListener('languageChanged', () => {
-    document.getElementById('cfg-dropdown')?.remove();
-    document.getElementById('cfg-overlay')?.remove();
-    injectDropdown(_lastUser);
-    updateTrigger(_lastUser);
-});

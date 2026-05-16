@@ -1,21 +1,8 @@
 <!DOCTYPE html>
-<html lang="uz" id="html-root">
+<html lang="uz">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <script>
-        // html lang atributini theme-flash-fix.js yuklanishidan OLDIN ham o'rnatish
-        (function(){
-            var s = localStorage.getItem('mrdev_lang');
-            if (!s) {
-                var nav = (navigator.language || '').toLowerCase();
-                if (nav.startsWith('ru')) s = 'ru';
-                else if (nav.startsWith('en')) s = 'en';
-                else { var ll = navigator.languages||[]; for(var i=0;i<ll.length;i++){var c=ll[i].toLowerCase();if(c.startsWith('ru')){s='ru';break;}if(c.startsWith('en')){s='en';break;}} }
-            }
-            if (s) document.documentElement.lang = s;
-        })();
-    </script>
     <title data-i18n="app_title">MRDEV</title>
     
     <!-- ==================== FLASH FIX: ENG BIRINCHI ==================== -->

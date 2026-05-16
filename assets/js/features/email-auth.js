@@ -104,7 +104,7 @@ function firebaseErr(code) {
             'auth/network-request-failed': 'No internet connection',
         }
     };
-    return errors[lang]?.[code] || errors.en[code] || t('error');
+    return errors[lang]?.[code] || t('error');
 }
 
 function updateModalTexts() {

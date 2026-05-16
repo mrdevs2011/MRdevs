@@ -113,7 +113,7 @@ function renderAccountList() {
                     <div class="account-info">
                         <div class="account-name">
                             ${account.displayName || 'User'}
-                            ${isActive ? `<span class="active-badge">${t('active') || 'Faol'}</span>` : ''}
+                            ${isActive ? `<span class="active-badge">${t('active')}</span>` : ''}
                         </div>
                         <div class="account-email">${account.email || ''}</div>
                         <div class="account-meta">
