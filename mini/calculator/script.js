@@ -2,6 +2,7 @@
 import { initAuth, smartSave, getCurrentUser, getUserId } from '../../assets/js/firebase-helper.js';
 import { initMiniDropdown } from '../../assets/js/dropdown.js';
 import { getFirebase } from '../../assets/js/firebase-helper.js';
+import { t, initI18n } from '../../assets/js/core/i18n.js';
 
 var _db = null;
 function getDB() {
@@ -233,7 +234,7 @@ function loadCloudHistory() {
 
 function renderHistory(items) {
     if (!items.length) {
-        historyList.innerHTML = '<div class="empty-history">Tarix bo\'sh</div>';
+        historyList.innerHTML = '<div class="empty-history">' + t('calc_history_empty') + '</div>';
         return;
     }
     historyList.innerHTML = items.map(function(item) {
@@ -253,7 +254,7 @@ function renderHistory(items) {
 }
 
 $('clearHistoryBtn').addEventListener('click', async function() {
-    if (!confirm('Tarixni tozalash?')) return;
+    if (!confirm(t('calc_history_clear_confirm'))) return;
     var uid = getUserId();
     var db = getDB();
     if (uid && db) {
@@ -269,7 +270,7 @@ $('clearHistoryBtn').addEventListener('click', async function() {
     }
     localStorage.removeItem('mr_calc_history');
     renderHistory([]);
-    showToast('Tozalandi');
+    showToast(t('calc_cleared'));
 });
 
 // ==================== AUTH UI ====================
@@ -295,6 +296,7 @@ function updateUserUI(user) {
 // ==================== INIT ====================
 function init() {
     console.log('MRDEV Calculator v2.0 ishga tushmoqda...');
+    initI18n();
     initTheme();
     updateDisplay();
     loadLocalHistory();
@@ -311,6 +313,17 @@ function init() {
             initMiniDropdown(user);
         } catch(e) {
             console.warn('Dropdown init failed:', e.message);
+        }
+    });
+
+    // Til o'zgarganda UI ni qayta render qilish
+    document.addEventListener('languageChanged', function() {
+        initI18n();
+        // Tarix panelini qayta ko'rsatish (bo'sh yozuv tarjimasi yangilansin)
+        if (currentUser) {
+            loadCloudHistory();
+        } else {
+            loadLocalHistory();
         }
     });
 

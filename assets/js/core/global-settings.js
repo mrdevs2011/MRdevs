@@ -63,7 +63,7 @@ export function getCacheSize() {
     const excludeKeys = [
         'mrdev_theme', 'mrdev_notifications', 'mrdev_lang',
         'mrdev_user_id', 'mrdev_local_auth', 'mrdev_auth_user',
-        'theme', 'mrdev_last_sync'
+        'theme', 'mrdev_last_sync', 'mrdev_lang_manual'
     ];
     for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
@@ -79,7 +79,7 @@ export function clearCache() {
     const excludeKeys = [
         'mrdev_theme', 'mrdev_notifications', 'mrdev_lang',
         'mrdev_user_id', 'mrdev_local_auth', 'mrdev_auth_user',
-        'theme', 'mrdev_last_sync'
+        'theme', 'mrdev_last_sync', 'mrdev_lang_manual'
     ];
     const toRemove = [];
     for (let i = 0; i < localStorage.length; i++) {

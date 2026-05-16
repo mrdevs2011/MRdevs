@@ -20,6 +20,7 @@ import {
     closePassNotifModal
 } from './features/pass-notifications.js';
 import { showToast } from './core/toast.js';
+import { initI18n } from './core/i18n.js';
 
 // ==================== WINDOW EXPORTS ====================
 window.toggleTheme          = toggleTheme;
@@ -65,6 +66,7 @@ window.toggleMobileSearch = function () {
 document.addEventListener('DOMContentLoaded', () => {
     logger.platformStart();
 
+    initI18n();   // Saqlangan tilni bir marta qo'llash — auth dan oldin
     initTheme();
     initAuth();
     initSidebar();

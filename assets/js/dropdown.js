@@ -30,6 +30,11 @@ let _overlayId   = null;   // Joriy overlay ID
 let _isOpen      = false;
 let _logoutState = 'idle'; // 'idle' | 'confirm'
 let _logoutTimer = null;
+let _currentUser = null;   // languageChanged uchun so'nggi user holati
+
+// Hover timerlari — bindTrigger va bindDropdownHover o'rtasida ulashiladi
+let _openTimer  = null;
+let _closeTimer = null;
 
 // =====================================================================
 // TRIGGER UTILS — HEADER O'ZGARMAYDI
@@ -95,6 +100,30 @@ function toggleDropdown() {
     _isOpen ? closeDropdown() : openDropdown();
 }
 
+function scheduleOpen() {
+    clearTimeout(_closeTimer);
+    if (_isOpen) return;
+    _openTimer = setTimeout(openDropdown, 80);
+}
+
+function scheduleClose() {
+    clearTimeout(_openTimer);
+    _closeTimer = setTimeout(() => {
+        const ddEl = document.getElementById(_dropdownId);
+        const trEl = document.getElementById('headerUserTrigger');
+        if (!ddEl?.matches(':hover') && !trEl?.matches(':hover')) closeDropdown();
+    }, 250);
+}
+
+// Dropdown element'iga hover listener'larini ulaydi.
+// Trigger qayta klonlanmasdan, faqat dropdown yangilanganda ham chaqiriladi.
+function bindDropdownHover() {
+    const ddEl = document.getElementById(_dropdownId);
+    if (!ddEl) return;
+    ddEl.addEventListener('mouseenter', () => clearTimeout(_closeTimer));
+    ddEl.addEventListener('mouseleave', scheduleClose);
+}
+
 function bindTrigger() {
     const oldTrigger = document.getElementById('headerUserTrigger');
     if (!oldTrigger) return;
@@ -103,35 +132,12 @@ function bindTrigger() {
     const trigger = oldTrigger.cloneNode(true);
     oldTrigger.parentNode.replaceChild(trigger, oldTrigger);
 
-    // ── Hover timerlari ──────────────────────────────────────
-    let _openTimer  = null;
-    let _closeTimer = null;
-
-    function scheduleOpen() {
-        clearTimeout(_closeTimer);
-        if (_isOpen) return;
-        _openTimer = setTimeout(openDropdown, 80);
-    }
-
-    function scheduleClose() {
-        clearTimeout(_openTimer);
-        _closeTimer = setTimeout(() => {
-            const ddEl = document.getElementById(_dropdownId);
-            const trEl = document.getElementById('headerUserTrigger');
-            if (!ddEl?.matches(':hover') && !trEl?.matches(':hover')) closeDropdown();
-        }, 250);
-    }
-
     // ── Trigger hover ────────────────────────────────────────
     trigger.addEventListener('mouseenter', scheduleOpen);
     trigger.addEventListener('mouseleave', scheduleClose);
 
     // ── Dropdown hover ───────────────────────────────────────
-    const ddEl = document.getElementById(_dropdownId);
-    if (ddEl) {
-        ddEl.addEventListener('mouseenter', () => clearTimeout(_closeTimer));
-        ddEl.addEventListener('mouseleave', scheduleClose);
-    }
+    bindDropdownHover();
 
     // ── Click (mobil + klaviatura uchun) ────────────────────
     trigger.addEventListener('click', e => {
@@ -500,6 +506,7 @@ function attachEvents(section) {
 // =====================================================================
 
 function injectDropdown(user) {
+    _currentUser = user;
     // Mavjud elementlarni tozalash
     document.getElementById('cfg-dropdown')?.remove();
     document.getElementById('cfg-overlay')?.remove();
@@ -619,3 +626,64 @@ export function getMiniUserFromLocalStorage() {
         return null;
     }
 }
+
+// =====================================================================
+// TIL O'ZGARGANDA DROPDOWN KONTENTINI YANGILASH
+// =====================================================================
+
+/**
+ * Header triggerini qayta klonlamasdan faqat dropdown ichki
+ * kontentini qayta quradi. Hover/click logikasi saqlanib qoladi,
+ * chunki modul darajasidagi _openTimer/_closeTimer va ID-based
+ * getElementById referenslar yangi element uchun ham to'g'ri ishlaydi.
+ */
+function refreshDropdownContent() {
+    if (!document.getElementById('cfg-dropdown')) return;
+
+    const wasOpen = _isOpen;
+
+    // Avval ochiq holatni yopdik (animatsiyasiz — class olib tashlanadi)
+    document.getElementById(_overlayId)?.classList.remove('show');
+    document.getElementById(_dropdownId)?.classList.remove('show');
+    _isOpen = false;
+
+    // Eski dropdown va overlay ni olib tashlaymiz
+    document.getElementById('cfg-dropdown')?.remove();
+    document.getElementById('cfg-overlay')?.remove();
+
+    // Joriy seksiya uchun yangi HTML ni quramiz
+    let html = '';
+    if (SECTION === 'mini') {
+        html = buildMiniHTML();
+    } else if (SECTION === 'settings') {
+        html = buildSettingsHTML(_currentUser);
+    } else {
+        html = buildRootHTML(_currentUser);
+    }
+
+    document.body.insertAdjacentHTML('beforeend', html);
+    _dropdownId = 'cfg-dropdown';
+    _overlayId  = 'cfg-overlay';
+
+    // Mini ilovalar uchun fallback rasmlarni qayta ulash
+    if (SECTION === 'mini') {
+        const body = document.getElementById('cfg-mini-body');
+        if (body) attachFallbacks(body);
+    }
+
+    // Event listener'larni qayta ulash
+    attachEvents(SECTION);
+    document.getElementById(_overlayId)?.addEventListener('click', closeDropdown);
+
+    // Dropdown hover listener'larini qayta ulash (trigger qayta klonlanmaydi)
+    bindDropdownHover();
+
+    // Agar oldin ochiq bo'lsa, qayta ochamiz
+    if (wasOpen) openDropdown();
+}
+
+// Boshqa fayllar kabi (account-switcher.js, sidebar.js, email-auth.js va b.)
+// til o'zgarganda dropdown kontentini yangilaymiz.
+document.addEventListener('languageChanged', () => {
+    refreshDropdownContent();
+});

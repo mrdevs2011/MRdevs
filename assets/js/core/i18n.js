@@ -121,7 +121,14 @@ const translations = {
         connected_device_not_found: "Ulangan qurilma topilmadi",
         current_device: "Hozirgi qurilma",
         device_name_default: "Qurilma",
-        apps_not_found: "Ilovalar topilmadi"
+        apps_not_found: "Ilovalar topilmadi",
+
+        // ========== MINI: CALCULATOR ==========
+        calc_history_title:         "Hisob-kitoblar tarixi",
+        calc_clear:                  "Tozalash",
+        calc_history_empty:          "Tarix bo'sh",
+        calc_history_clear_confirm:  "Tarixni tozalash?",
+        calc_cleared:                "Tozalandi"
     },
 
     ru: {
@@ -243,7 +250,14 @@ const translations = {
         connected_device_not_found: "Устройства не найдены",
         current_device: "Текущее устройство",
         device_name_default: "Устройство",
-        apps_not_found: "Приложения не найдены"
+        apps_not_found: "Приложения не найдены",
+
+        // ========== MINI: CALCULATOR ==========
+        calc_history_title:         "История вычислений",
+        calc_clear:                  "Очистить",
+        calc_history_empty:          "История пуста",
+        calc_history_clear_confirm:  "Очистить историю?",
+        calc_cleared:                "Очищено"
     },
 
     en: {
@@ -365,7 +379,14 @@ const translations = {
         connected_device_not_found: "No connected devices found",
         current_device: "Current device",
         device_name_default: "Device",
-        apps_not_found: "Apps not found"
+        apps_not_found: "Apps not found",
+
+        // ========== MINI: CALCULATOR ==========
+        calc_history_title:         "Calculation history",
+        calc_clear:                  "Clear",
+        calc_history_empty:          "History is empty",
+        calc_history_clear_confirm:  "Clear history?",
+        calc_cleared:                "Cleared"
     }
 };
 
