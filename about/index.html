@@ -1,262 +1,781 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MR DEV — Platforma haqida</title>
-    <meta name="description" content="MR Dev — O'zbek dasturchilar va talabalar uchun universal platforma. Fayl saqlash, test yaratish, kod yozish, va 22+ qulay vosita. MRDEV ID tizimi haqida batafsil.">
-    <meta name="keywords" content="mrdev, mr dev, mrdev id, o'zbek dasturchilar, fayl yuklash, exam, test, uzbekistan developer">
-    <meta name="theme-color" content="#2a7de1">
-    
-    <!-- ==================== GLOBAL MRDEV ASSETS ==================== -->
-    <script src="../assets/js/core/theme-flash-fix.js"></script>
-    <link rel="stylesheet" href="../style.css">
-    <link rel="stylesheet" href="../assets/css/variables.css">
-    <link rel="stylesheet" href="../assets/css/reset.css">
-    <link rel="stylesheet" href="../assets/css/header.css">
-    <link rel="stylesheet" href="../assets/css/sidebar.css">
-    <link rel="stylesheet" href="../assets/css/dropdown.css">
-    <link rel="stylesheet" href="../assets/css/loading.css">
-    <link rel="stylesheet" href="../assets/css/splash.css">
-    <link rel="stylesheet" href="../assets/css/toast.css">
-    <link rel="stylesheet" href="../assets/css/modal.css">
-    <link rel="stylesheet" href="../assets/css/auth.css">
-    <link rel="stylesheet" href="../assets/css/mrdev-login.css">
-    
-    <!-- About sahifasiga xos stillar -->
-    <link rel="stylesheet" href="./style.css">
-    
-    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
-    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="description" content="MR Dev — O'zbek dasturchilar va talabalar uchun universal platforma. 22+ qulay vosita, MRDEV ID tizimi, to'liq bepul.">
+<title>Platforma haqida — MRDEV</title>
+
+<!-- ① Flash fix: eng birinchi -->
+<script src="../assets/js/core/theme-flash-fix.js"></script>
+
+<!-- ② CSS -->
+<link rel="stylesheet" href="../assets/css/variables.css">
+<link rel="stylesheet" href="../assets/css/reset.css">
+<link rel="stylesheet" href="../assets/css/loading.css">
+<link rel="stylesheet" href="../assets/css/splash.css">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+    font-family: var(--font-sans);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+a { color: inherit; text-decoration: none; }
+
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 10px; }
+
+/* ── Progress bar ── */
+.ab-progress {
+    position: fixed; top: 0; left: 0; height: 2px;
+    background: linear-gradient(90deg, #64d2ff, var(--accent));
+    width: 0%; z-index: 9999; transition: width 0.1s;
+    pointer-events: none;
+}
+
+/* ── Header ── */
+.ab-header {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--glass);
+    backdrop-filter: blur(20px) saturate(1.4);
+    -webkit-backdrop-filter: blur(20px) saturate(1.4);
+    border-bottom: 1px solid var(--border);
+    height: 60px; display: flex; align-items: center;
+    padding: 0 20px; gap: 16px;
+}
+.ab-back {
+    display: flex; align-items: center; gap: 8px;
+    color: var(--text-3); font-size: 13px; font-weight: 500;
+    transition: color .2s, transform .2s; flex-shrink: 0;
+}
+.ab-back:hover { color: var(--text); transform: translateX(-2px); }
+.ab-header-logo {
+    flex: 1; display: flex; align-items: center; justify-content: center;
+    font-size: 18px; font-weight: 700; letter-spacing: -0.5px;
+}
+.ab-header-logo .mr { color: var(--text); }
+.ab-header-logo .dev { color: var(--accent); }
+.ab-theme-btn {
+    width: 38px; height: 38px; border: 1px solid var(--border);
+    background: var(--surface); border-radius: var(--radius-md);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text-3); cursor: pointer; transition: all .2s; flex-shrink: 0;
+}
+.ab-theme-btn:hover { background: var(--surface-2); color: var(--text); }
+
+/* ── Hero ── */
+.ab-hero {
+    padding: 72px 20px 64px;
+    text-align: center; max-width: 680px; margin: 0 auto;
+}
+.ab-hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--accent-dim);
+    border: 1px solid rgba(42,125,225,.15);
+    border-radius: var(--radius-full);
+    padding: 6px 16px; font-size: 12px; font-weight: 500; color: var(--accent);
+    margin-bottom: 28px; font-family: var(--font-mono); letter-spacing: .5px;
+}
+.ab-badge-dot {
+    width: 6px; height: 6px; border-radius: 50%; background: var(--accent);
+    animation: abPulse 2s ease-in-out infinite;
+}
+@keyframes abPulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.8)} }
+
+.ab-hero-title {
+    font-size: clamp(52px,12vw,88px); font-weight: 700;
+    letter-spacing: -3px; line-height: 1; margin-bottom: 20px; color: var(--text);
+}
+.ab-hero-title .accent { color: var(--accent); }
+.ab-hero-sub {
+    font-size: 16px; color: var(--text-3); line-height: 1.7; margin-bottom: 36px;
+    max-width: 520px; margin-left: auto; margin-right: auto;
+}
+.ab-hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+.ab-btn-primary {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 24px; background: var(--accent); color: white;
+    border-radius: var(--radius-full); font-size: 14px; font-weight: 600;
+    transition: all .2s var(--ease-out); border: none; cursor: pointer;
+}
+.ab-btn-primary:hover { background: var(--accent-2); transform: translateY(-1px); box-shadow: 0 4px 16px var(--accent-glow); }
+
+.ab-btn-ghost {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 24px; background: transparent; color: var(--text-2);
+    border: 1px solid var(--border-strong); border-radius: var(--radius-full);
+    font-size: 14px; font-weight: 500; transition: all .2s; cursor: pointer;
+}
+.ab-btn-ghost:hover { background: var(--hover-strong); color: var(--text); transform: translateY(-1px); }
+
+/* ── Stats ── */
+.ab-stats {
+    display: grid; grid-template-columns: repeat(4,1fr);
+    gap: 12px; max-width: 680px; margin: 0 auto 80px; padding: 0 20px;
+}
+@media(max-width:600px){.ab-stats{grid-template-columns:repeat(2,1fr);}}
+.ab-stat {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 20px 16px;
+    text-align: center; transition: all .25s;
+}
+.ab-stat:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.ab-stat-num {
+    font-size: 28px; font-weight: 700; color: var(--accent);
+    font-family: var(--font-mono); letter-spacing: -1px; display: block; margin-bottom: 4px;
+}
+.ab-stat-label { font-size: 11px; color: var(--text-3); font-weight: 500; text-transform: uppercase; letter-spacing: .5px; }
+
+/* ── Section ── */
+.ab-section { max-width: 800px; margin: 0 auto; padding: 0 20px 80px; }
+.ab-section-label {
+    font-size: 11px; font-weight: 600; color: var(--accent);
+    font-family: var(--font-mono); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px;
+}
+.ab-section-title { font-size: clamp(24px,5vw,36px); font-weight: 700; letter-spacing: -.5px; color: var(--text); margin-bottom: 12px; }
+.ab-section-desc { font-size: 15px; color: var(--text-3); line-height: 1.7; margin-bottom: 40px; }
+.ab-divider { height: 1px; background: var(--border); max-width: 800px; margin: 0 auto 80px; }
+
+/* ── Tools ── */
+.ab-tools-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(220px,1fr)); gap: 12px; }
+.ab-tool-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 20px; transition: all .25s var(--ease-out);
+}
+.ab-tool-card:hover { border-color: var(--border-strong); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.ab-tool-icon {
+    width: 40px; height: 40px; background: var(--accent-dim); border-radius: var(--radius-md);
+    display: flex; align-items: center; justify-content: center; color: var(--accent); margin-bottom: 14px;
+}
+.ab-tool-num { font-family: var(--font-mono); font-size: 10px; color: var(--text-4); margin-bottom: 6px; }
+.ab-tool-name { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+.ab-tool-desc { font-size: 12px; color: var(--text-3); line-height: 1.6; }
+.ab-tool-tag {
+    display: inline-block; background: var(--surface-2); border: 1px solid var(--border);
+    border-radius: var(--radius-full); padding: 3px 10px; font-size: 10px; color: var(--text-3);
+    margin-top: 10px; margin-right: 4px;
+}
+
+/* ── Tech grid ── */
+.ab-tech-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-top: 8px; }
+@media(max-width:540px){.ab-tech-grid{grid-template-columns:1fr 1fr;}}
+.ab-tech-item { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 18px 16px; transition: all .2s; }
+.ab-tech-item:hover { border-color: var(--border-strong); transform: translateY(-1px); }
+.ab-tech-badge {
+    display: inline-block; background: var(--accent-dim); border: 1px solid rgba(42,125,225,.15);
+    color: var(--accent); border-radius: var(--radius-full); padding: 3px 10px;
+    font-size: 10px; font-family: var(--font-mono); font-weight: 600; margin-bottom: 10px;
+}
+.ab-tech-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+.ab-tech-desc { font-size: 12px; color: var(--text-3); line-height: 1.5; }
+
+/* ── MRDEV ID ── */
+.ab-id-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
+@media(max-width:640px){.ab-id-grid{grid-template-columns:1fr;}}
+.ab-id-card {
+    background: linear-gradient(135deg,#1a8fe8,#64d2ff);
+    border-radius: var(--radius-lg); padding: 28px; color: white; position: relative; overflow: hidden;
+}
+.ab-id-card::before { content:''; position:absolute; top:-40px; right:-40px; width:140px; height:140px; border-radius:50%; background:rgba(255,255,255,.08); }
+.ab-id-card-logo { font-size: 13px; font-weight: 700; letter-spacing: 1px; margin-bottom: 24px; opacity: .9; }
+.ab-id-display { font-family: var(--font-mono); font-size: 26px; font-weight: 700; letter-spacing: 4px; margin-bottom: 6px; }
+.ab-id-display .hash { opacity: .65; }
+.ab-id-hint { font-size: 10px; opacity: .6; margin-bottom: 24px; font-family: var(--font-mono); }
+.ab-otp-row { display: flex; gap: 6px; margin-bottom: 28px; }
+.ab-otp-box {
+    width: 34px; height: 40px; background: rgba(255,255,255,.15); border-radius: 8px;
+    border: 1px solid rgba(255,255,255,.25); display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono); font-size: 16px; font-weight: 600;
+}
+.ab-otp-box.filled { background: rgba(255,255,255,.22); }
+.ab-otp-box.active { border-color: rgba(255,255,255,.7); animation: abBlink 1s ease-in-out infinite; }
+@keyframes abBlink { 0%,100%{opacity:1} 50%{opacity:.5} }
+.ab-id-footer { display: flex; align-items: center; justify-content: space-between; }
+.ab-id-owner-label { font-size: 9px; opacity: .6; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 3px; }
+.ab-id-owner-name { font-size: 13px; font-weight: 600; }
+.ab-verified { background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.3); border-radius: var(--radius-full); padding: 4px 12px; font-size: 10px; font-family: var(--font-mono); font-weight: 600; }
+
+.ab-id-info { display: flex; flex-direction: column; gap: 14px; }
+.ab-id-info-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 16px 18px; transition: border-color .2s; }
+.ab-id-info-card:hover { border-color: var(--accent); }
+.ab-id-info-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+.ab-id-info-desc { font-size: 12px; color: var(--text-3); line-height: 1.6; }
+.ab-info-box { background: var(--accent-dim); border: 1px solid rgba(42,125,225,.2); border-radius: var(--radius-md); padding: 14px 16px; display: flex; align-items: flex-start; gap: 10px; font-size: 12px; color: var(--text-2); line-height: 1.6; margin-top: 4px; }
+.ab-info-box svg { flex-shrink: 0; color: var(--accent); margin-top: 1px; }
+
+/* ── Flow ── */
+.ab-flow-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(170px,1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+.ab-flow-item { background: var(--surface); padding: 22px 18px; transition: background .2s; }
+.ab-flow-item:hover { background: var(--surface-2); }
+.ab-flow-num { font-family: var(--font-mono); font-size: 11px; color: var(--accent); font-weight: 600; margin-bottom: 10px; }
+.ab-flow-icon { width: 34px; height: 34px; background: var(--accent-dim); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; color: var(--accent); margin-bottom: 10px; }
+.ab-flow-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+.ab-flow-desc { font-size: 12px; color: var(--text-3); line-height: 1.5; }
+
+/* ── Access ── */
+.ab-access-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+@media(max-width:540px){.ab-access-grid{grid-template-columns:1fr;}}
+.ab-access-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 22px; }
+.ab-access-card.highlight { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent-dim); }
+.ab-access-type { font-size: 10px; font-family: var(--font-mono); letter-spacing: 2px; color: var(--text-4); margin-bottom: 4px; text-transform: uppercase; }
+.ab-access-title { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.ab-access-subtitle { font-size: 12px; color: var(--text-3); margin-bottom: 18px; line-height: 1.5; }
+.ab-access-list { display: flex; flex-direction: column; gap: 9px; }
+.ab-access-item { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--text-2); }
+.ab-check-yes { width: 20px; height: 20px; background: var(--green-dim); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--green); flex-shrink: 0; }
+.ab-check-no { width: 20px; height: 20px; background: var(--red-dim); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--red); flex-shrink: 0; }
+
+/* ── Timeline ── */
+.ab-timeline { position: relative; padding-left: 32px; display: flex; flex-direction: column; gap: 28px; }
+.ab-timeline::before { content:''; position:absolute; left:6px; top:8px; bottom:8px; width:1px; background:var(--border); }
+.ab-tl-item { position: relative; }
+.ab-tl-dot { position:absolute; left:-28px; top:6px; width:12px; height:12px; border-radius:50%; background:var(--surface-3); border:2px solid var(--border-strong); }
+.ab-tl-item:last-child .ab-tl-dot { background:var(--accent); border-color:var(--accent); box-shadow:0 0 0 4px var(--accent-dim); }
+.ab-tl-date { font-size: 11px; font-family: var(--font-mono); color: var(--accent); font-weight: 600; margin-bottom: 4px; }
+.ab-tl-title { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+.ab-tl-desc { font-size: 13px; color: var(--text-3); line-height: 1.6; }
+
+/* ── FAQ ── */
+.ab-faq-list { display: flex; flex-direction: column; gap: 8px; }
+.ab-faq-item { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; transition: border-color .2s; }
+.ab-faq-item:hover { border-color: var(--border-strong); }
+.ab-faq-item.open { border-color: var(--accent); }
+.ab-faq-q { display: flex; align-items: center; justify-content: space-between; padding: 16px 18px; cursor: pointer; font-size: 14px; font-weight: 500; color: var(--text); gap: 16px; user-select: none; }
+.ab-faq-q svg { flex-shrink: 0; color: var(--text-3); transition: transform .3s var(--ease-spring); }
+.ab-faq-item.open .ab-faq-q svg { transform: rotate(45deg); }
+.ab-faq-a { max-height: 0; overflow: hidden; transition: max-height .4s var(--ease-out), padding .3s; padding: 0 18px; font-size: 13px; color: var(--text-3); line-height: 1.7; }
+.ab-faq-item.open .ab-faq-a { max-height: 300px; padding: 0 18px 16px; }
+
+/* ── Contact ── */
+.ab-contact-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(220px,1fr)); gap: 12px; }
+.ab-contact-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; display: flex; align-items: flex-start; gap: 14px; transition: all .2s; }
+.ab-contact-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: var(--shadow-sm); }
+.ab-contact-icon { width: 40px; height: 40px; background: var(--accent-dim); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; color: var(--accent); flex-shrink: 0; }
+.ab-contact-label { font-size: 10px; color: var(--text-4); margin-bottom: 4px; font-family: var(--font-mono); text-transform: uppercase; letter-spacing: .5px; }
+.ab-contact-value { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+.ab-contact-value a { color: var(--accent); transition: opacity .2s; }
+.ab-contact-value a:hover { opacity: .75; }
+.ab-contact-note { font-size: 11px; color: var(--text-3); }
+
+/* ── Sponsor card ── */
+.ab-sponsor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 28px; }
+@media(max-width:560px){.ab-sponsor-grid{grid-template-columns:1fr;}}
+.ab-card-visual { background: linear-gradient(135deg,#1a8fe8,#0d6cc4); border-radius: var(--radius-md); padding: 22px; color: white; position: relative; overflow: hidden; }
+.ab-card-visual::before { content:''; position:absolute; top:-30px; right:-30px; width:100px; height:100px; border-radius:50%; background:rgba(255,255,255,.07); }
+.ab-card-logo-text { font-size: 12px; font-weight: 700; letter-spacing: 1px; margin-bottom: 18px; opacity: .9; }
+.ab-card-number { font-family: var(--font-mono); font-size: 15px; letter-spacing: 3px; margin-bottom: 3px; cursor: pointer; transition: opacity .2s; }
+.ab-card-number:hover { opacity: .8; }
+.ab-card-hint { font-size: 10px; opacity: .55; margin-bottom: 20px; }
+.ab-card-owner-label { font-size: 9px; opacity: .6; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 3px; }
+.ab-card-owner-name { font-size: 13px; font-weight: 600; }
+.ab-copy-btn { width: 100%; margin-top: 10px; padding: 9px; background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-md); color: var(--text-2); font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all .2s; }
+.ab-copy-btn:hover { background: var(--hover-strong); color: var(--text); }
+.ab-sponsor-why { display: flex; flex-direction: column; gap: 16px; }
+.ab-sponsor-why-item { display: flex; align-items: flex-start; gap: 12px; }
+.ab-sponsor-why-icon { width: 34px; height: 34px; background: var(--surface-2); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; color: var(--text-3); flex-shrink: 0; margin-top: 2px; }
+.ab-sponsor-why-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+.ab-sponsor-why-desc { font-size: 12px; color: var(--text-3); line-height: 1.5; }
+
+/* ── CTA ── */
+.ab-cta { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 48px 32px; text-align: center; max-width: 800px; margin: 0 auto 80px; }
+.ab-cta-tag { display: inline-block; background: var(--green-dim); color: var(--green); border-radius: var(--radius-full); padding: 4px 14px; font-size: 11px; font-weight: 600; font-family: var(--font-mono); margin-bottom: 18px; }
+.ab-cta-title { font-size: 30px; font-weight: 700; letter-spacing: -.5px; color: var(--text); margin-bottom: 8px; }
+.ab-cta-desc { font-size: 14px; color: var(--text-3); margin-bottom: 26px; }
+.ab-cta-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.ab-cta-url { margin-top: 14px; font-size: 12px; font-family: var(--font-mono); color: var(--text-4); }
+
+/* ── Footer ── */
+.ab-footer { border-top: 1px solid var(--border); padding: 40px 20px; max-width: 800px; margin: 0 auto; }
+.ab-footer-inner { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; }
+@media(max-width:580px){.ab-footer-inner{grid-template-columns:1fr;gap:28px;}}
+.ab-footer-logo { font-size: 20px; font-weight: 700; letter-spacing: -.5px; margin-bottom: 10px; }
+.ab-footer-logo span { color: var(--accent); }
+.ab-footer-desc { font-size: 13px; color: var(--text-3); line-height: 1.6; margin-bottom: 16px; }
+.ab-footer-social { display: flex; gap: 8px; }
+.ab-footer-social-link { width: 34px; height: 34px; background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; color: var(--text-3); transition: all .2s; }
+.ab-footer-social-link:hover { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+.ab-footer-col-title { font-size: 12px; font-weight: 600; color: var(--text); letter-spacing: .5px; margin-bottom: 14px; }
+.ab-footer-links { display: flex; flex-direction: column; gap: 10px; }
+.ab-footer-links a { font-size: 13px; color: var(--text-3); transition: color .2s; }
+.ab-footer-links a:hover { color: var(--text); }
+.ab-footer-bottom { margin-top: 28px; padding-top: 18px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; font-size: 12px; color: var(--text-4); }
+
+/* ── Back to top ── */
+.ab-back-top { position: fixed; bottom: 24px; right: 24px; width: 44px; height: 44px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center; color: var(--text-2); cursor: pointer; box-shadow: var(--shadow-md); opacity: 0; transform: translateY(16px); transition: all .3s var(--ease-out); z-index: 50; }
+.ab-back-top.show { opacity: 1; transform: translateY(0); }
+.ab-back-top:hover { background: var(--accent); border-color: var(--accent); color: white; }
+
+/* ── Reveal ── */
+.ab-reveal { opacity: 0; transform: translateY(18px); transition: opacity .6s var(--ease-out), transform .6s var(--ease-out); }
+.ab-reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ── Toast ── */
+.ab-toast { position: fixed; bottom: 80px; right: 24px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 11px 16px; font-size: 13px; color: var(--text-2); box-shadow: var(--shadow-lg); z-index: 99999; opacity: 0; transform: translateY(12px); transition: all .3s var(--ease-out); pointer-events: none; }
+.ab-toast.show { opacity: 1; transform: translateY(0); }
+</style>
 </head>
 <body>
 
-    <!-- ==================== SIDEBAR ==================== -->
-    <aside id="sidebar" class="sidebar">
-        <div class="sidebar-header">
-            <div class="sidebar-logo">
-                <span class="logo-mr">MR</span><span class="logo-dev">DEV</span>
-            </div>
-            <button class="sidebar-close" onclick="window.closeSidebar?.()">✕</button>
+<div class="ab-progress" id="abProgress"></div>
+
+<!-- ==================== HEADER ==================== -->
+<header class="ab-header">
+    <a href="../" class="ab-back">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Bosh sahifa
+    </a>
+    <div class="ab-header-logo"><span class="mr">MR</span><span class="dev">DEV</span></div>
+    <button class="ab-theme-btn" onclick="abToggleTheme()" aria-label="Mavzu">
+        <svg id="themeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+</header>
+
+<!-- ==================== HERO ==================== -->
+<section class="ab-hero ab-reveal">
+    <div class="ab-hero-badge">
+        <div class="ab-badge-dot"></div>
+        O'zbek dasturchilar platformasi
+    </div>
+    <h1 class="ab-hero-title">MR<span class="accent">DEV</span></h1>
+    <p class="ab-hero-sub">Fayllarni saqlang, testlar yarating, kod yozing, hamkorlik qiling. Yagona platforma — 22 dan ortiq qulay vosita, to'liq bepul, hech qanday cheklov yo'q.</p>
+    <div class="ab-hero-actions">
+        <a href="../" class="ab-btn-primary">Platformaga kirish →</a>
+        <a href="#tools" class="ab-btn-ghost">Vositalarni ko'rish</a>
+    </div>
+</section>
+
+<!-- ==================== STATS ==================== -->
+<div class="ab-stats ab-reveal">
+    <div class="ab-stat"><span class="ab-stat-num">22+</span><div class="ab-stat-label">Vosita</div></div>
+    <div class="ab-stat"><span class="ab-stat-num">100%</span><div class="ab-stat-label">Bepul</div></div>
+    <div class="ab-stat"><span class="ab-stat-num">50 MB</span><div class="ab-stat-label">Fayl chegarasi</div></div>
+    <div class="ab-stat"><span class="ab-stat-num">3</span><div class="ab-stat-label">Kirish usuli</div></div>
+</div>
+
+<div class="ab-divider"></div>
+
+<!-- ==================== 01 — NIMA BU? ==================== -->
+<section class="ab-section ab-reveal" id="about">
+    <div class="ab-section-label">01 — Platforma haqida</div>
+    <h2 class="ab-section-title">MR Dev nima?</h2>
+    <p class="ab-section-desc">MR Dev — O'zbekiston dasturchilar, talabalar va ijodkorlar uchun yaratilgan <strong>universal veb-platforma</strong>. Bitta hisob orqali 22 ta qulay vositadan foydalanishingiz mumkin. Hech qanday to'lov, kredit karta yoki yashirin cheklov yo'q.</p>
+    <div class="ab-tech-grid">
+        <div class="ab-tech-item"><div class="ab-tech-badge">Firebase</div><div class="ab-tech-title">Autentifikatsiya</div><div class="ab-tech-desc">Email, Google va MRDEV ID orqali xavfsiz kirish. SHA-256 parol shifrlash.</div></div>
+        <div class="ab-tech-item"><div class="ab-tech-badge">Supabase</div><div class="ab-tech-title">Fayl saqlash</div><div class="ab-tech-desc">Fayllar AES-256 bilan himoyalangan. 50 MB gacha, barcha formatlar.</div></div>
+        <div class="ab-tech-item"><div class="ab-tech-badge">Firestore</div><div class="ab-tech-title">Real vaqt</div><div class="ab-tech-desc">Post, test, natija — millisekundlar ichida barcha qurilmalarga uzatiladi.</div></div>
+        <div class="ab-tech-item"><div class="ab-tech-badge">Responsive</div><div class="ab-tech-title">Har qanday qurilma</div><div class="ab-tech-desc">Telefon, planshet, kompyuter — barcha ekranlarda bir xil ishlaydi.</div></div>
+        <div class="ab-tech-item"><div class="ab-tech-badge">SHA-256</div><div class="ab-tech-title">Parol himoya</div><div class="ab-tech-desc">Parollar hash ko'rinishida saqlanadi. Administrator ham asl qiymatni ko'rmaydi.</div></div>
+        <div class="ab-tech-item"><div class="ab-tech-badge">MRDEV ID</div><div class="ab-tech-title">Shaxsiy identifikator</div><div class="ab-tech-desc">7 belgili noyob raqam. E-mail yoki parolsiz OTP orqali kirish.</div></div>
+    </div>
+</section>
+
+<div class="ab-divider"></div>
+
+<!-- ==================== 02 — VOSITALAR ==================== -->
+<section class="ab-section ab-reveal" id="tools">
+    <div class="ab-section-label">02 — Vositalar</div>
+    <h2 class="ab-section-title">22 ta kuchli vosita</h2>
+    <p class="ab-section-desc">Bitta hisob — barcha vositalar. Har biri mustaqil ishlaydi, lekin yagona ekotizimda.</p>
+    <div class="ab-tools-grid">
+        <div class="ab-tool-card">
+            <div class="ab-tool-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/><circle cx="12" cy="16" r="1"/></svg></div>
+            <div class="ab-tool-num">01</div><div class="ab-tool-name">MR Vault</div>
+            <div class="ab-tool-desc">Shaxsiy fayl ombori. Rasm, video, audio, hujjat va arxivlarni 50 MB gacha saqlang va ulashing.</div>
+            <span class="ab-tool-tag">50 MB</span><span class="ab-tool-tag">Noyob URL</span>
         </div>
-        <div class="sidebar-scroll">
-            <div class="sidebar-user is-loading" id="sidebarUser">
-                <div class="user-avatar-large" id="sidebarAvatar">U</div>
-                <div class="user-details">
-                    <div class="user-fullname" id="sidebarName">Yuklanmoqda...</div>
-                    <div class="user-email" id="sidebarEmail"></div>
-                    <div class="user-mrdev-id" id="sidebarMrdevId"></div>
+        <div class="ab-tool-card">
+            <div class="ab-tool-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+            <div class="ab-tool-num">02</div><div class="ab-tool-name">Examer</div>
+            <div class="ab-tool-desc">Professional test va imtihon yaratuvchi. Havolani ulashing, natijalar avtomatik hisoblanadi.</div>
+            <span class="ab-tool-tag">Test yaratish</span><span class="ab-tool-tag">Avtomatik natija</span>
+        </div>
+        <div class="ab-tool-card">
+            <div class="ab-tool-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
+            <div class="ab-tool-num">03</div><div class="ab-tool-name">Group Board</div>
+            <div class="ab-tool-desc">Real vaqt hamkorlik doskasi. Bir vaqtda bir nechta foydalanuvchi chizishi va yozishi mumkin.</div>
+            <span class="ab-tool-tag">Real vaqt</span><span class="ab-tool-tag">Hamkorlik</span>
+        </div>
+        <div class="ab-tool-card">
+            <div class="ab-tool-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
+            <div class="ab-tool-num">04</div><div class="ab-tool-name">Code Studio</div>
+            <div class="ab-tool-desc">Brauzerda to'liq kod muharriri. HTML, CSS, JS va boshqa tillarda yozing va natijani ko'ring.</div>
+            <span class="ab-tool-tag">HTML/CSS/JS</span><span class="ab-tool-tag">Onlayn IDE</span>
+        </div>
+        <div class="ab-tool-card">
+            <div class="ab-tool-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2H3v16h5v4l4-4h9V2z"/></svg></div>
+            <div class="ab-tool-num">05</div><div class="ab-tool-name">MR Gram</div>
+            <div class="ab-tool-desc">MR Dev ichidagi ijtimoiy tarmoq. Post, rasm, video ulashing, izoh qoldiring.</div>
+            <span class="ab-tool-tag">Ijtimoiy</span>
+        </div>
+        <div class="ab-tool-card">
+            <div class="ab-tool-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="5" width="14" height="14" rx="1"/><path d="M9 5V3M15 5V3M9 21V19M15 21V19M5 9H3M5 15H3M21 9H19M21 15H19"/></svg></div>
+            <div class="ab-tool-num">06</div><div class="ab-tool-name">MR AI Assistant</div>
+            <div class="ab-tool-desc">Sun'iy idrok yordamchisi. Savollaringizga javob, matn yozdiring, kodni tekshirting.</div>
+            <span class="ab-tool-tag">Chat</span><span class="ab-tool-tag">Tarjima</span>
+        </div>
+        <div class="ab-tool-card">
+            <div class="ab-tool-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div>
+            <div class="ab-tool-num">07</div><div class="ab-tool-name">Notes</div>
+            <div class="ab-tool-desc">Tezkor eslatmalar ilovasi. Markdown formatlash, ranglar, yorliqlar. Bulutda saqlanadi.</div>
+            <span class="ab-tool-tag">Markdown</span><span class="ab-tool-tag">Bulutda</span>
+        </div>
+        <div class="ab-tool-card">
+            <div class="ab-tool-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/></svg></div>
+            <div class="ab-tool-num">08</div><div class="ab-tool-name">Timer</div>
+            <div class="ab-tool-desc">Pomodoro va oddiy taymer. Vaqtni belgilang, boshlang, ovozli bildirishnoma qo'ying.</div>
+            <span class="ab-tool-tag">Pomodoro</span>
+        </div>
+        <div class="ab-tool-card">
+            <div class="ab-tool-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M8 12h.01M12 12h.01M16 12h.01"/></svg></div>
+            <div class="ab-tool-num">09</div><div class="ab-tool-name">Typing Test</div>
+            <div class="ab-tool-desc">Yozish tezligi va aniqligi sinovi. WPM ko'rsatkichi. O'zbek, rus va ingliz tillarida.</div>
+            <span class="ab-tool-tag">WPM</span><span class="ab-tool-tag">3 til</span>
+        </div>
+        <div class="ab-tool-card">
+            <div class="ab-tool-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+            <div class="ab-tool-num">10</div><div class="ab-tool-name">Security</div>
+            <div class="ab-tool-desc">Parol generatori va xavfsizlik tekshiruvi. MD5, SHA-1, SHA-256 hash generatori.</div>
+            <span class="ab-tool-tag">Parol generator</span><span class="ab-tool-tag">Hash</span>
+        </div>
+        <div class="ab-tool-card">
+            <div class="ab-tool-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg></div>
+            <div class="ab-tool-num">11</div><div class="ab-tool-name">Weather</div>
+            <div class="ab-tool-desc">Ob-havo ilovasi. Real vaqt harorat, shamol tezligi va haftalik prognoz.</div>
+            <span class="ab-tool-tag">Real vaqt</span><span class="ab-tool-tag">7 kunlik</span>
+        </div>
+        <div class="ab-tool-card">
+            <div class="ab-tool-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>
+            <div class="ab-tool-num">12</div><div class="ab-tool-name">QR Generator</div>
+            <div class="ab-tool-desc">URL, matn yoki kontakt ma'lumotlarini QR kodga aylantiring va yuklab oling.</div>
+            <span class="ab-tool-tag">URL</span><span class="ab-tool-tag">Yuklab olish</span>
+        </div>
+    </div>
+</section>
+
+<div class="ab-divider"></div>
+
+<!-- ==================== 03 — MRDEV ID ==================== -->
+<section class="ab-section ab-reveal" id="mrdev-id">
+    <div class="ab-section-label">03 — Shaxsiy identifikator</div>
+    <h2 class="ab-section-title">MRDEV ID nima?</h2>
+    <p class="ab-section-desc">MRDEV ID — har bir foydalanuvchiga berilgan noyob 7 belgili kod. E-mail yoki parolsiz OTP tizimi orqali platformaga kirish imkonini beradi.</p>
+
+    <div class="ab-id-grid">
+        <div class="ab-id-card">
+            <div class="ab-id-card-logo">MRDEV · Shaxsiy ID karta</div>
+            <div class="ab-id-display"><span class="hash">#</span><span>_ _ _ _ _ _</span></div>
+            <div class="ab-id-hint">6 xonali raqam · hash belgisi bilan boshlanadi</div>
+            <div class="ab-otp-row">
+                <div class="ab-otp-box filled">4</div>
+                <div class="ab-otp-box filled">2</div>
+                <div class="ab-otp-box filled">8</div>
+                <div class="ab-otp-box active"></div>
+                <div class="ab-otp-box"></div>
+                <div class="ab-otp-box"></div>
+            </div>
+            <div class="ab-id-footer">
+                <div><div class="ab-id-owner-label">HISOB EGASI</div><div class="ab-id-owner-name">MRDEV A'ZOSI</div></div>
+                <div class="ab-verified">VERIFIED ✓</div>
+            </div>
+        </div>
+
+        <div class="ab-id-info">
+            <div class="ab-id-info-card">
+                <div class="ab-id-info-title">MRDEV ID nima?</div>
+                <div class="ab-id-info-desc">Har bir ro'yxatdan o'tgan foydalanuvchiga avtomatik tarzda beriladi. <code style="background:var(--accent-dim);color:var(--accent);padding:1px 6px;border-radius:4px;font-family:var(--font-mono);font-size:12px;">#</code> belgisi bilan boshlanadigan 7 belgili shaxsiy raqam: masalan <code style="background:var(--accent-dim);color:var(--accent);padding:1px 6px;border-radius:4px;font-family:var(--font-mono);font-size:12px;">#428139</code>.</div>
+            </div>
+            <div class="ab-id-info-card">
+                <div class="ab-id-info-title">Nima uchun kerak?</div>
+                <div class="ab-id-info-desc">E-mail yoki parolni bilmasangiz ham MRDEV ID yordamida platformaga kirishingiz mumkin. OTP kod tizimi orqali ikki bosqichli tekshiruv amalga oshiriladi.</div>
+            </div>
+            <div class="ab-id-info-card">
+                <div class="ab-id-info-title">Kod qayerga keladi?</div>
+                <div class="ab-id-info-desc">MRDEV ID orqali kirish so'ralganda, 6 xonali OTP kod hisob egasining <strong>"Parol xabarlari"</strong> bo'limiga yuboriladi. Kod 2 daqiqa amal qiladi.</div>
+            </div>
+            <div class="ab-info-box">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                <span><strong>Eslatma:</strong> MRDEV ID ni boshqalarga berish mumkin, lekin OTP kodni <em>hech kim bilan</em> ulashmang.</span>
+            </div>
+        </div>
+    </div>
+
+    <h3 style="font-size:15px;font-weight:600;color:var(--text);margin:36px 0 14px;">MRDEV ID orqali kirish qanday ishlaydi?</h3>
+    <div class="ab-flow-grid">
+        <div class="ab-flow-item"><div class="ab-flow-num">01</div><div class="ab-flow-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div><div class="ab-flow-title">ID kiriting</div><div class="ab-flow-desc">Kirish sahifasida "MRDEV ID orqali kirish" ni bosing va ID raqamingizni kiriting.</div></div>
+        <div class="ab-flow-item"><div class="ab-flow-num">02</div><div class="ab-flow-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div><div class="ab-flow-title">OTP yuboriladi</div><div class="ab-flow-desc">Tizim "Parol xabarlari" bo'limiga 6 xonali bir martalik kod yuboradi. 2 daqiqa amal qiladi.</div></div>
+        <div class="ab-flow-item"><div class="ab-flow-num">03</div><div class="ab-flow-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div><div class="ab-flow-title">Kodni tasdiqlang</div><div class="ab-flow-desc">6 ta katakka OTP kodni kiriting. Barcha kataklar to'lishi bilan kirish avtomatik amalga oshadi.</div></div>
+        <div class="ab-flow-item"><div class="ab-flow-num">04</div><div class="ab-flow-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div><div class="ab-flow-title">Muvaffaqiyatli kirish</div><div class="ab-flow-desc">Tasdiqlash o'tsa, platforma hisobingizga kirgansiz. Barcha 22 vosita ochiq.</div></div>
+    </div>
+</section>
+
+<div class="ab-divider"></div>
+
+<!-- ==================== 04 — RUXSATLAR ==================== -->
+<section class="ab-section ab-reveal" id="access">
+    <div class="ab-section-label">04 — Ruxsatlar</div>
+    <h2 class="ab-section-title">Kim nima qila oladi?</h2>
+    <p class="ab-section-desc">Mehmon va ro'yxatdan o'tgan foydalanuvchi imkoniyatlarini solishtiring.</p>
+    <div class="ab-access-grid">
+        <div class="ab-access-card">
+            <div class="ab-access-type">Mehmon</div>
+            <div class="ab-access-title">Ro'yxatsiz</div>
+            <div class="ab-access-subtitle">Saytga kirmasdan ham bir qancha vositalardan foydalanish mumkin.</div>
+            <div class="ab-access-list">
+                <div class="ab-access-item"><div class="ab-check-yes"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>Ommaviy postlarni ko'rish</div>
+                <div class="ab-access-item"><div class="ab-check-yes"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>Examlarni hal qilish</div>
+                <div class="ab-access-item"><div class="ab-check-yes"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>Calculator, Timer, Clock</div>
+                <div class="ab-access-item"><div class="ab-check-yes"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>Weather va QR Generator</div>
+                <div class="ab-access-item"><div class="ab-check-no"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>Fayl yuklash va saqlash</div>
+                <div class="ab-access-item"><div class="ab-check-no"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>MRDEV ID olish</div>
+                <div class="ab-access-item"><div class="ab-check-no"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>Exam yaratish</div>
+            </div>
+        </div>
+        <div class="ab-access-card highlight">
+            <div class="ab-access-type">A'zo</div>
+            <div class="ab-access-title">Ro'yxatdan o'tgan</div>
+            <div class="ab-access-subtitle">Barcha 22 vositaning to'liq imkoniyatlari ochiq — bepul, cheksiz.</div>
+            <div class="ab-access-list">
+                <div class="ab-access-item"><div class="ab-check-yes"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>Shaxsiy MRDEV ID raqam</div>
+                <div class="ab-access-item"><div class="ab-check-yes"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>MRDEV ID orqali kirish (OTP)</div>
+                <div class="ab-access-item"><div class="ab-check-yes"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>Fayl yuklash, saqlash, ulashish</div>
+                <div class="ab-access-item"><div class="ab-check-yes"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>Exam yaratish va ulashish</div>
+                <div class="ab-access-item"><div class="ab-check-yes"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>Board, Notes, MR Gram (to'liq)</div>
+                <div class="ab-access-item"><div class="ab-check-yes"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>MR AI va Code Studio</div>
+                <div class="ab-access-item"><div class="ab-check-yes"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>Barcha qurilmalarda sinxronlash</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="ab-divider"></div>
+
+<!-- ==================== 05 — TARIX ==================== -->
+<section class="ab-section ab-reveal" id="history">
+    <div class="ab-section-label">05 — Tarix</div>
+    <h2 class="ab-section-title">Rivojlanish yo'li</h2>
+    <p class="ab-section-desc">MR Dev qanday boshlandi va hozirgi holatga qanday keldi.</p>
+    <div class="ab-timeline">
+        <div class="ab-tl-item"><div class="ab-tl-dot"></div><div class="ab-tl-date">2025 — Yanvar</div><div class="ab-tl-title">Dastlabki g'oya</div><div class="ab-tl-desc">MR Dev dastlab shaxsiy fayllarni saqlash uchun oddiy veb-ilova sifatida tug'ildi. Firebase va vanilla JavaScript bilan birinchi versiya yaratildi.</div></div>
+        <div class="ab-tl-item"><div class="ab-tl-dot"></div><div class="ab-tl-date">2025 — Fevral–Mart</div><div class="ab-tl-title">MR Vault</div><div class="ab-tl-desc">Birinchi rasmiy versiya — MR Vault nomi bilan ishga tushirildi. Fayl yuklash va ulashish imkoni. Dastlabki foydalanuvchilar qo'shildi.</div></div>
+        <div class="ab-tl-item"><div class="ab-tl-dot"></div><div class="ab-tl-date">2025 — Aprel–Noyabr</div><div class="ab-tl-title">Platform kengayishi</div><div class="ab-tl-desc">Examer, Calculator, Notes va Board qo'shildi. Supabase Storage integratsiyasi amalga oshirildi. To'liq responsive dizayn.</div></div>
+        <div class="ab-tl-item"><div class="ab-tl-dot"></div><div class="ab-tl-date">2026 — Yanvar</div><div class="ab-tl-title">MR Gram va ijtimoiy xususiyatlar</div><div class="ab-tl-desc">MR Gram ijtimoiy tarmog'i ishga tushirildi. Group Board va Code Studio qo'shildi.</div></div>
+        <div class="ab-tl-item"><div class="ab-tl-dot"></div><div class="ab-tl-date">2026 — May · Hozirgi versiya</div><div class="ab-tl-title">MRDEV ID & Katta yangilanish</div><div class="ab-tl-desc">MRDEV ID autentifikatsiya tizimi ishga tushirildi. OTP orqali xavfsiz kirish. Qayta ishlab chiqilgan dizayn, AI Assistant, Weather, Typing Test. 22+ vosita, 3 ta kirish usuli.</div></div>
+    </div>
+</section>
+
+<div class="ab-divider"></div>
+
+<!-- ==================== 06 — HOMIYLIK ==================== -->
+<section class="ab-section ab-reveal" id="sponsor">
+    <div class="ab-section-label">06 — Qo'llab-quvvatlash</div>
+    <h2 class="ab-section-title">Homiylik</h2>
+    <p class="ab-section-desc">MR Dev to'liq bepul platforma. Server, domen va xizmatlar uchun haqiqiy xarajatlar bor. Agar bu platforma sizga foydali bo'lsa, quyidagi rekvizitlar orqali yordam bera olasiz.</p>
+    <div class="ab-sponsor-grid">
+        <div>
+            <div class="ab-card-visual">
+                <div class="ab-card-logo-text">MR Dev · Homiylik kartasi</div>
+                <div class="ab-card-number" id="cardNum" onclick="abCopyCard()">8600 &nbsp;1234 &nbsp;5678 &nbsp;9012</div>
+                <div class="ab-card-hint"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block;vertical-align:middle;margin-right:3px;"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Bosib nusxa oling</div>
+                <div style="display:flex;align-items:center;justify-content:space-between;">
+                    <div><div class="ab-card-owner-label">KARTA EGASI</div><div class="ab-card-owner-name">MUHAMMADRASUL QOSIMOV</div></div>
+                    <div style="font-size:11px;opacity:.65;font-weight:600;">HAMKOR BANK</div>
                 </div>
             </div>
-            <div class="sidebar-login" id="sidebarLogin" style="display:none;">
-                <button class="login-sidebar-btn" onclick="window.showAuthModal?.()">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M5 20v-2a7 7 0 0 1 14 0v2"/></svg>
-                    <span>Hisobga kirish</span>
-                </button>
-            </div>
-            <div class="sidebar-divider"></div>
-            <nav class="sidebar-nav">
-                <a href="../" class="sidebar-nav-item">
-                    <span class="nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span>
-                    <span class="nav-text">Barcha ilovalar</span>
-                </a>
-                <a href="../about/" class="sidebar-nav-item active">
-                    <span class="nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></span>
-                    <span class="nav-text">Loyiha haqida</span>
-                </a>
-            </nav>
-            <div class="sidebar-divider"></div>
-        </div>
-        <div class="sidebar-footer">
-            <button class="logout-sidebar-btn" id="sidebarLogout" style="display:none;" onclick="window.logout?.()">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-                <span>Chiqish</span>
+            <button class="ab-copy-btn" onclick="abCopyCard()">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                <span id="copyCardText">Karta raqamini nusxalash</span>
             </button>
-            <div class="sidebar-version">MRDEV made with mr</div>
         </div>
-    </aside>
-
-    <div id="overlay" class="overlay" onclick="window.closeSidebar?.()"></div>
-
-    <!-- ==================== HEADER ==================== -->
-    <header>
-        <div class="header-left">
-            <button class="header-btn" onclick="window.toggleSidebar?.()">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-            </button>
-            <a href="../" class="logo"><span class="logo-mr">MR</span><span class="logo-dev">DEV</span></a>
+        <div class="ab-sponsor-why">
+            <div class="ab-sponsor-why-item">
+                <div class="ab-sponsor-why-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
+                <div><div class="ab-sponsor-why-title">Server xarajatlari</div><div class="ab-sponsor-why-desc">Firebase, Supabase, Vercel — uchta xizmatning to'lovlari oy sayin to'lanadi.</div></div>
+            </div>
+            <div class="ab-sponsor-why-item">
+                <div class="ab-sponsor-why-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
+                <div><div class="ab-sponsor-why-title">Yangi funksiyalar</div><div class="ab-sponsor-why-desc">Yangi vositalar va yaxshilanishlar uchun vaqt va resurs kerak.</div></div>
+            </div>
+            <div class="ab-sponsor-why-item">
+                <div class="ab-sponsor-why-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+                <div><div class="ab-sponsor-why-title">Hamjamiyat uchun</div><div class="ab-sponsor-why-desc">Platforma O'zbekiston yoshlari uchun yaratilgan. Siz bepul ta'limni ko'proq odamga yetkazishga yordam berasiz.</div></div>
+            </div>
         </div>
-        <div class="header-center"></div>
-        <div class="header-right">
-            <button class="header-user-trigger is-loading" id="headerUserTrigger">
-                <div class="header-user-avatar" id="headerUserAvatar">?</div>
-                <div class="header-user-info">
-                    <span class="header-user-name" id="headerUserName">Mehmon</span>
-                    <span class="header-user-role">Foydalanuvchi</span>
-                </div>
-                <svg class="header-user-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-            </button>
-            <button id="theme-btn" class="header-btn theme-btn" onclick="window.toggleTheme?.()"></button>
+    </div>
+</section>
+
+<div class="ab-divider"></div>
+
+<!-- ==================== 07 — ALOQA ==================== -->
+<section class="ab-section ab-reveal" id="contact">
+    <div class="ab-section-label">07 — Aloqa</div>
+    <h2 class="ab-section-title">Bog'lanish</h2>
+    <p class="ab-section-desc">Texnik muammolar, takliflar yoki savollar uchun quyidagi kanallar orqali murojaat qiling.</p>
+    <div class="ab-contact-grid">
+        <div class="ab-contact-card">
+            <div class="ab-contact-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+            <div><div class="ab-contact-label">Elektron pochta</div><div class="ab-contact-value"><a href="mailto:mrdevs2011@gmail.com">mrdevs2011@gmail.com</a></div><div class="ab-contact-note">Texnik muammolar va takliflar</div></div>
         </div>
-    </header>
-
-    <!-- ==================== MAIN CONTENT ==================== -->
-    <main class="about-main">
-        
-        <!-- Hero Section -->
-        <section class="about-hero">
-            <div class="about-hero-badge">
-                <span class="badge-dot"></span>
-                O'zbek dasturchilar platformasi
-            </div>
-            <h1 class="about-hero-title">
-                MR<span class="accent">DEV</span>
-            </h1>
-            <p class="about-hero-desc">
-                Fayllarni saqlang, testlar yarating, kod yozing, hamkorlik qiling.<br>
-                Yagona platforma — 22 dan ortiq vosita, to'liq bepul.
-            </p>
-            <div class="about-hero-buttons">
-                <a href="../" class="btn-primary">Platformaga kirish →</a>
-                <a href="#tools" class="btn-secondary">Vositalarni ko'rish</a>
-            </div>
-        </section>
-
-        <!-- Statlar -->
-        <div class="about-stats">
-            <div class="stat-card"><span class="stat-number" id="statTools">22</span><span class="stat-label">Vosita</span></div>
-            <div class="stat-card"><span class="stat-number" id="statFree">100</span><span class="stat-label">% Bepul</span></div>
-            <div class="stat-card"><span class="stat-number" id="statStorage">50</span><span class="stat-label">MB Fayl chegarasi</span></div>
-            <div class="stat-card"><span class="stat-number" id="statEncrypt">256</span><span class="stat-label">bit AES shifrlash</span></div>
+        <div class="ab-contact-card">
+            <div class="ab-contact-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></div>
+            <div><div class="ab-contact-label">Telegram kanal</div><div class="ab-contact-value"><a href="https://t.me/mrdevuz" target="_blank" rel="noopener">@mrdevuz</a></div><div class="ab-contact-note">Yangiliklar va e'lonlar</div></div>
         </div>
+        <div class="ab-contact-card">
+            <div class="ab-contact-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10"/></svg></div>
+            <div><div class="ab-contact-label">Veb-sayt</div><div class="ab-contact-value"><a href="https://mrdevs.vercel.app" target="_blank" rel="noopener">mrdevs.vercel.app</a></div><div class="ab-contact-note">Asosiy platforma manzili</div></div>
+        </div>
+    </div>
+</section>
 
-        <!-- Nima bu? -->
-        <section class="about-section" id="what">
-            <div class="container">
-                <div class="section-label">01 — Platforma haqida</div>
-                <h2 class="section-title">MR Dev nima?</h2>
-                <div class="what-grid">
-                    <div class="what-card">
-                        <div class="card-icon blue"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
-                        <h3>To'liq bepul</h3>
-                        <p>Barcha 22 vosita hech qanday to'lovsiz. Kredit karta yoki yashirin to'lovlar yo'q.</p>
-                    </div>
-                    <div class="what-card">
-                        <div class="card-icon blue"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
-                        <h3>Xavfsizlik birinchi</h3>
-                        <p>Parollar SHA-256 hash bilan, fayllar AES-256 sifrlash bilan himoyalangan.</p>
-                    </div>
-                    <div class="what-card">
-                        <div class="card-icon blue"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
-                        <h3>Real vaqt hamkorlik</h3>
-                        <p>Firebase Firestore tufayli ma'lumotlar millisekundlar ichida uzatiladi.</p>
-                    </div>
-                    <div class="what-card">
-                        <div class="card-icon blue"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div>
-                        <h3>Mobil mos</h3>
-                        <p>Telefon, planshet yoki kompyuter — har qanday qurilmada bir xil ishlaydi.</p>
-                    </div>
-                </div>
+<div class="ab-divider"></div>
+
+<!-- ==================== 08 — FAQ ==================== -->
+<section class="ab-section ab-reveal" id="faq">
+    <div class="ab-section-label">08 — Savol-javob</div>
+    <h2 class="ab-section-title">Ko'p so'raladigan savollar</h2>
+    <div class="ab-faq-list">
+        <div class="ab-faq-item"><div class="ab-faq-q" onclick="abToggleFaq(this)">MRDEV ID qayerdan olinadi?<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div><div class="ab-faq-a">Ro'yxatdan o'tgan har bir foydalanuvchiga avtomatik tarzda MRDEV ID beriladi. Sozlamalar yoki profil bo'limida ko'rishingiz mumkin. <code style="font-family:var(--font-mono);color:var(--accent)">#428139</code> formatida bo'ladi.</div></div>
+        <div class="ab-faq-item"><div class="ab-faq-q" onclick="abToggleFaq(this)">MRDEV ID orqali kirish xavfsizmi?<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div><div class="ab-faq-a">Ha, xavfsiz. OTP (bir martalik kod) tizimi ishlatiladi — har bir kirish uchun yangi 6 xonali kod yuboriladi. Kod faqat 2 daqiqa amal qiladi va bir marta ishlatilgach bekor bo'ladi. SHA-256 hash algoritmi barcha ma'lumotlarni himoya qiladi.</div></div>
+        <div class="ab-faq-item"><div class="ab-faq-q" onclick="abToggleFaq(this)">OTP kod kelmasa nima qilaman?<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div><div class="ab-faq-a">OTP kod hisob egasining "Parol xabarlari" bo'limiga keladi — bu platforma ichidagi bildirishnomalar markazidir, xuddi SMS emas. Hisobingizga oddiy usulda kirib, yuqori o'ngdagi qo'ng'iroq belgisini bosib tekshiring.</div></div>
+        <div class="ab-faq-item"><div class="ab-faq-q" onclick="abToggleFaq(this)">MR Dev to'liq bepulmi?<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div><div class="ab-faq-a">Ha, to'liq bepul. Ro'yxatdan o'tish, fayl yuklash, exam yaratish, Board, MR Gram, MRDEV ID — hech birida to'lov yo'q. Hech qanday yashirin to'lov, premium obuna yoki cheklov mavjud emas.</div></div>
+        <div class="ab-faq-item"><div class="ab-faq-q" onclick="abToggleFaq(this)">Qanday fayl turlari yuklab bo'ladi?<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div><div class="ab-faq-a">Rasm (jpg, png, gif, webp, svg), video (mp4, mov, avi, mkv), audio (mp3, wav, ogg, flac), hujjat (pdf, doc, docx, txt, xlsx, pptx), arxiv (zip, rar, 7z) va ko'plab formatlar. Bir fayl uchun maksimal hajm 50 MB.</div></div>
+        <div class="ab-faq-item"><div class="ab-faq-q" onclick="abToggleFaq(this)">Telefonda ham to'g'ri ishlaydi?<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div><div class="ab-faq-a">Ha, platforma to'liq responsive dizaynda yaratilgan. Telefon, planshet va kompyuterda bir xil yaxshi ishlaydi. Maxsus ilova yuklab olish shart emas — brauzerda oching va ishlatavering.</div></div>
+        <div class="ab-faq-item"><div class="ab-faq-q" onclick="abToggleFaq(this)">Exam qanday ishlaydi?<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div><div class="ab-faq-a">Examer'da test yaratasiz: nom, savollar, to'g'ri javoblar va ixtiyoriy vaqt chegarasini kiritasiz. Yaratilgan exam alohida havolaga ega — shu havolani do'stlaringizga yuboring. Ular javob beradi, natija avtomatik hisoblanadi.</div></div>
+    </div>
+</section>
+
+<!-- ==================== CTA ==================== -->
+<div class="ab-cta ab-reveal">
+    <div class="ab-cta-tag">Bepul · Hech qanday karta kerak emas</div>
+    <div class="ab-cta-title">Bugun boshlang</div>
+    <div class="ab-cta-desc">Ro'yxatdan o'tish 30 soniya. Barcha 22 vosita uchun. MRDEV ID avtomatik beriladi.</div>
+    <div class="ab-cta-actions">
+        <a href="../" class="ab-btn-primary">mrdev ga kirish →</a>
+        <a href="../settings/" class="ab-btn-ghost">Sozlamalar</a>
+    </div>
+    <div class="ab-cta-url">mrdevs.vercel.app</div>
+</div>
+
+<!-- ==================== FOOTER ==================== -->
+<footer class="ab-footer">
+    <div class="ab-footer-inner">
+        <div>
+            <div class="ab-footer-logo">MR<span>DEV</span></div>
+            <div class="ab-footer-desc">O'zbekiston dasturchilar va talabalar uchun bepul universal platforma. 22 ta vosita, MRDEV ID tizimi, bitta hisob.</div>
+            <div class="ab-footer-social">
+                <a href="https://t.me/mrdevuz" class="ab-footer-social-link" target="_blank" rel="noopener" aria-label="Telegram"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.2 5.6 3 11.6c-1.2.4-1.1 1.1-.2 1.4l4.6 1.4 1.8 5.5c.2.6.5.8 1 .7l2.5-2.3 4.8 3.5c.9.5 1.5.2 1.7-.8l3.1-14.6c.3-1.3-.5-1.9-1.1-1.8z"/></svg></a>
+                <a href="mailto:mrdevs2011@gmail.com" class="ab-footer-social-link" aria-label="Email"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></a>
             </div>
-        </section>
-
-        <!-- MRDEV ID bo'limi -->
-        <section class="about-section" id="mrdev-id">
-            <div class="container">
-                <div class="section-label">02 — Shaxsiy identifikator</div>
-                <h2 class="section-title">MRDEV ID nima?</h2>
-                <div class="id-showcase">
-                    <div class="id-card">
-                        <div class="id-card-header">
-                            <div class="id-logo">MRDEV<small>Shaxsiy ID karta</small></div>
-                            <div class="id-chip"></div>
-                        </div>
-                        <div class="id-number"><span class="hash">#</span><span class="digits">428139</span></div>
-                        <div class="id-owner">MRDEV A'ZOSI</div>
-                        <div class="id-badge">VERIFIED ✓</div>
-                    </div>
-                    <div class="id-info">
-                        <div class="id-info-item">
-                            <div class="id-info-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div>
-                            <div><strong>MRDEV ID nima?</strong><br>Har bir foydalanuvchiga beriladigan noyob 7 belgili kod.</div>
-                        </div>
-                        <div class="id-info-item">
-                            <div class="id-info-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
-                            <div><strong>Nima uchun kerak?</strong><br>E-mail yoki parolsiz platformaga kirish imkonini beradi.</div>
-                        </div>
-                        <div class="id-info-item">
-                            <div class="id-info-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
-                            <div><strong>Xavfsizlik</strong><br>6 xonali OTP kod faqat 2 daqiqa amal qiladi, bir martalik.</div>
-                        </div>
-                    </div>
-                </div>
+        </div>
+        <div>
+            <div class="ab-footer-col-title">Sahifalar</div>
+            <div class="ab-footer-links">
+                <a href="#about">Platforma haqida</a>
+                <a href="#tools">Vositalar</a>
+                <a href="#mrdev-id">MRDEV ID</a>
+                <a href="#history">Tarix</a>
+                <a href="#faq">FAQ</a>
             </div>
-        </section>
-
-        <!-- Vositalar ro'yxati -->
-        <section class="about-section" id="tools">
-            <div class="container">
-                <div class="section-label">03 — Vositalar</div>
-                <h2 class="section-title">22 ta kuchli vosita</h2>
-                <div class="tools-grid" id="toolsGrid"></div>
+        </div>
+        <div>
+            <div class="ab-footer-col-title">Yordam</div>
+            <div class="ab-footer-links">
+                <a href="mailto:mrdevs2011@gmail.com">Murojaat</a>
+                <a href="https://t.me/mrdevuz" target="_blank" rel="noopener">Telegram</a>
+                <a href="#sponsor">Homiylik</a>
+                <a href="../settings/">Sozlamalar</a>
+                <a href="../">Bosh sahifa</a>
             </div>
-        </section>
+        </div>
+    </div>
+    <div class="ab-footer-bottom">
+        <div>© 2024–2026 <a href="https://mrdevs.vercel.app" style="color:var(--accent);">MR Dev</a> — O'zbekiston.</div>
+        <div style="font-family:var(--font-mono);font-size:11px;">v6.0 · Firebase + Supabase · MRDEV ID</div>
+    </div>
+</footer>
 
-        <!-- Qanday boshlash -->
-        <section class="about-section" id="howto">
-            <div class="container">
-                <div class="section-label">04 — Boshlash</div>
-                <h2 class="section-title">30 soniyada boshlang</h2>
-                <div class="steps">
-                    <div class="step"><div class="step-num">01</div><div><h3>Saytga kiring</h3><p>mrdevs.vercel.app manzilini oching. Hech qanday dastur kerak emas.</p></div></div>
-                    <div class="step"><div class="step-num">02</div><div><h3>Hisobga kiring</h3><p>E-mail + parol, Google yoki MRDEV ID orqali 30 soniyada kirish.</p></div></div>
-                    <div class="step"><div class="step-num">03</div><div><h3>Vositani tanlang</h3><p>22 vositadan birini tanlang va ishlatishni boshlang.</p></div></div>
-                </div>
-            </div>
-        </section>
+<button class="ab-back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Yuqoriga">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
 
-        <!-- Texnik tuzilma -->
-        <section class="about-section" id="tech">
-            <div class="container">
-                <div class="section-label">05 — Texnologiyalar</div>
-                <h2 class="section-title">Qanday ishlaydi?</h2>
-                <div class="tech-grid">
-                    <div class="tech-item"><span class="tech-icon">🔥</span><span>Firebase Auth</span><small>Autentifikatsiya</small></div>
-                    <div class="tech-item"><span class="tech-icon">📦</span><span>Supabase Storage</span><small>Fayl saqlash</small></div>
-                    <div class="tech-item"><span class="tech-icon">🗄️</span><span>Firestore</span><small>Ma'lumotlar bazasi</small></div>
-                    <div class="tech-item"><span class="tech-icon">🔐</span><span>SHA-256 + AES-256</span><small>Shifrlash</small></div>
-                    <div class="tech-item"><span class="tech-icon">🌐</span><span>Vercel</span><small>Hosting</small></div>
-                    <div class="tech-item"><span class="tech-icon">🎨</span><span>Vanilla JS + CSS</span><small>Frontend</small></div>
-                </div>
-            </div>
-        </section>
+<div class="ab-toast" id="abToast"></div>
 
-        <!-- Footer -->
-        <footer class="about-footer">
-            <div class="footer-content">
-                <div class="footer-brand">MR<span>DEV</span></div>
-                <p>O'zbekiston dasturchilar va talabalar uchun bepul universal platforma.</p>
-                <div class="footer-links">
-                    <a href="https://t.me/mrdevuz" target="_blank">Telegram</a>
-                    <a href="mailto:mrdevs2011@gmail.com">Email</a>
-                    <a href="../settings/">Sozlamalar</a>
-                </div>
-                <div class="footer-copyright">© 2024–2026 MR Dev — O'zbekiston</div>
-            </div>
-        </footer>
-    </main>
+<!-- Splash screen -->
+<script src="../assets/js/core/splash.js"></script>
 
-    <!-- ==================== MODALLAR ==================== -->
-    <div id="authModal" class="modal"><div class="modal-content"><div class="modal-header"><h3>Hisobga kirish</h3><button class="modal-close" onclick="window.closeAuthModal?.()">✕</button></div><div class="modal-body"><div id="registerFields" style="display:none;"><div class="input-group"><label>Ism Familiya</label><input type="text" id="registerName" placeholder="Sardor Karimov"></div></div><div class="input-group"><label>Email</label><input type="text" id="loginEmail" placeholder="username@mrdev.uz"></div><div class="input-group"><label>Parol</label><input type="password" id="loginPassword" placeholder="••••••••"></div><p id="authError" style="display:none;"></p><button id="authSubmitBtn" class="auth-submit-btn">Kirish</button><div class="auth-divider"><span>yoki</span></div><button class="google-auth-btn" onclick="window.signInWithGoogle?.()">Google orqali kirish</button><button class="mrdev-auth-btn" onclick="window.showMrdevLogin?.()">MRDEV ID orqali kirish</button><div class="auth-toggle"><span id="authToggleText">Hisobingiz yo'qmi?</span> <a href="#" id="authToggleLink" onclick="event.preventDefault();window.toggleAuthMode?.()">Ro'yxatdan o'tish</a></div></div></div></div>
+<script>
+// Theme
+function abGetTheme() { return localStorage.getItem('mrdev_theme') || localStorage.getItem('theme') || 'light'; }
+function abApplyTheme() {
+    const isDark = abGetTheme() === 'dark';
+    document.body.classList.toggle('dark', isDark);
+    const icon = document.getElementById('themeIcon');
+    if (!icon) return;
+    icon.setAttribute('d', isDark
+        ? 'M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z'
+        : 'M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z');
+}
+function abToggleTheme() {
+    const isDark = !document.body.classList.contains('dark');
+    localStorage.setItem('mrdev_theme', isDark ? 'dark' : 'light');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    abApplyTheme();
+}
+abApplyTheme();
 
-    <div id="mrdevLoginModal" class="modal"><div class="modal-content"><div class="modal-header"><h3>MRDEV orqali kirish</h3><button class="modal-close" onclick="window.closeMrdevLoginModal?.()">✕</button></div><div class="modal-body"><div id="mrdevStep1"><div class="mrdev-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div><p class="mrdev-heading">MRDEV ID kiriting</p><input type="text" id="mrdevIdInput" class="mrdev-id-input" placeholder="# _ _ _ _ _ _" maxlength="7"><button class="mrdev-submit" onclick="window.submitMrdevId?.()">Kirish</button></div><div id="mrdevStep2" style="display:none;"><div class="mrdev-otp-wrap"><input type="text" maxlength="1" class="mrdev-otp-box" id="otp1"><input type="text" maxlength="1" class="mrdev-otp-box" id="otp2"><input type="text" maxlength="1" class="mrdev-otp-box" id="otp3"><input type="text" maxlength="1" class="mrdev-otp-box" id="otp4"><input type="text" maxlength="1" class="mrdev-otp-box" id="otp5"><input type="text" maxlength="1" class="mrdev-otp-box" id="otp6"></div><div class="mrdev-timer-row"><span id="mrdevTimer">02:00</span></div><button class="mrdev-submit" onclick="window.verifyMrdevPass?.()">Tasdiqlash</button></div><p id="mrdevError" class="mrdev-error-msg"></p></div></div></div>
+// Progress + back to top
+window.addEventListener('scroll', function() {
+    var prog = document.getElementById('abProgress');
+    var btn = document.getElementById('backTop');
+    var scrolled = window.scrollY;
+    var total = document.documentElement.scrollHeight - window.innerHeight;
+    if (prog) prog.style.width = (total > 0 ? scrolled / total * 100 : 0) + '%';
+    if (btn) btn.classList.toggle('show', scrolled > 400);
+});
 
-    <div id="passNotifModal" class="modal"><div class="modal-content"><div class="modal-header"><h3>Parol xabarlari</h3><button class="modal-close" onclick="window.closePassNotifModal?.()">✕</button></div><div class="modal-body" id="passNotifList"><div style="text-align:center;padding:20px;">Yuklanmoqda...</div></div></div></div>
+// Reveal
+document.addEventListener('DOMContentLoaded', function() {
+    var io = new IntersectionObserver(function(entries) {
+        entries.forEach(function(e) {
+            if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }
+        });
+    }, { threshold: 0.07 });
+    document.querySelectorAll('.ab-reveal').forEach(function(el) { io.observe(el); });
+});
 
-    <!-- ==================== SCRIPTS ==================== -->
-    <script src="../assets/js/core/theme-flash-fix.js"></script>
-    <script src="../assets/js/core/splash.js"></script>
-    <script src="../assets/js/core/loading.js"></script>
-    <script type="module" src="./script.js"></script>
+// FAQ
+function abToggleFaq(el) {
+    var item = el.closest('.ab-faq-item');
+    var isOpen = item.classList.contains('open');
+    document.querySelectorAll('.ab-faq-item').forEach(function(i) { i.classList.remove('open'); });
+    if (!isOpen) item.classList.add('open');
+}
+
+// Copy card
+function abCopyCard() {
+    navigator.clipboard.writeText('8600123456789012').then(function() {
+        var t = document.getElementById('copyCardText');
+        if (t) { t.textContent = 'Nusxalandi ✓'; setTimeout(function() { t.textContent = 'Karta raqamini nusxalash'; }, 2000); }
+        abShowToast('Karta raqami nusxalandi ✓');
+    }).catch(function() { abShowToast('Nusxalash muvaffaqiyatsiz'); });
+}
+
+// Toast
+function abShowToast(msg) {
+    var t = document.getElementById('abToast');
+    if (!t) return;
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(function() { t.classList.remove('show'); }, 2500);
+}
+</script>
 </body>
 </html>
