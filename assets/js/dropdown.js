@@ -199,16 +199,21 @@ function attachFallbacks(el) {
 }
 
 // =====================================================================
-// LOGOUT — ODDIY SILLIQ TUGMA
+// LOGOUT — 3 MARTA BOSISH KERAK (tasodifiy chiqishdan himoya)
 // =====================================================================
+
+const LOGOUT_REQUIRED_TAPS = 3;
+const LOGOUT_RESET_DELAY   = 3000; // 3 soniyada reset
 
 function resetLogoutBtn() {
     clearTimeout(_logoutHintTimer);
     _logoutTapCount = 0;
-    const btn = document.getElementById('cfg-logout-btn');
+    const btn     = document.getElementById('cfg-logout-btn');
+    const counter = document.getElementById('cfg-logout-counter');
     if (!btn) return;
-    btn.classList.remove('is-leaving');
+    btn.classList.remove('is-leaving', 'is-warn', 'is-final');
     btn.disabled = false;
+    if (counter) counter.textContent = '';
 }
 
 function doLogout() {
@@ -218,6 +223,19 @@ function doLogout() {
     logout();
 }
 
+function bindDangerZone() {
+    const toggle  = document.getElementById('cfg-danger-toggle');
+    const content = document.getElementById('cfg-danger-content');
+    if (!toggle || !content || toggle._dangerBound) return;
+    toggle._dangerBound = true;
+    toggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const open = content.style.display !== 'none';
+        content.style.display = open ? 'none' : 'block';
+        toggle.classList.toggle('is-open', !open);
+    });
+}
+
 function bindLogoutBtn(btn) {
     if (!btn || btn._logoutBound) return;
     btn._logoutBound = true;
@@ -225,11 +243,29 @@ function bindLogoutBtn(btn) {
     btn.addEventListener('click', (e) => {
         e.stopPropagation();
         if (btn.disabled) return;
-        // Tugmani bloklash + animatsiya
-        btn.disabled = true;
-        btn.classList.add('is-leaving');
-        // 320ms animatsiya tugagandan so'ng logout
-        setTimeout(doLogout, 320);
+
+        _logoutTapCount++;
+        clearTimeout(_logoutHintTimer);
+
+        const counter = document.getElementById('cfg-logout-counter');
+        const left    = LOGOUT_REQUIRED_TAPS - _logoutTapCount;
+
+        if (_logoutTapCount >= LOGOUT_REQUIRED_TAPS) {
+            // Chiqish
+            btn.disabled = true;
+            btn.classList.add('is-leaving');
+            if (counter) counter.textContent = '';
+            setTimeout(doLogout, 320);
+        } else {
+            // Ogohlantirish
+            btn.classList.add('is-warn');
+            btn.classList.toggle('is-final', left === 1);
+            if (counter) counter.textContent = `${left}x`;
+            // Reset if user stops
+            _logoutHintTimer = setTimeout(() => {
+                resetLogoutBtn();
+            }, LOGOUT_RESET_DELAY);
+        }
     });
 }
 
@@ -278,13 +314,6 @@ function buildRootHTML(user) {
                 <span class="cfg-item-text">Sozlamalar</span>
                 <span class="cfg-item-chevron">${Icons.chevronRight}</span>
             </a>
-
-            ${isAuth ? `
-            <div class="cfg-divider"></div>
-            <button class="cfg-logout-btn" id="cfg-logout-btn" type="button">
-                <span class="cfg-logout-icon">${Icons.logout}</span>
-                <span class="cfg-logout-label">Chiqish</span>
-            </button>` : ''}
 
         </div>
     </div>`;
@@ -431,10 +460,20 @@ function buildSettingsHTML(user) {
 
             ${isAuth ? `
             <div class="cfg-divider"></div>
-            <button class="cfg-logout-btn" id="cfg-logout-btn" type="button">
-                <span class="cfg-logout-icon">${Icons.logout}</span>
-                <span class="cfg-logout-label">Chiqish</span>
-            </button>` : ''}
+            <div class="cfg-danger-zone" id="cfg-danger-zone">
+                <button class="cfg-danger-toggle" id="cfg-danger-toggle" type="button">
+                    <span class="cfg-danger-toggle-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></span>
+                    <span class="cfg-danger-toggle-label">Boshqa sozlamalar</span>
+                    <span class="cfg-danger-toggle-chevron"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></span>
+                </button>
+                <div class="cfg-danger-content" id="cfg-danger-content" style="display:none;">
+                    <button class="cfg-logout-btn" id="cfg-logout-btn" type="button">
+                        <span class="cfg-logout-icon">${Icons.logout}</span>
+                        <span class="cfg-logout-label">Hisobdan chiqish</span>
+                        <span class="cfg-logout-counter" id="cfg-logout-counter"></span>
+                    </button>
+                </div>
+            </div>` : ''}
 
         </div>
     </div>`;
@@ -503,6 +542,7 @@ function attachEvents(section) {
         window.location.href = BASE + '/about/';
     });
 
+    bindDangerZone();
     if (logoutBtn) bindLogoutBtn(logoutBtn);
 }
 

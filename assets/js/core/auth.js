@@ -62,13 +62,12 @@ function setAvatar(id, photoURL, fallback) {
 
 export function updateUIForUser(user) {
     if (!user) {
-        ['sidebarUser','sidebarLogout'].forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; });
+        ['sidebarUser'].forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; });
         const sl = document.getElementById('sidebarLogin'); if (sl) sl.style.display = 'block';
         const nn = document.getElementById('notifNav'); if (nn) nn.style.display = 'none';
         
         const mh = document.getElementById('userMenuHeader'); if (mh) mh.style.display = 'none';
         const ml = document.getElementById('userMenuLogin'); if (ml) ml.style.display = 'block';
-        const mo = document.getElementById('userMenuLogout'); if (mo) mo.style.display = 'none';
         const nm = document.getElementById('notifMenuLink'); if (nm) nm.style.display = 'none';
         
         const av = document.getElementById('headerUserAvatar'); if (av) av.textContent = '?';
@@ -87,14 +86,13 @@ export function updateUIForUser(user) {
     setText('sidebarEmail', email);
     setText('sidebarMrdevId', mrdevId);
     setAvatar('sidebarAvatar', user.photoURL, avatar);
-    ['sidebarUser','sidebarLogout'].forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'flex'; });
+    ['sidebarUser'].forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'flex'; });
     const su = document.getElementById('sidebarUser'); if (su) su.classList.remove('is-loading');
     const sl = document.getElementById('sidebarLogin'); if (sl) sl.style.display = 'none';
     const nn = document.getElementById('notifNav'); if (nn) nn.style.display = 'flex';
 
     const mh = document.getElementById('userMenuHeader'); if (mh) mh.style.display = 'flex';
     const ml = document.getElementById('userMenuLogin'); if (ml) ml.style.display = 'none';
-    const mo = document.getElementById('userMenuLogout'); if (mo) mo.style.display = 'flex';
     const nm = document.getElementById('notifMenuLink'); if (nm) nm.style.display = 'flex';
     setText('menuName', dn);
     setText('menuEmail', email);

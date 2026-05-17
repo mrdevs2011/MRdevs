@@ -51,7 +51,6 @@ export function updateUserMenuForUser(user) {
     const email   = document.getElementById('menuEmail');
     const mrdevId = document.getElementById('menuMrdevId');
     const login   = document.getElementById('userMenuLogin');
-    const logout  = document.getElementById('userMenuLogout');
     const notif   = document.getElementById('notifMenuLink');
 
     if (user && user.isAuthenticated) {
@@ -60,7 +59,6 @@ export function updateUserMenuForUser(user) {
 
         if (header)  header.style.display  = 'flex';
         if (login)   login.style.display   = 'none';
-        if (logout)  logout.style.display  = 'flex';
         if (notif)   notif.style.display   = 'flex';
 
         if (avatar) {
@@ -80,7 +78,6 @@ export function updateUserMenuForUser(user) {
     } else {
         if (header)  header.style.display = 'none';
         if (login)   login.style.display  = 'block';
-        if (logout)  logout.style.display = 'none';
         if (notif)   notif.style.display  = 'none';
         if (avatar)  avatar.textContent   = '?';
     }
@@ -92,7 +89,6 @@ function updateUserMenuTexts() {
     const miniLink       = document.querySelector('#userMenu a[onclick*="switchTab(\'mini\')"]');
     const settingsLink   = document.querySelector('#userMenu a[href*="./settings/"]');
     const notifLink      = document.getElementById('notifMenuLink');
-    const logoutBtn      = document.getElementById('userMenuLogout');
     const loginBtn       = document.querySelector('#userMenuLogin button');
 
     [
@@ -106,13 +102,6 @@ function updateUserMenuTexts() {
         const last = el.childNodes[el.childNodes.length - 1];
         if (last?.nodeType === Node.TEXT_NODE) last.textContent = t(key);
     });
-
-    if (logoutBtn) {
-        const svg = logoutBtn.querySelector('svg');
-        logoutBtn.innerHTML = '';
-        if (svg) logoutBtn.appendChild(svg);
-        logoutBtn.appendChild(document.createTextNode(' ' + t('logout')));
-    }
 
     if (loginBtn) {
         const svg = loginBtn.querySelector('svg');

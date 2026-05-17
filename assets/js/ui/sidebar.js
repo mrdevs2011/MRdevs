@@ -43,19 +43,12 @@ function updateSidebarTexts() {
     const navPopular = document.querySelector('#navPopular .nav-text');
     const navMini = document.querySelector('#navMini .nav-text');
     const notifNav = document.querySelector('#notifNav .nav-text');
-    const logoutBtn = document.getElementById('sidebarLogout');
     const loginBtn = document.querySelector('.login-sidebar-btn');
 
     if (navAll) navAll.textContent = t('all_apps');
     if (navPopular) navPopular.textContent = t('popular_apps');
     if (navMini) navMini.textContent = t('mini_apps');
     if (notifNav) notifNav.textContent = t('pass_notifications');
-
-    if (logoutBtn) {
-        // Span orqali to'g'ridan-to'g'ri matn yangilash (text node xatosidan qochish)
-        const span = logoutBtn.querySelector('span[data-i18n]');
-        if (span) span.textContent = t('logout');
-    }
 
     if (loginBtn) {
         const textNode = loginBtn.childNodes[loginBtn.childNodes.length - 1];
