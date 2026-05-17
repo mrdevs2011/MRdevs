@@ -29,8 +29,8 @@ const SECTION = detectSection();
 let _dropdownId  = null;   // Joriy dropdown element ID
 let _overlayId   = null;   // Joriy overlay ID
 let _isOpen      = false;
-let _logoutState = 'idle'; // 'idle' | 'confirm'
-let _logoutTimer = null;
+let _logoutTapCount = 0;    // Tap sanagich (swipe yo'q bosishlar)
+let _logoutHintTimer = null; // Hint yashirish uchun
 let _currentUser = null;   // languageChanged uchun so'nggi user holati
 
 // Hover timerlari — bindTrigger va bindDropdownHover o'rtasida ulashiladi
@@ -84,7 +84,7 @@ function openDropdown() {
     document.getElementById(_overlayId)?.classList.add('show');
     document.getElementById(_dropdownId)?.classList.add('show');
     _isOpen = true;
-    resetLogout();
+    resetSwipeLogout();
 }
 
 function closeDropdown() {
@@ -92,7 +92,7 @@ function closeDropdown() {
     document.getElementById(_overlayId)?.classList.remove('show');
     document.getElementById(_dropdownId)?.classList.remove('show');
     _isOpen = false;
-    resetLogout();
+    resetSwipeLogout();
 }
 
 function toggleDropdown() {
@@ -199,37 +199,117 @@ function attachFallbacks(el) {
 }
 
 // =====================================================================
-// LOGOUT — INLINE DOUBLE CONFIRMATION
+// LOGOUT — SWIPE-TO-LOGOUT
 // =====================================================================
 
-function resetLogout() {
-    _logoutState = 'idle';
-    clearTimeout(_logoutTimer);
+function resetSwipeLogout() {
+    _logoutTapCount = 0;
+    clearTimeout(_logoutHintTimer);
     const btn = document.getElementById('cfg-logout-btn');
-    if (btn) {
-        btn.classList.remove('confirm-state');
-        btn.querySelector('.cfg-btn-label').textContent = 'Chiqish';
-    }
+    if (!btn) return;
+    btn.classList.remove('swipe-hint-active');
+    const thumb = btn.querySelector('.cfg-sw-thumb');
+    const fill  = btn.querySelector('.cfg-sw-fill');
+    const hint  = btn.querySelector('.cfg-sw-hint');
+    if (thumb) { thumb.style.transform = ''; thumb.style.transition = ''; }
+    if (fill)  { fill.style.width = '0%'; fill.style.transition = ''; }
+    if (hint)  { hint.classList.remove('visible'); }
 }
 
-function handleLogoutClick() {
-    if (_logoutState === 'idle') {
-        _logoutState = 'confirm';
-        const btn = document.getElementById('cfg-logout-btn');
-        if (btn) {
-            btn.classList.add('confirm-state');
-            btn.querySelector('.cfg-btn-label').textContent = 'Ishonchingiz komilmi?';
-        }
-        // 4 sekunddan keyin avtomatik reset
-        _logoutTimer = setTimeout(() => resetLogout(), 4000);
-    } else if (_logoutState === 'confirm') {
-        clearTimeout(_logoutTimer);
-        _logoutState = 'idle';
-        closeDropdown();
-        const trigger = document.getElementById('headerUserTrigger');
-        if (trigger) trigger.classList.add('is-loading');
-        logout();
+function doLogout() {
+    closeDropdown();
+    const trigger = document.getElementById('headerUserTrigger');
+    if (trigger) trigger.classList.add('is-loading');
+    logout();
+}
+
+function bindSwipeLogout(btn) {
+    if (!btn) return;
+
+    let startX = 0, currentX = 0, dragging = false, didSwipe = false;
+    const THRESHOLD = 0.65; // 65% o'tsa logout
+
+    function showHint() {
+        const hint = btn.querySelector('.cfg-sw-hint');
+        if (hint) hint.classList.add('visible');
+        clearTimeout(_logoutHintTimer);
+        _logoutHintTimer = setTimeout(() => {
+            if (hint) hint.classList.remove('visible');
+        }, 2800);
     }
+
+    function updateDrag(dx) {
+        const maxDx = btn.offsetWidth - 52;
+        const clamped = Math.max(0, Math.min(dx, maxDx));
+        const ratio = clamped / maxDx;
+        const thumb = btn.querySelector('.cfg-sw-thumb');
+        const fill  = btn.querySelector('.cfg-sw-fill');
+        if (thumb) thumb.style.transform = \`translateX(\${clamped}px)\`;
+        if (fill)  fill.style.width = \`\${Math.min(ratio * 100 + 6, 100)}%\`;
+    }
+
+    btn.addEventListener('pointerdown', (e) => {
+        // Faqat thumb yoki button o'ziga
+        startX = e.clientX;
+        currentX = e.clientX;
+        dragging = false;
+        didSwipe = false;
+        const thumb = btn.querySelector('.cfg-sw-thumb');
+        if (thumb) { thumb.style.transition = 'none'; }
+        const fill = btn.querySelector('.cfg-sw-fill');
+        if (fill)  { fill.style.transition = 'none'; }
+        btn.setPointerCapture(e.pointerId);
+    }, { passive: true });
+
+    btn.addEventListener('pointermove', (e) => {
+        if (!e.buttons) return;
+        currentX = e.clientX;
+        const dx = currentX - startX;
+        if (dx > 6) {
+            dragging = true;
+            updateDrag(dx);
+        }
+    }, { passive: true });
+
+    btn.addEventListener('pointerup', (e) => {
+        const dx = (e.clientX || currentX) - startX;
+        const maxDx = btn.offsetWidth - 52;
+        const ratio = maxDx > 0 ? dx / maxDx : 0;
+
+        const thumb = btn.querySelector('.cfg-sw-thumb');
+        const fill  = btn.querySelector('.cfg-sw-fill');
+
+        if (dragging && ratio >= THRESHOLD) {
+            // ✅ Swipe muvaffaqiyatli — logout
+            didSwipe = true;
+            if (thumb) { thumb.style.transition = 'transform 0.22s ease'; thumb.style.transform = \`translateX(\${maxDx}px)\`; }
+            if (fill)  { fill.style.transition = 'width 0.22s ease'; fill.style.width = '100%'; }
+            setTimeout(doLogout, 240);
+        } else {
+            // ❌ Swipe yetarli emas — qaytish animatsiyasi
+            if (thumb) { thumb.style.transition = 'transform 0.35s cubic-bezier(0.34, 1.4, 0.64, 1)'; thumb.style.transform = ''; }
+            if (fill)  { fill.style.transition = 'width 0.35s ease'; fill.style.width = '0%'; }
+
+            if (!dragging) {
+                // Faqat tap — sanagich oshirish
+                _logoutTapCount++;
+                if (_logoutTapCount >= 3) {
+                    showHint();
+                    _logoutTapCount = 0;
+                }
+            }
+        }
+        dragging = false;
+    });
+
+    // Touch cancel uchun ham reset
+    btn.addEventListener('pointercancel', () => {
+        const thumb = btn.querySelector('.cfg-sw-thumb');
+        const fill  = btn.querySelector('.cfg-sw-fill');
+        if (thumb) { thumb.style.transition = 'transform 0.35s cubic-bezier(0.34,1.4,0.64,1)'; thumb.style.transform = ''; }
+        if (fill)  { fill.style.transition = 'width 0.35s ease'; fill.style.width = '0%'; }
+        dragging = false;
+    });
 }
 
 // =====================================================================
@@ -280,10 +360,12 @@ function buildRootHTML(user) {
 
             ${isAuth ? `
             <div class="cfg-divider"></div>
-            <button class="cfg-item cfg-item-danger" id="cfg-logout-btn">
-                <span class="cfg-item-icon">${Icons.logout}</span>
-                <span class="cfg-btn-label">Chiqish</span>
-            </button>` : ''}
+            <div class="cfg-swipe-logout" id="cfg-logout-btn">
+                <div class="cfg-sw-fill"></div>
+                <div class="cfg-sw-thumb"><span class="cfg-sw-icon">${Icons.logout}</span></div>
+                <span class="cfg-sw-label">Chiqish</span>
+                <span class="cfg-sw-hint">O'nga suring →</span>
+            </div>` : ''}
 
         </div>
     </div>`;
@@ -430,10 +512,12 @@ function buildSettingsHTML(user) {
 
             ${isAuth ? `
             <div class="cfg-divider"></div>
-            <button class="cfg-item cfg-item-danger" id="cfg-logout-btn">
-                <span class="cfg-item-icon">${Icons.logout}</span>
-                <span class="cfg-btn-label">Chiqish</span>
-            </button>` : ''}
+            <div class="cfg-swipe-logout" id="cfg-logout-btn">
+                <div class="cfg-sw-fill"></div>
+                <div class="cfg-sw-thumb"><span class="cfg-sw-icon">${Icons.logout}</span></div>
+                <span class="cfg-sw-label">Chiqish</span>
+                <span class="cfg-sw-hint">O'nga suring →</span>
+            </div>` : ''}
 
         </div>
     </div>`;
@@ -491,15 +575,49 @@ function attachEvents(section) {
 
     notifBtn?.addEventListener('click', () => {
         closeDropdown();
+        // Settings sahifasida modal bo'lmasa — dinamik yaratamiz
+        ensurePassNotifModal();
         showPassNotifications();
     });
 
     aboutBtn?.addEventListener('click', () => {
         closeDropdown();
-        if (window.showAboutModal) window.showAboutModal();
+        // About sahifasiga o'tish
+        window.location.href = BASE + '/about/';
     });
 
-    logoutBtn?.addEventListener('click', handleLogoutClick);
+    if (logoutBtn) bindSwipeLogout(logoutBtn);
+}
+
+// passNotifModal DOM da bo'lmasa — dinamik qo'shamiz
+function ensurePassNotifModal() {
+    if (document.getElementById('passNotifModal')) return;
+    const modal = document.createElement('div');
+    modal.id = 'passNotifModal';
+    modal.className = 'modal';
+    modal.style.display = 'none';
+    modal.innerHTML = `
+        <div class="modal-content" style="max-width:450px;">
+            <div class="modal-header">
+                <h3 data-i18n="pass_notifications">Parol xabarlari</h3>
+                <button class="modal-close" onclick="closePassNotifModal()" data-i18n="close">✕</button>
+            </div>
+            <div class="modal-body" id="passNotifList" style="max-height:60vh;overflow-y:auto;">
+                <div style="text-align:center;padding:20px;color:var(--text-3);">Yuklanmoqda...</div>
+            </div>
+        </div>`;
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            import('./ui/modal.js').then(m => m.closeModal('passNotifModal'));
+        }
+    });
+    document.body.appendChild(modal);
+    // closePassNotifModal global funksiyasi
+    if (!window.closePassNotifModal) {
+        window.closePassNotifModal = () => {
+            import('./ui/modal.js').then(m => m.closeModal('passNotifModal'));
+        };
+    }
 }
 
 // =====================================================================
@@ -600,12 +718,12 @@ export function updateDropdown(user) {
 export { initRootDropdown as initDropdown };
 
 export function showLogoutModal() {
-    // Eski modal o'rniga inline double-confirm ishlatilmoqda
-    handleLogoutClick();
+    const btn = document.getElementById('cfg-logout-btn');
+    if (btn) bindSwipeLogout(btn);
 }
 
 export function closeAllLogoutModals() {
-    resetLogout();
+    resetSwipeLogout();
 }
 
 export function getMiniUserFromLocalStorage() {

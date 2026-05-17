@@ -17,6 +17,11 @@ import {
 } from '../assets/js/core/global-settings.js';
 import { toggleTheme } from '../assets/js/core/theme.js';
 import { initSettingsDropdown, setTriggerLoading } from '../assets/js/dropdown.js';
+import { showModal, closeModal, initModals } from '../assets/js/ui/modal.js';
+import { showPassNotifications } from '../assets/js/features/pass-notifications.js';
+
+// Settings sahifasida global funksiyalar (onclick uchun)
+window.closePassNotifModal = () => closeModal('passNotifModal');
 
 let currentUser = null;
 
@@ -251,6 +256,9 @@ updateCacheSize();
 
 // 4. Event listeners
 initEventListeners();
+
+// 5. Modals
+initModals();
 
 // 6. Firebase auth holati kuzatish
 onAuthStateChanged(auth, (firebaseUser) => {

@@ -6,14 +6,11 @@ import { auth, rtdb } from '../core/firebase-init.js';
 import { ref, get } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 import { showToast } from '../core/toast.js';
 import { showModal, closeModal } from '../ui/modal.js';
-import { getNotificationsEnabled } from '../core/global-settings.js';
 import { t } from '../core/i18n.js';
 
 export function showPassNotifications() {
-    if (!getNotificationsEnabled()) {
-        showToast(t('notifications_disabled') || "Bildirishnomalar o'chirilgan", 'info');
-        return;
-    }
+    // Notifications sozlamasi faqat ovozni boshqaradi, modalni emas
+    // Modal har doim ochiladi
 
     let uid   = null;
     let email = null;

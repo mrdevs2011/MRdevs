@@ -14,35 +14,47 @@
             "dest": "/404.html"
         },
         {
-            "src": "/settings",
+            "src": "/settings$",
+            "headers": {
+                "Location": "/settings/"
+            },
+            "status": 308
+        },
+        {
+            "src": "/settings/$",
             "dest": "/settings/index.html"
         },
         {
-            "src": "/settings/",
-            "dest": "/settings/index.html"
+            "src": "/about$",
+            "headers": {
+                "Location": "/about/"
+            },
+            "status": 308
         },
         {
-            "src": "/about",
+            "src": "/about/$",
             "dest": "/about/index.html"
         },
         {
-            "src": "/about/",
-            "dest": "/about/index.html"
+            "src": "/mini$",
+            "headers": {
+                "Location": "/mini/"
+            },
+            "status": 308
         },
         {
-            "src": "/mini",
+            "src": "/mini/$",
             "dest": "/mini/index.html"
         },
         {
-            "src": "/mini/",
-            "dest": "/mini/index.html"
+            "src": "/popular$",
+            "headers": {
+                "Location": "/popular/"
+            },
+            "status": 308
         },
         {
-            "src": "/popular",
-            "dest": "/popular/index.html"
-        },
-        {
-            "src": "/popular/",
+            "src": "/popular/$",
             "dest": "/popular/index.html"
         },
         {
