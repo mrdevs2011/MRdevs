@@ -219,7 +219,7 @@ function loadCloudBoard() {
 }
 
 // ==================== CLEAR ====================
-$('clearBoardBtn').addEventListener('click', function() {
+$('clearBoardBtn').addEventListener('click', async function() {
     if (!await mrdevConfirm(t('board_clear_confirm'))) return;
     state.elements = []; addHistory(); render();
 });

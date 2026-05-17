@@ -259,3 +259,11 @@ body.no-entry-anim .tabs,
 body.no-entry-anim .apps-grid {
     animation: none !important;
 }
+
+/* ===== 2026: ANIMATION FIXES ===== */
+@media (prefers-reduced-motion: reduce) {
+    .hero-section, .tabs, .apps-grid, body { animation: none !important; }
+}
+.no-entry-anim .hero-section,
+.no-entry-anim .tabs,
+.no-entry-anim .apps-grid { animation: none !important; }

@@ -245,7 +245,7 @@ function renderHistory(items) {
     }).join('');
 
     document.querySelectorAll('.history-item').forEach(function(item) {
-        item.addEventListener('click', function() {
+        item.addEventListener('click', async function() {
             expressionEl.textContent = item.dataset.expr + ' =';
             resultEl.textContent = item.dataset.result;
             expression = item.dataset.result;

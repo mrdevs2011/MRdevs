@@ -190,7 +190,7 @@ function loadSavedUrls() {
 }
 
 // ==================== MUTE ALL ====================
-$('muteAllBtn').addEventListener('click', function() {
+$('muteAllBtn').addEventListener('click', async function() {
     for (var i = 1; i <= panelCount; i++) {
         var iframe = $('iframe' + i);
         if (iframe && iframe.contentWindow) {
