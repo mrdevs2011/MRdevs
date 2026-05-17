@@ -1,5 +1,6 @@
 // ==================== MRDEV STOPWATCH v2.0 — Firebase + Local Sync ====================
 import { initAuth, smartSave, getCurrentUser, getUserId } from '../../assets/js/firebase-helper.js';
+import { mrdevConfirm } from '../../assets/js/core/dialog.js';
 import { initMiniDropdown } from '../../assets/js/dropdown.js';
 import { getFirebase } from '../../assets/js/firebase-helper.js';
 import { t, initI18n } from '../../assets/js/core/i18n.js';
@@ -246,7 +247,7 @@ function renderHistory() {
 }
 
 $('clearHistoryBtn').addEventListener('click', async function() {
-    if (!confirm(t('sw_clear_confirm'))) return;
+    if (!await mrdevConfirm(t('sw_clear_confirm'))) return;
     var uid = getUserId();
     var db = getDB();
     if (uid && db) {

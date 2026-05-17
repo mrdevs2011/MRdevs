@@ -241,3 +241,21 @@
     color: var(--text-4);
     font-size: 13px;
 }
+
+/* ==================== 2026 FIX: ANIMATION ==================== */
+/* Reduced motion — barcha animatsiyalarni o'chirish */
+@media (prefers-reduced-motion: reduce) {
+    .hero-section,
+    .tabs,
+    .apps-grid,
+    body {
+        animation: none !important;
+    }
+}
+
+/* Qayta kirganida animatsiya o'chiriladi (JS tomonidan boshqariladi) */
+body.no-entry-anim .hero-section,
+body.no-entry-anim .tabs,
+body.no-entry-anim .apps-grid {
+    animation: none !important;
+}

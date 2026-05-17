@@ -1,5 +1,6 @@
 // ==================== MRDEV SPLITVIEW v2.0 — Firebase + Local Sync ====================
 import { initAuth, smartSave, smartLoad, smartDelete, getCurrentUser, getUserId } from '../../assets/js/firebase-helper.js';
+import { mrdevConfirm } from '../../assets/js/core/dialog.js';
 import { initMiniDropdown } from '../../assets/js/dropdown.js';
 import { t, initI18n } from '../../assets/js/core/i18n.js';
 
@@ -202,8 +203,8 @@ $('muteAllBtn').addEventListener('click', function() {
 });
 
 // ==================== CLEAR ALL ====================
-$('clearAllBtn').addEventListener('click', function() {
-    if (!confirm(t('split_clear_confirm'))) return;
+$('clearAllBtn').addEventListener('click', async function() {
+    if (!await mrdevConfirm(t('split_clear_confirm'))) return;
 
     for (var i = 1; i <= panelCount; i++) {
         var iframe = $('iframe' + i);

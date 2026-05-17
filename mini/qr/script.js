@@ -1,5 +1,6 @@
 // ==================== MRDEV QR CODE v2.1 — Firebase + Local Sync ====================
 import { initAuth, smartSave, getCurrentUser, getUserId } from '../../assets/js/firebase-helper.js';
+import { mrdevConfirm } from '../../assets/js/core/dialog.js';
 import { initMiniDropdown } from '../../assets/js/dropdown.js';
 import { getFirebase } from '../../assets/js/firebase-helper.js';
 
@@ -298,7 +299,7 @@ async function deleteHistoryItem(id, isCloud) {
 }
 
 $('clearHistoryBtn').addEventListener('click', async function() {
-    if (!confirm('Barcha tarixni tozalashni xohlaysizmi?')) return;
+    if (!await mrdevConfirm('Barcha tarixni tozalashni xohlaysizmi?')) return;
     if (currentUser) {
         var snap = await getDocs(collection(getDB(), 'users', currentUser.uid, 'qrcodes'));
         var batch = writeBatch(getDB());

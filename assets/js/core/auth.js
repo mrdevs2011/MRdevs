@@ -62,12 +62,13 @@ function setAvatar(id, photoURL, fallback) {
 
 export function updateUIForUser(user) {
     if (!user) {
-        ['sidebarUser'].forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; });
+        ['sidebarUser','sidebarLogout'].forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; });
         const sl = document.getElementById('sidebarLogin'); if (sl) sl.style.display = 'block';
         const nn = document.getElementById('notifNav'); if (nn) nn.style.display = 'none';
         
         const mh = document.getElementById('userMenuHeader'); if (mh) mh.style.display = 'none';
         const ml = document.getElementById('userMenuLogin'); if (ml) ml.style.display = 'block';
+        const mo = document.getElementById('userMenuLogout'); if (mo) mo.style.display = 'none';
         const nm = document.getElementById('notifMenuLink'); if (nm) nm.style.display = 'none';
         
         const av = document.getElementById('headerUserAvatar'); if (av) av.textContent = '?';
@@ -86,13 +87,13 @@ export function updateUIForUser(user) {
     setText('sidebarEmail', email);
     setText('sidebarMrdevId', mrdevId);
     setAvatar('sidebarAvatar', user.photoURL, avatar);
-    ['sidebarUser'].forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'flex'; });
-    const su = document.getElementById('sidebarUser'); if (su) su.classList.remove('is-loading');
+    ['sidebarUser','sidebarLogout'].forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'flex'; });
     const sl = document.getElementById('sidebarLogin'); if (sl) sl.style.display = 'none';
     const nn = document.getElementById('notifNav'); if (nn) nn.style.display = 'flex';
 
     const mh = document.getElementById('userMenuHeader'); if (mh) mh.style.display = 'flex';
     const ml = document.getElementById('userMenuLogin'); if (ml) ml.style.display = 'none';
+    const mo = document.getElementById('userMenuLogout'); if (mo) mo.style.display = 'flex';
     const nm = document.getElementById('notifMenuLink'); if (nm) nm.style.display = 'flex';
     setText('menuName', dn);
     setText('menuEmail', email);
@@ -128,25 +129,6 @@ export async function logout() {
 
 export function initAuth() {
     logger.auth.start('v6.0');
-
-    // ── TEZKOR PRE-POPULATE: Firebase javob berishidan oldin ──
-    // localStorage dagi keshdan UI ni splash davomida to'ldirish
-    // Firebase javob bergandan keyin fresh ma'lumot bilan yangilanadi
-    const earlyAuth = getLocalAuth();
-    if (earlyAuth) {
-        const earlyUser = {
-            uid: earlyAuth.uid,
-            email: earlyAuth.email,
-            displayName: earlyAuth.displayName,
-            photoURL: earlyAuth.photoURL,
-            mrdevId: earlyAuth.mrdevId || localStorage.getItem('mrdev_user_id') || '',
-            providerData: [{ providerId: earlyAuth.provider || 'mrdev' }],
-            isAuthenticated: true
-        };
-        // UI ni darhol to'ldirish (skeleton ko'rinmasin)
-        updateUIForUser(earlyUser);
-        try { initDropdown(earlyUser); } catch (e) {}
-    }
 
     onAuthStateChanged(auth, async (firebaseUser) => {
         if (firebaseUser && firebaseUser.uid) {

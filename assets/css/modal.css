@@ -11,8 +11,8 @@
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.22s var(--ease-out), visibility 0.22s;
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
 }
 
 .modal.show {
@@ -592,4 +592,14 @@
     .account-switcher-modal { max-width: 100% !important; }
     .account-item { padding: 11px 16px; }
     .account-avatar { width: 36px; height: 36px; font-size: 14px; }
+}
+
+/* 2026 FIX: modal backdrop graceful degradation */
+@supports not (backdrop-filter: blur(1px)) {
+    .modal { background: rgba(0, 0, 0, 0.45); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .modal { backdrop-filter: none; -webkit-backdrop-filter: none; }
+    .modal-content { transition: none; }
 }

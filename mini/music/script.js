@@ -1,5 +1,6 @@
 // ==================== MRDEV MUSIC v2.0 — Firebase + Supabase + Local Sync ====================
 import { initAuth, getCurrentUser, getUserId } from '../../assets/js/firebase-helper.js';
+import { mrdevConfirm } from '../../assets/js/core/dialog.js';
 import { initMiniDropdown } from '../../assets/js/dropdown.js';
 import { getFirebase } from '../../assets/js/firebase-helper.js';
 import { t, initI18n } from '../../assets/js/core/i18n.js';
@@ -173,7 +174,7 @@ function renderCard(id, data) {
 
 // ==================== DELETE ====================
 async function deleteAudio(id, data) {
-    if (!confirm('"' + (data.name || 'Audio') + '" ' + t('music_delete_confirm'))) return;
+    if (!await mrdevConfirm('"' + (data.name || 'Audio') + '" ' + t('music_delete_confirm'))) return;
     try {
         if (data.storagePath) {
             await supabase.storage.from('videos').remove([data.storagePath]);

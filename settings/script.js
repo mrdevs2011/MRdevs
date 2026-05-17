@@ -216,6 +216,20 @@ function initEventListeners() {
         window.location.href = '../about/';
     });
 
+    // Hisobdan chiqish
+    document.getElementById('logoutBtn')?.addEventListener('click', async () => {
+        if (confirm(t('logout_confirm'))) {
+            try {
+                if (auth?.currentUser) await signOut(auth);
+                localStorage.removeItem('mrdev_local_auth');
+                localStorage.removeItem('mrdev_auth_user');
+                window.location.href = '../';
+            } catch (e) {
+                showToast(e.message, 'error');
+            }
+        }
+    });
+
     // Til o'zgarganda yangilash
     document.addEventListener('languageChanged', () => {
         loadSettings();

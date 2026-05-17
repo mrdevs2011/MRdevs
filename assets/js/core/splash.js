@@ -92,12 +92,22 @@
         document.body.prepend(splash);
         run(splash);
 
-        /* Xavfsizlik: 5.5s dan keyin majburiy yashirish */
+        /* Xavfsizlik: 3.5s dan keyin majburiy yashirish */
         setTimeout(function () {
             if (splash && !splash.classList.contains('hidden')) {
                 splash.classList.add('hidden');
+                setTimeout(function(){ if(splash&&splash.parentNode) splash.remove(); }, 700);
             }
-        }, 5500);
+        }, 3500);
+
+        /* Sahifa yashirinsayu qayta ko'rinsa — splash ni olib tashlash */
+        document.addEventListener('visibilitychange', function onVis() {
+            if (!document.hidden && splash && !splash.classList.contains('hidden')) {
+                splash.classList.add('hidden');
+                setTimeout(function(){ if(splash&&splash.parentNode) splash.remove(); }, 700);
+                document.removeEventListener('visibilitychange', onVis);
+            }
+        });
     }
 
     if (document.readyState === 'loading') {

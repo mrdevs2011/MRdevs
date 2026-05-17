@@ -1,5 +1,6 @@
 // ==================== MRDEV EXAMER v2.0 — Firebase + Local Sync ====================
 import { initAuth, getCurrentUser, getUserId } from '../../assets/js/firebase-helper.js';
+import { mrdevConfirm } from '../../assets/js/core/dialog.js';
 import { initMiniDropdown } from '../../assets/js/dropdown.js';
 import { getFirebase } from '../../assets/js/firebase-helper.js';
 
@@ -209,7 +210,7 @@ async function loadExams() {
         container.querySelectorAll('.delete-exam').forEach(function(btn) {
             btn.addEventListener('click', async function(e) {
                 e.stopPropagation();
-                if (!confirm('Exam\'ni o\'chirish?')) return;
+                if (!await mrdevConfirm('Exam\'ni o\'chirish?')) return;
                 await deleteDoc(doc(db, 'users', currentUser.uid, 'exams', btn.dataset.id));
                 showToast('O\'chirildi');
                 loadExams();
@@ -323,8 +324,8 @@ function showResults() {
 }
 
 // ==================== NAVIGATION ====================
-$('exitExamBtn').addEventListener('click', function() {
-    if (confirm('Examni tark etmoqchimisiz?')) {
+$('exitExamBtn').addEventListener('click', async function() {
+    if (await mrdevConfirm('Examni tark etmoqchimisiz?')) {
         teacherView.style.display = 'block';
         examView.style.display = 'none';
         resultView.style.display = 'none';

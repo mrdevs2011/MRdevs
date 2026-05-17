@@ -1,6 +1,7 @@
 // ==================== MRDEV BOARD v2.4 — Firebase + Local Sync ====================
 
 import logger from '../../assets/js/core/logger.js';
+import { mrdevConfirm } from '../../assets/js/core/dialog.js';
 import { initAuth, getCurrentUser, getUserId } from '../../assets/js/firebase-helper.js';
 import { db } from '../../assets/js/core/firebase-init.js';
 import { initMiniDropdown } from '../../assets/js/dropdown.js';
@@ -117,7 +118,7 @@ function updateUndoRedo() {
 
 // ==================== TOOLS ====================
 document.querySelectorAll('.tool-btn[data-tool]').forEach(function(btn) {
-    btn.addEventListener('click', function() {
+    btn.addEventListener('click', async function() {
         document.querySelectorAll('.tool-btn[data-tool]').forEach(function(b) { b.classList.remove('active'); });
         btn.classList.add('active');
         state.tool = btn.dataset.tool;
@@ -219,7 +220,7 @@ function loadCloudBoard() {
 
 // ==================== CLEAR ====================
 $('clearBoardBtn').addEventListener('click', function() {
-    if (!confirm(t('board_clear_confirm'))) return;
+    if (!await mrdevConfirm(t('board_clear_confirm'))) return;
     state.elements = []; addHistory(); render();
 });
 

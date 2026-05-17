@@ -43,12 +43,21 @@ function updateSidebarTexts() {
     const navPopular = document.querySelector('#navPopular .nav-text');
     const navMini = document.querySelector('#navMini .nav-text');
     const notifNav = document.querySelector('#notifNav .nav-text');
+    const logoutBtn = document.getElementById('sidebarLogout');
     const loginBtn = document.querySelector('.login-sidebar-btn');
 
     if (navAll) navAll.textContent = t('all_apps');
     if (navPopular) navPopular.textContent = t('popular_apps');
     if (navMini) navMini.textContent = t('mini_apps');
     if (notifNav) notifNav.textContent = t('pass_notifications');
+
+    if (logoutBtn) {
+        // SVG ni saqlagan holda matnni yangilash
+        const textNode = logoutBtn.childNodes[logoutBtn.childNodes.length - 1];
+        if (textNode && textNode.nodeType === Node.TEXT_NODE) {
+            textNode.textContent = ' ' + t('logout');
+        }
+    }
 
     if (loginBtn) {
         const textNode = loginBtn.childNodes[loginBtn.childNodes.length - 1];
