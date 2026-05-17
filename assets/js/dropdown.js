@@ -84,7 +84,7 @@ function openDropdown() {
     document.getElementById(_overlayId)?.classList.add('show');
     document.getElementById(_dropdownId)?.classList.add('show');
     _isOpen = true;
-    resetSwipeLogout();
+    resetLogoutBtn();
 }
 
 function closeDropdown() {
@@ -92,7 +92,7 @@ function closeDropdown() {
     document.getElementById(_overlayId)?.classList.remove('show');
     document.getElementById(_dropdownId)?.classList.remove('show');
     _isOpen = false;
-    resetSwipeLogout();
+    resetLogoutBtn();
 }
 
 function toggleDropdown() {
@@ -199,7 +199,7 @@ function attachFallbacks(el) {
 }
 
 // =====================================================================
-// LOGOUT — IKKI BOSQICHLI CONFIRM TUGMASI
+// LOGOUT — ODDIY SILLIQ TUGMA
 // =====================================================================
 
 function resetLogoutBtn() {
@@ -207,13 +207,11 @@ function resetLogoutBtn() {
     _logoutTapCount = 0;
     const btn = document.getElementById('cfg-logout-btn');
     if (!btn) return;
-    btn.classList.remove('confirm-state');
-    const label = btn.querySelector('.cfg-logout-label');
-    if (label) label.textContent = t('logout') || 'Chiqish';
+    btn.classList.remove('is-leaving');
+    btn.disabled = false;
 }
 
 function doLogout() {
-    resetLogoutBtn();
     closeDropdown();
     const trigger = document.getElementById('headerUserTrigger');
     if (trigger) trigger.classList.add('is-loading');
@@ -221,21 +219,17 @@ function doLogout() {
 }
 
 function bindLogoutBtn(btn) {
-    if (!btn) return;
+    if (!btn || btn._logoutBound) return;
+    btn._logoutBound = true;
 
     btn.addEventListener('click', (e) => {
         e.stopPropagation();
-        if (btn.classList.contains('confirm-state')) {
-            // Ikkinchi bosish — haqiqiy logout
-            doLogout();
-        } else {
-            // Birinchi bosish — tasdiqlash holati
-            btn.classList.add('confirm-state');
-            const label = btn.querySelector('.cfg-logout-label');
-            if (label) label.textContent = t('logout_confirm') || 'Tasdiqlash';
-            clearTimeout(_logoutHintTimer);
-            _logoutHintTimer = setTimeout(() => resetLogoutBtn(), 3000);
-        }
+        if (btn.disabled) return;
+        // Tugmani bloklash + animatsiya
+        btn.disabled = true;
+        btn.classList.add('is-leaving');
+        // 320ms animatsiya tugagandan so'ng logout
+        setTimeout(doLogout, 320);
     });
 }
 
@@ -646,7 +640,7 @@ export function showLogoutModal() {
 }
 
 export function closeAllLogoutModals() {
-    resetSwipeLogout();
+    resetLogoutBtn();
 }
 
 export function getMiniUserFromLocalStorage() {
