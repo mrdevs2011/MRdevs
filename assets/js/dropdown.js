@@ -244,8 +244,8 @@ function bindSwipeLogout(btn) {
         const ratio = clamped / maxDx;
         const thumb = btn.querySelector('.cfg-sw-thumb');
         const fill  = btn.querySelector('.cfg-sw-fill');
-        if (thumb) thumb.style.transform = \`translateX(\${clamped}px)\`;
-        if (fill)  fill.style.width = \`\${Math.min(ratio * 100 + 6, 100)}%\`;
+        if (thumb) thumb.style.transform = `translateX(${clamped}px)`;
+        if (fill)  fill.style.width = `${Math.min(ratio * 100 + 6, 100)}%`;
     }
 
     btn.addEventListener('pointerdown', (e) => {
@@ -282,7 +282,7 @@ function bindSwipeLogout(btn) {
         if (dragging && ratio >= THRESHOLD) {
             // ✅ Swipe muvaffaqiyatli — logout
             didSwipe = true;
-            if (thumb) { thumb.style.transition = 'transform 0.22s ease'; thumb.style.transform = \`translateX(\${maxDx}px)\`; }
+            if (thumb) { thumb.style.transition = 'transform 0.22s ease'; thumb.style.transform = `translateX(${maxDx}px)`; }
             if (fill)  { fill.style.transition = 'width 0.22s ease'; fill.style.width = '100%'; }
             setTimeout(doLogout, 240);
         } else {
