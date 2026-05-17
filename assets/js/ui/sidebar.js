@@ -52,11 +52,9 @@ function updateSidebarTexts() {
     if (notifNav) notifNav.textContent = t('pass_notifications');
 
     if (logoutBtn) {
-        // SVG ni saqlagan holda matnni yangilash
-        const textNode = logoutBtn.childNodes[logoutBtn.childNodes.length - 1];
-        if (textNode && textNode.nodeType === Node.TEXT_NODE) {
-            textNode.textContent = ' ' + t('logout');
-        }
+        // Span orqali to'g'ridan-to'g'ri matn yangilash (text node xatosidan qochish)
+        const span = logoutBtn.querySelector('span[data-i18n]');
+        if (span) span.textContent = t('logout');
     }
 
     if (loginBtn) {

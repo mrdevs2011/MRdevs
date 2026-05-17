@@ -260,111 +260,56 @@ body.dark .cfg-overlay.show { background: rgba(0, 0, 0, 0.38); }
 }
 
 /* =====================================================================
-   SWIPE-TO-LOGOUT — Chap dan o'nga surish
+   LOGOUT BUTTON — clean 2-step confirm
    ===================================================================== */
 
-.cfg-swipe-logout {
-    position: relative;
+.cfg-logout-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: calc(100% - 16px);
     margin: 4px 8px 8px;
-    height: 44px;
-    border-radius: 22px;
-    background: var(--red-dim, rgba(220, 60, 40, 0.08));
-    border: 1px solid rgba(220, 60, 40, 0.18);
-    overflow: hidden;
-    cursor: grab;
-    user-select: none;
-    touch-action: pan-y;
+    height: 42px;
+    border-radius: 12px;
+    border: 1px solid rgba(220, 60, 40, 0.20);
+    background: rgba(220, 60, 40, 0.06);
+    color: var(--red, #dc3c28);
+    font-size: 13.5px;
+    font-weight: 500;
+    font-family: var(--font-sans);
+    cursor: pointer;
+    transition: background 0.18s ease, border-color 0.18s ease,
+                color 0.18s ease, transform 0.15s ease;
     -webkit-tap-highlight-color: transparent;
-    transition: border-color 0.2s;
-}
-.cfg-swipe-logout:active { cursor: grabbing; }
-
-/* To'liq qizil fill — progress ko'rsatuvchi */
-.cfg-sw-fill {
-    position: absolute;
-    inset: 0;
-    width: 0%;
-    background: linear-gradient(90deg, rgba(220,60,40,0.14), rgba(220,60,40,0.28));
-    border-radius: inherit;
-    transition: none;
-    pointer-events: none;
 }
 
-/* Siljuvchi thumb — asosiy drag elementi */
-.cfg-sw-thumb {
-    position: absolute;
-    left: 3px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    background: var(--red, #dc3c28);
+.cfg-logout-btn:hover {
+    background: rgba(220, 60, 40, 0.11);
+    border-color: rgba(220, 60, 40, 0.35);
+}
+
+.cfg-logout-btn:active { transform: scale(0.97); }
+
+.cfg-logout-icon {
     display: flex;
     align-items: center;
-    justify-content: center;
-    box-shadow: 0 2px 8px rgba(220, 60, 40, 0.35);
-    transition: transform 0.35s cubic-bezier(0.34, 1.4, 0.64, 1),
-                box-shadow 0.2s;
-    will-change: transform;
-    z-index: 2;
-}
-.cfg-swipe-logout:active .cfg-sw-thumb {
-    box-shadow: 0 3px 12px rgba(220, 60, 40, 0.5);
-}
-
-.cfg-sw-icon {
-    display: flex;
-    color: white;
-    opacity: 0.95;
-}
-.cfg-sw-icon svg { width: 16px; height: 16px; }
-
-/* "Chiqish" matni */
-.cfg-sw-label {
-    position: absolute;
-    left: 0; right: 0;
-    text-align: center;
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--red, #dc3c28);
-    pointer-events: none;
-    user-select: none;
-    transition: opacity 0.2s;
-}
-
-/* Hint — "O'nga suring →" */
-.cfg-sw-hint {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 11.5px;
-    font-weight: 500;
-    color: var(--red, #dc3c28);
-    opacity: 0;
-    pointer-events: none;
-    user-select: none;
-    letter-spacing: 0.01em;
-    transition: opacity 0.3s ease;
-    gap: 4px;
-}
-.cfg-sw-hint.visible {
     opacity: 0.85;
-    animation: sw-hint-bounce 0.55s cubic-bezier(0.34, 1.4, 0.64, 1);
+    flex-shrink: 0;
+}
+.cfg-logout-icon svg { width: 16px; height: 16px; }
+
+.cfg-logout-btn.confirm-state {
+    background: rgba(220, 60, 40, 0.14);
+    border-color: rgba(220, 60, 40, 0.50);
+    font-weight: 600;
+    animation: cfg-logout-confirm-pop 0.28s cubic-bezier(0.34, 1.4, 0.64, 1);
 }
 
-@keyframes sw-hint-bounce {
-    0%   { transform: translateX(-6px); opacity: 0; }
-    60%  { transform: translateX(3px); }
-    100% { transform: translateX(0); opacity: 0.85; }
-}
-
-/* Hint ko'rinayotganda label yashirish */
-.cfg-sw-hint.visible ~ .cfg-sw-label,
-.cfg-swipe-logout:has(.cfg-sw-hint.visible) .cfg-sw-label {
-    opacity: 0;
+@keyframes cfg-logout-confirm-pop {
+    0%   { transform: scale(0.96); }
+    60%  { transform: scale(1.02); }
+    100% { transform: scale(1); }
 }
 
 /* =====================================================================

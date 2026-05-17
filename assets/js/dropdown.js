@@ -199,116 +199,43 @@ function attachFallbacks(el) {
 }
 
 // =====================================================================
-// LOGOUT — SWIPE-TO-LOGOUT
+// LOGOUT — IKKI BOSQICHLI CONFIRM TUGMASI
 // =====================================================================
 
-function resetSwipeLogout() {
-    _logoutTapCount = 0;
+function resetLogoutBtn() {
     clearTimeout(_logoutHintTimer);
+    _logoutTapCount = 0;
     const btn = document.getElementById('cfg-logout-btn');
     if (!btn) return;
-    btn.classList.remove('swipe-hint-active');
-    const thumb = btn.querySelector('.cfg-sw-thumb');
-    const fill  = btn.querySelector('.cfg-sw-fill');
-    const hint  = btn.querySelector('.cfg-sw-hint');
-    if (thumb) { thumb.style.transform = ''; thumb.style.transition = ''; }
-    if (fill)  { fill.style.width = '0%'; fill.style.transition = ''; }
-    if (hint)  { hint.classList.remove('visible'); }
+    btn.classList.remove('confirm-state');
+    const label = btn.querySelector('.cfg-logout-label');
+    if (label) label.textContent = t('logout') || 'Chiqish';
 }
 
 function doLogout() {
+    resetLogoutBtn();
     closeDropdown();
     const trigger = document.getElementById('headerUserTrigger');
     if (trigger) trigger.classList.add('is-loading');
     logout();
 }
 
-function bindSwipeLogout(btn) {
+function bindLogoutBtn(btn) {
     if (!btn) return;
 
-    let startX = 0, currentX = 0, dragging = false, didSwipe = false;
-    const THRESHOLD = 0.65; // 65% o'tsa logout
-
-    function showHint() {
-        const hint = btn.querySelector('.cfg-sw-hint');
-        if (hint) hint.classList.add('visible');
-        clearTimeout(_logoutHintTimer);
-        _logoutHintTimer = setTimeout(() => {
-            if (hint) hint.classList.remove('visible');
-        }, 2800);
-    }
-
-    function updateDrag(dx) {
-        const maxDx = btn.offsetWidth - 52;
-        const clamped = Math.max(0, Math.min(dx, maxDx));
-        const ratio = clamped / maxDx;
-        const thumb = btn.querySelector('.cfg-sw-thumb');
-        const fill  = btn.querySelector('.cfg-sw-fill');
-        if (thumb) thumb.style.transform = `translateX(${clamped}px)`;
-        if (fill)  fill.style.width = `${Math.min(ratio * 100 + 6, 100)}%`;
-    }
-
-    btn.addEventListener('pointerdown', (e) => {
-        // Faqat thumb yoki button o'ziga
-        startX = e.clientX;
-        currentX = e.clientX;
-        dragging = false;
-        didSwipe = false;
-        const thumb = btn.querySelector('.cfg-sw-thumb');
-        if (thumb) { thumb.style.transition = 'none'; }
-        const fill = btn.querySelector('.cfg-sw-fill');
-        if (fill)  { fill.style.transition = 'none'; }
-        btn.setPointerCapture(e.pointerId);
-    }, { passive: true });
-
-    btn.addEventListener('pointermove', (e) => {
-        if (!e.buttons) return;
-        currentX = e.clientX;
-        const dx = currentX - startX;
-        if (dx > 6) {
-            dragging = true;
-            updateDrag(dx);
-        }
-    }, { passive: true });
-
-    btn.addEventListener('pointerup', (e) => {
-        const dx = (e.clientX || currentX) - startX;
-        const maxDx = btn.offsetWidth - 52;
-        const ratio = maxDx > 0 ? dx / maxDx : 0;
-
-        const thumb = btn.querySelector('.cfg-sw-thumb');
-        const fill  = btn.querySelector('.cfg-sw-fill');
-
-        if (dragging && ratio >= THRESHOLD) {
-            // ✅ Swipe muvaffaqiyatli — logout
-            didSwipe = true;
-            if (thumb) { thumb.style.transition = 'transform 0.22s ease'; thumb.style.transform = `translateX(${maxDx}px)`; }
-            if (fill)  { fill.style.transition = 'width 0.22s ease'; fill.style.width = '100%'; }
-            setTimeout(doLogout, 240);
+    btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (btn.classList.contains('confirm-state')) {
+            // Ikkinchi bosish — haqiqiy logout
+            doLogout();
         } else {
-            // ❌ Swipe yetarli emas — qaytish animatsiyasi
-            if (thumb) { thumb.style.transition = 'transform 0.35s cubic-bezier(0.34, 1.4, 0.64, 1)'; thumb.style.transform = ''; }
-            if (fill)  { fill.style.transition = 'width 0.35s ease'; fill.style.width = '0%'; }
-
-            if (!dragging) {
-                // Faqat tap — sanagich oshirish
-                _logoutTapCount++;
-                if (_logoutTapCount >= 3) {
-                    showHint();
-                    _logoutTapCount = 0;
-                }
-            }
+            // Birinchi bosish — tasdiqlash holati
+            btn.classList.add('confirm-state');
+            const label = btn.querySelector('.cfg-logout-label');
+            if (label) label.textContent = t('logout_confirm') || 'Tasdiqlash';
+            clearTimeout(_logoutHintTimer);
+            _logoutHintTimer = setTimeout(() => resetLogoutBtn(), 3000);
         }
-        dragging = false;
-    });
-
-    // Touch cancel uchun ham reset
-    btn.addEventListener('pointercancel', () => {
-        const thumb = btn.querySelector('.cfg-sw-thumb');
-        const fill  = btn.querySelector('.cfg-sw-fill');
-        if (thumb) { thumb.style.transition = 'transform 0.35s cubic-bezier(0.34,1.4,0.64,1)'; thumb.style.transform = ''; }
-        if (fill)  { fill.style.transition = 'width 0.35s ease'; fill.style.width = '0%'; }
-        dragging = false;
     });
 }
 
@@ -360,12 +287,10 @@ function buildRootHTML(user) {
 
             ${isAuth ? `
             <div class="cfg-divider"></div>
-            <div class="cfg-swipe-logout" id="cfg-logout-btn">
-                <div class="cfg-sw-fill"></div>
-                <div class="cfg-sw-thumb"><span class="cfg-sw-icon">${Icons.logout}</span></div>
-                <span class="cfg-sw-label">Chiqish</span>
-                <span class="cfg-sw-hint">O'nga suring →</span>
-            </div>` : ''}
+            <button class="cfg-logout-btn" id="cfg-logout-btn" type="button">
+                <span class="cfg-logout-icon">${Icons.logout}</span>
+                <span class="cfg-logout-label">Chiqish</span>
+            </button>` : ''}
 
         </div>
     </div>`;
@@ -512,12 +437,10 @@ function buildSettingsHTML(user) {
 
             ${isAuth ? `
             <div class="cfg-divider"></div>
-            <div class="cfg-swipe-logout" id="cfg-logout-btn">
-                <div class="cfg-sw-fill"></div>
-                <div class="cfg-sw-thumb"><span class="cfg-sw-icon">${Icons.logout}</span></div>
-                <span class="cfg-sw-label">Chiqish</span>
-                <span class="cfg-sw-hint">O'nga suring →</span>
-            </div>` : ''}
+            <button class="cfg-logout-btn" id="cfg-logout-btn" type="button">
+                <span class="cfg-logout-icon">${Icons.logout}</span>
+                <span class="cfg-logout-label">Chiqish</span>
+            </button>` : ''}
 
         </div>
     </div>`;
@@ -586,7 +509,7 @@ function attachEvents(section) {
         window.location.href = BASE + '/about/';
     });
 
-    if (logoutBtn) bindSwipeLogout(logoutBtn);
+    if (logoutBtn) bindLogoutBtn(logoutBtn);
 }
 
 // passNotifModal DOM da bo'lmasa — dinamik qo'shamiz
@@ -719,7 +642,7 @@ export { initRootDropdown as initDropdown };
 
 export function showLogoutModal() {
     const btn = document.getElementById('cfg-logout-btn');
-    if (btn) bindSwipeLogout(btn);
+    if (btn) bindLogoutBtn(btn);
 }
 
 export function closeAllLogoutModals() {

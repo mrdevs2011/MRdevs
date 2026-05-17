@@ -88,6 +88,7 @@ export function updateUIForUser(user) {
     setText('sidebarMrdevId', mrdevId);
     setAvatar('sidebarAvatar', user.photoURL, avatar);
     ['sidebarUser','sidebarLogout'].forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'flex'; });
+    const su = document.getElementById('sidebarUser'); if (su) su.classList.remove('is-loading');
     const sl = document.getElementById('sidebarLogin'); if (sl) sl.style.display = 'none';
     const nn = document.getElementById('notifNav'); if (nn) nn.style.display = 'flex';
 
@@ -129,6 +130,25 @@ export async function logout() {
 
 export function initAuth() {
     logger.auth.start('v6.0');
+
+    // ── TEZKOR PRE-POPULATE: Firebase javob berishidan oldin ──
+    // localStorage dagi keshdan UI ni splash davomida to'ldirish
+    // Firebase javob bergandan keyin fresh ma'lumot bilan yangilanadi
+    const earlyAuth = getLocalAuth();
+    if (earlyAuth) {
+        const earlyUser = {
+            uid: earlyAuth.uid,
+            email: earlyAuth.email,
+            displayName: earlyAuth.displayName,
+            photoURL: earlyAuth.photoURL,
+            mrdevId: earlyAuth.mrdevId || localStorage.getItem('mrdev_user_id') || '',
+            providerData: [{ providerId: earlyAuth.provider || 'mrdev' }],
+            isAuthenticated: true
+        };
+        // UI ni darhol to'ldirish (skeleton ko'rinmasin)
+        updateUIForUser(earlyUser);
+        try { initDropdown(earlyUser); } catch (e) {}
+    }
 
     onAuthStateChanged(auth, async (firebaseUser) => {
         if (firebaseUser && firebaseUser.uid) {
