@@ -14,6 +14,42 @@
             "dest": "/404.html"
         },
         {
+            "src": "/settings",
+            "dest": "/settings/index.html"
+        },
+        {
+            "src": "/settings/",
+            "dest": "/settings/index.html"
+        },
+        {
+            "src": "/about",
+            "dest": "/about/index.html"
+        },
+        {
+            "src": "/about/",
+            "dest": "/about/index.html"
+        },
+        {
+            "src": "/mini",
+            "dest": "/mini/index.html"
+        },
+        {
+            "src": "/mini/",
+            "dest": "/mini/index.html"
+        },
+        {
+            "src": "/popular",
+            "dest": "/popular/index.html"
+        },
+        {
+            "src": "/popular/",
+            "dest": "/popular/index.html"
+        },
+        {
+            "src": "/api/(.*)",
+            "dest": "/api/$1"
+        },
+        {
             "src": "/(.*)",
             "dest": "/$1"
         }
