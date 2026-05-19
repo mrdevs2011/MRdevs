@@ -1,7 +1,8 @@
-// ==================== MRDEV DROPDOWN SYSTEM v8.0 ====================
+// ==================== MRDEV DROPDOWN SYSTEM v8.1 ====================
 // Har bir bo'lim (root / mini / settings) uchun alohida dropdown kontenti.
 // Header vizuali o'zgarmaydi — faqat dropdown ichidagi kontent o'zgaradi.
-// Yagona trigger: #headerUserTrigger
+// BUG FIX v8.1: Mini sahifalarda trigger ID 'mrdevUserTriggerMini' — endi
+//   TRIGGER_ID const orqali boshqariladi, hardcoded 'headerUserTrigger' olib tashlandi.
 // Avtomatik bo'lim aniqlash: detectSection() → URL ga qarab
 
 import { showPassNotifications }           from './features/pass-notifications.js';
@@ -25,6 +26,10 @@ import {
 const BASE    = getBasePath();
 const APPS    = getAppsConfig(BASE);
 const SECTION = detectSection();
+
+// BUG FIX v8.1: Mini sahifalar 'mrdevUserTriggerMini' ID dan foydalanadi,
+// root va settings sahifalar esa 'headerUserTrigger' dan.
+const TRIGGER_ID = SECTION === 'mini' ? 'mrdevUserTriggerMini' : 'headerUserTrigger';
 
 let _dropdownId  = null;   // Joriy dropdown element ID
 let _overlayId   = null;   // Joriy overlay ID
@@ -60,10 +65,13 @@ export function setDropdownLoading(id, v) {
 }
 
 function updateTrigger(user) {
-    const trigger = document.getElementById('headerUserTrigger');
+    // BUG FIX v8.1: Mini sahifada TRIGGER_ID = 'mrdevUserTriggerMini'
+    const trigger = document.getElementById(TRIGGER_ID);
     if (!trigger) return;
-    const av = trigger.querySelector('.header-user-avatar');
-    const nm = trigger.querySelector('.header-user-name');
+    // Mini sahifada class nomi .trigger-avatar / .trigger-name,
+    // root va settings da .header-user-avatar / .header-user-name
+    const av = trigger.querySelector('.header-user-avatar, .trigger-avatar');
+    const nm = trigger.querySelector('.header-user-name, .trigger-name');
     if (!user || !user.isAuthenticated) {
         if (av) av.textContent = '?';
         if (nm) nm.textContent = 'Mehmon';
@@ -109,7 +117,7 @@ function scheduleClose() {
     clearTimeout(_openTimer);
     _closeTimer = setTimeout(() => {
         const ddEl = document.getElementById(_dropdownId);
-        const trEl = document.getElementById('headerUserTrigger');
+        const trEl = document.getElementById(TRIGGER_ID); // BUG FIX v8.1
         if (!ddEl?.matches(':hover') && !trEl?.matches(':hover')) closeDropdown();
     }, 250);
 }
