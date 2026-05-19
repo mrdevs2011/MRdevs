@@ -132,7 +132,8 @@ function bindDropdownHover() {
 }
 
 function bindTrigger() {
-    const oldTrigger = document.getElementById('headerUserTrigger');
+    // BUG FIX v8.1 (tugallandi): Mini sahifada 'mrdevUserTriggerMini', boshqalarda 'headerUserTrigger'
+    const oldTrigger = document.getElementById(TRIGGER_ID);
     if (!oldTrigger) return;
 
     // Eski listener'larni tozalash uchun klonlash
@@ -165,7 +166,7 @@ function bindTrigger() {
     // ── Tashqi click (mobil / touch) ─────────────────────────
     document.addEventListener('click', e => {
         const dd = document.getElementById(_dropdownId);
-        const tr = document.getElementById('headerUserTrigger');
+        const tr = document.getElementById(TRIGGER_ID); // BUG FIX v8.1 (tugallandi)
         if (_isOpen && dd && tr && !dd.contains(e.target) && !tr.contains(e.target)) {
             closeDropdown();
         }
@@ -226,7 +227,7 @@ function resetSwipeLogout() {
 
 function doLogout() {
     closeDropdown();
-    const trigger = document.getElementById('headerUserTrigger');
+    const trigger = document.getElementById(TRIGGER_ID); // BUG FIX v8.1
     if (trigger) trigger.classList.add('is-loading');
     logout();
 }
