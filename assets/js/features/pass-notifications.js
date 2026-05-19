@@ -1,5 +1,11 @@
-// ==================== MRDEV PASS NOTIFICATIONS v4.1 ====================
-// BUG #1 FIX: pass_notifications/$uid yo'li + passCode ko'rsatilmaydi (hash)
+// ==================== MRDEV PASS NOTIFICATIONS v4.2 ====================
+// BUG FIX v4.2: loadPassNotifications noto'g'ri yo'l ishlatgan edi.
+//   OLDIN: ref(rtdb, `pass_notifications/${uid}`)  ← bu yo'l mavjud emas
+//   KEYIN:  ref(rtdb, 'pass_notifications') + uid filtri  ← to'g'ri yo'l
+//
+// Sabab: notif-pass.js sendPassCode() ma'lumotni tekis tuzilmada yozadi:
+//   push(ref(rtdb, 'pass_notifications'))  → pass_notifications/<auto-id>
+// Shuning uchun o'qishda ham tekis yo'l + uid filtri ishlatilishi kerak.
 
 import logger from '../core/logger.js';
 import { auth, rtdb } from '../core/firebase-init.js';
@@ -63,8 +69,10 @@ async function loadPassNotifications(uid, email) {
 
         logger.notif.searching(uid, email);
 
-        // BUG #1 FIX: faqat o'z UID'i ostidagi yozuvlarni o'qiymiz
-        const notifRef = ref(rtdb, `pass_notifications/${uid}`);
+        // BUG FIX: Tekis yo'ldan o'qib, keyin uid ga qarab filtrlaymiz.
+        // sendPassCode() ma'lumotni pass_notifications/<auto-id> ga yozadi,
+        // uid ostidagi sub-yo'lga EMAS.
+        const notifRef = ref(rtdb, 'pass_notifications');
         const snapshot = await get(notifRef);
 
         if (!snapshot.exists()) {
@@ -76,8 +84,10 @@ async function loadPassNotifications(uid, email) {
         snapshot.forEach((child) => {
             const data = child.val();
             if (!data) return;
-            // Per-uid path bo'lgani uchun qo'shimcha UID filtri shart emas
-            items.push({ id: child.key, ...data, createdAt: data.createdAt || Date.now() });
+            // Faqat joriy foydalanuvchiga tegishli bildirishnomalarni olamiz
+            if (data.uid === uid || data.firestoreUid === uid) {
+                items.push({ id: child.key, ...data, createdAt: data.createdAt || Date.now() });
+            }
         });
 
         items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));

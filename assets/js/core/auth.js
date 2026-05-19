@@ -1,4 +1,7 @@
-// ==================== MRDEV AUTH STATE MANAGER v6.0 ====================
+// ==================== MRDEV AUTH STATE MANAGER v6.1 ====================
+// BUG FIX v6.1: auth null bo'lganda (Firebase init muvaffaqiyatsiz) crash
+// bermaydi — mehmon rejimida ishlaydi va dropdown/UI yuklanadi.
+
 import logger from './logger.js';
 import { auth, db } from './firebase-init.js';
 import { onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
@@ -65,12 +68,12 @@ export function updateUIForUser(user) {
         ['sidebarUser','sidebarLogout'].forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; });
         const sl = document.getElementById('sidebarLogin'); if (sl) sl.style.display = 'block';
         const nn = document.getElementById('notifNav'); if (nn) nn.style.display = 'none';
-        
+
         const mh = document.getElementById('userMenuHeader'); if (mh) mh.style.display = 'none';
         const ml = document.getElementById('userMenuLogin'); if (ml) ml.style.display = 'block';
         const mo = document.getElementById('userMenuLogout'); if (mo) mo.style.display = 'none';
         const nm = document.getElementById('notifMenuLink'); if (nm) nm.style.display = 'none';
-        
+
         const av = document.getElementById('headerUserAvatar'); if (av) av.textContent = '?';
         const nm2 = document.getElementById('headerUserName'); if (nm2) nm2.textContent = t('guest');
         return;
@@ -128,7 +131,35 @@ export async function logout() {
 }
 
 export function initAuth() {
-    logger.auth.start('v6.0');
+    logger.auth.start('v6.1');
+
+    // ── BUG FIX: Firebase init muvaffaqiyatsiz bo'lsa (auth === null) ──
+    // Ilovalar, dropdown va UI baribir to'g'ri ishlab ketishi kerak.
+    // Local auth tekshirib, mehmon yoki saqlangan sessiyani ko'rsatamiz.
+    if (!auth) {
+        console.warn("⚠️ Firebase auth mavjud emas — local auth tekshirilmoqda.");
+        const localAuth = getLocalAuth();
+        if (localAuth) {
+            logger.localAuth.found(localAuth.email);
+            currentUser = {
+                uid: localAuth.uid,
+                email: localAuth.email,
+                displayName: localAuth.displayName,
+                photoURL: localAuth.photoURL,
+                mrdevId: localAuth.mrdevId || localStorage.getItem('mrdev_user_id') || '',
+                providerData: [{ providerId: localAuth.provider || 'mrdev' }],
+                isAuthenticated: true
+            };
+            updateUIForUser(currentUser);
+        } else {
+            currentUser = null;
+            updateUIForUser(null);
+        }
+        try { initDropdown(currentUser); } catch (e) {
+            logger.error.dropdown(e.message);
+        }
+        return;
+    }
 
     onAuthStateChanged(auth, async (firebaseUser) => {
         if (firebaseUser && firebaseUser.uid) {
@@ -140,7 +171,7 @@ export function initAuth() {
 
             try {
                 mrdevId = await saveUserMrdevId(firebaseUser);
-                
+
                 if (mrdevId) {
                     logger.auth.mrdevId(mrdevId);
                     localStorage.setItem('mrdev_user_id', mrdevId);

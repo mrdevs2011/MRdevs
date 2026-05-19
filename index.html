@@ -262,8 +262,9 @@
         </div>
     </div>
 
-<script type="module" src="./assets/js/config.js"></script>
-<script src="./assets/js/core/theme-flash-fix.js"></script>
+<!-- BUG FIX: config.js ni alohida module sifatida yuklash shart emas —
+     u firebase-init.js orqali app.js zanjirida yuklanadi.
+     theme-flash-fix.js ikkinchi marta yuklash ham olib tashlandi (head da bor). -->
 <script src="./assets/js/core/splash.js"></script>
 <script src="./assets/js/core/loading.js"></script>
 <script type="module" src="./assets/js/app.js"></script>

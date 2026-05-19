@@ -1,4 +1,6 @@
-// ==================== MRDEV APP v7.3 ====================
+// ==================== MRDEV APP v7.4 ====================
+// BUG FIX v7.4:
+//   - email-auth.js import qo'shildi (submitAuthForm, toggleAuthMode window ga berilmagan edi)
 
 import logger from './core/logger.js';
 import { initTheme, toggleTheme } from './core/theme.js';
@@ -23,21 +25,29 @@ import { showToast } from './core/toast.js';
 import { initI18n } from './core/i18n.js';
 import { autoDetectLanguage } from './core/geo-lang.js';
 
+// BUG FIX: email-auth.js import qilinmagan edi — submitAuthForm va
+// toggleAuthMode window ga hech qachon qo'shilmas edi, login formasi ishlamasdi.
+import { submitAuthForm, toggleAuthMode } from './features/email-auth.js';
+
 // ==================== WINDOW EXPORTS ====================
-window.toggleTheme          = toggleTheme;
-window.toggleSidebar        = toggleSidebar;
-window.closeSidebar         = closeSidebar;
-window.switchTab            = switchTab;
-window.signInWithGoogle     = signInWithGoogle;
-window.logout               = logout;
-window.showAuthModal        = () => showModal('authModal');
-window.closeAuthModal       = () => closeModal('authModal');
-window.showMrdevLogin       = showMrdevLogin;
-window.closeMrdevLoginModal = closeMrdevLoginModal;
-window.submitMrdevId        = submitMrdevId;
-window.verifyMrdevPass      = verifyMrdevPass;
+window.toggleTheme           = toggleTheme;
+window.toggleSidebar         = toggleSidebar;
+window.closeSidebar          = closeSidebar;
+window.switchTab             = switchTab;
+window.signInWithGoogle      = signInWithGoogle;
+window.logout                = logout;
+window.showAuthModal         = () => showModal('authModal');
+window.closeAuthModal        = () => closeModal('authModal');
+window.showMrdevLogin        = showMrdevLogin;
+window.closeMrdevLoginModal  = closeMrdevLoginModal;
+window.submitMrdevId         = submitMrdevId;
+window.verifyMrdevPass       = verifyMrdevPass;
 window.showPassNotifications = showPassNotifications;
-window.closePassNotifModal  = closePassNotifModal;
+window.closePassNotifModal   = closePassNotifModal;
+
+// BUG FIX: bu ikki funksiya index.html da chaqiriladi lekin window ga qo'shilmagan edi
+window.submitAuthForm = submitAuthForm;
+window.toggleAuthMode = toggleAuthMode;
 
 window.toggleUserMenu = function () {
     document.getElementById('userMenu')?.classList.toggle('show');
