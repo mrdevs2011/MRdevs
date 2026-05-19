@@ -74,7 +74,12 @@ window.toggleMobileSearch = function () {
 };
 
 // ==================== INIT ====================
-document.addEventListener('DOMContentLoaded', () => {
+// BUG FIX v7.5: config.js va firebase-init.js top-level await ishlatadi.
+// ES module await ga yetganda brauzer to'xtatib DOMContentLoaded ni yuboradi.
+// Shu sababli document.addEventListener('DOMContentLoaded', ...) juda kech
+// ro'yxatdan o'tadi va callback hech qachon ishlamaydi → app grid bo'sh qoladi.
+// Tuzatish: readyState tekshiruvi orqali event o'tib ketganmi yo'qmi aniqlaymiz.
+function initApp() {
     logger.platformStart();
 
     initI18n();   // Saqlangan tilni bir marta qo'llash — auth dan oldin
@@ -100,4 +105,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     logger.platformReady();
-});
+}
+
+// DOMContentLoaded top-level await tufayli modul yuklanishidan oldin o'tib
+// ketgan bo'lishi mumkin — readyState 'loading' bo'lsagina listener qo'shamiz,
+// aks holda initApp() ni to'g'ridan-to'g'ri chaqiramiz.
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initApp);
+} else {
+    initApp();
+}
