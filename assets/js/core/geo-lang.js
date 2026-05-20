@@ -28,13 +28,21 @@ function detectFromBrowserLang() {
     return 'en';
 }
 
+// BUG FIX v2.1: Ilgari null yoki string qaytarardi — app.js da .catch() chaqirilganda
+// TypeError: Cannot read properties of null (reading 'catch') degan xato chiqardi.
+// Bu xato initApp() ni crash qilardi va initTabs() hech qachon ishlamasdi → app grid bo'sh.
+// Endi har doim Promise qaytaradi (hatto null/string holatlarda ham).
 export function autoDetectLanguage() {
-    if (isLangManual()) return null;
-    if (sessionStorage.getItem(GEO_DONE_KEY)) return null;
-    const detectedLang = detectFromBrowserLang();
-    if (detectedLang) {
-        setLanguage(detectedLang);
-        sessionStorage.setItem(GEO_DONE_KEY, '1');
+    try {
+        if (isLangManual()) return Promise.resolve(null);
+        if (sessionStorage.getItem(GEO_DONE_KEY)) return Promise.resolve(null);
+        const detectedLang = detectFromBrowserLang();
+        if (detectedLang) {
+            setLanguage(detectedLang);
+            sessionStorage.setItem(GEO_DONE_KEY, '1');
+        }
+        return Promise.resolve(detectedLang || null);
+    } catch (e) {
+        return Promise.resolve(null);
     }
-    return detectedLang;
 }

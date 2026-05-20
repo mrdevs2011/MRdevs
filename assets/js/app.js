@@ -83,7 +83,11 @@ function initApp() {
     logger.platformStart();
 
     initI18n();   // Saqlangan tilni bir marta qo'llash — auth dan oldin
-    autoDetectLanguage().catch(() => {}); // Barcha foydalanuvchilar uchun GPS/browser-lang detection
+    // BUG FIX v7.5: autoDetectLanguage() ilgari Promise emas edi → .catch() TypeError berardi
+    // → initApp() crash bo'lib initTabs() ishlamasdi → app grid bo'sh qolardi.
+    // Endi geo-lang.js har doim Promise qaytaradi, lekin qo'shimcha himoya sifatida
+    // try-catch ham qo'shildi.
+    try { autoDetectLanguage()?.catch(() => {}); } catch (_) {}
     initTheme();
     initAuth();
     initSidebar();
